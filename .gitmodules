@@ -4,3 +4,18 @@
 [submodule "pdf.js"]
            path = js/lib/pdf.js
            url = https://github.com/mozilla/pdf.js.git
+[submodule "hbs"]
+           path = js/lib/hbs
+           url = https://github.com/epeli/requirejs-hbs
+[submodule "underscorejs"]
+           path = js/lib/underscore
+           url = https://github.com/jashkenas/underscore.git
+[submodule "handlebars"]
+           path = js/lib/require-handlebars-plugin
+           url = https://github.com/SlexAxton/require-handlebars-plugin
+[submodule "restful-api"]
+           path = lib/restful-api
+           url = https://github.com/kellanburket/restful_api.git
+[submodule "xml-parser"]
+           path = lib/xml-parser
+           url = https://github.com/kellanburket/xml-parser
