@@ -1,4 +1,5 @@
 <?php
+
 abstract class restful_api {
 
     protected $method = '';
@@ -6,7 +7,8 @@ abstract class restful_api {
     protected $endpoint = '';
     protected $verb = '';
     protected $args = array();
-    
+    protected $wp_session = NULL;
+
 	protected $file = NULL;
 	protected $file_dir;
 	
@@ -14,13 +16,15 @@ abstract class restful_api {
 	protected $baseurl;
 	protected $allowed_exts;
 	protected $input_name = 'file';
+    protected $request = NULL;
 	
 	protected $user_id;
 
-    public function __construct($request) {
+    public function __construct($request, $session) {
         header("Access-Control-Allow-Orgin: *"); //allow requests from any origin to be processed
         header("Access-Control-Allow-Methods: *"); //allow any http method to be accepted
         if (!$_FILES) header("Content-Type: application/json");
+        $this->wp_session = $session;
 		$this->debug_values = array('debug_values'=>'none');
         $this->args = explode('/', rtrim($request, '/'));
 		$this->endpoint = array_shift($this->args);

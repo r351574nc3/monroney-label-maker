@@ -6,7 +6,9 @@ define(
 	
 	var initialize = function(){
 		var rootUser;
-		
+
+        console.log("Accessing: " + backbone_data.url)
+        
 		$.ajax({
 			url: backbone_data.url
 		}).done(function(data) {
