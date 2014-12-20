@@ -13,21 +13,15 @@ class backbone_controller {
 
 
     public function get($request, $verb, $args) {
-        echo json_encode([
-                "success" => true,
-                "name"    => "",
-                "id"      => "0",
-                "secret"  => ""
-        ]);
         return json_encode([
                 "success" => true,
                 "name"    => "",
                 "id"      => "0",
                 "secret"  => "",
-                "labelgen_images"  => get_images(),
-                "labelgen_logos"   => get_logos(),
-                "labelgen_options" => get_options(),
-                "interior_options" => get_interior_options(),
+                "labelgen_images"  => $this->get_images(),
+                "labelgen_logos"   => $this->get_logos(),
+                "labelgen_options" => $this->get_options(),
+                "interior_options" => $this->get_interior_options(),
                 "labelgen_labels"  => []
         ]);
     }
