@@ -19,14 +19,14 @@ class Image {
         $retval = [];
         $wpdb->query(
             $wpdb->prepare(
-                "SELECT * FROM {$this->table} tx 
+                "SELECT * FROM {$table} tx 
                  INNER JOIN labelgen_user_relationships ty
                  ON tx.id = ty.item_id 
                  WHERE ty.user_id = %d OR ty.user_id = 0 AND ty.table_name = %s", 
-                 intval($id), $tbl
+                 intval($id), $table;
             )
         );
-        
+        echo "Got here\n";
         $num_results = $wpdb->last_result;
             
         if ($num_results) {
@@ -42,7 +42,6 @@ class Image {
             }        
         }
 
-        echo "Returning";
         return $retval;
     }
 }
