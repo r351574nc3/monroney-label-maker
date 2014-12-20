@@ -16,16 +16,21 @@ class backbone_controller {
 
 
     public function get($request, $verb, $args) {
-        return json_encode([
+        $retval = [
                 "success" => true,
                 "name"    => "",
                 "id"      => "",
                 "secret"  => "",
                 "labelgen_images"  => $this->get_images(),
                 "labelgen_logos"   => $this->get_logos(),
-                "options"          => $this->get_options(),
                 "labelgen_labels"  => []
-        ]);
+        ];
+
+        foreach ($this->get_options() as $key => $value) {
+            $retval[$key] = $value;
+        }
+
+        return json_encode($retval);
     }
 
     protected function get_images() {
