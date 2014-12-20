@@ -4,6 +4,8 @@ namespace labelgen;
 
 require_once(LABEL_MAKER_ROOT.'/models/labelgen-user.php');
 require_once(LABEL_MAKER_ROOT.'/models/image.php');
+require_once(LABEL_MAKER_ROOT.'/models/logo.php');
+require_once(LABEL_MAKER_ROOT.'/models/option.php');
 
 class backbone_controller {
     protected $wp_session;
@@ -21,8 +23,7 @@ class backbone_controller {
                 "secret"  => "",
                 "labelgen_images"  => $this->get_images(),
                 "labelgen_logos"   => $this->get_logos(),
-                "labelgen_options" => $this->get_options(),
-                "interior_options" => $this->get_interior_options(),
+                "options"          => $this->get_options(),
                 "labelgen_labels"  => []
         ]);
     }
@@ -32,15 +33,11 @@ class backbone_controller {
     }
 
     protected function get_logos() {
-        return [];
+        return Logo::get_all(0);
     }
 
     protected function get_options() {
-        return [];
-    }
-
-    protected function get_interior_options() {
-        return [];
+        return Option::get_all(0);
     }
 }
 ?>

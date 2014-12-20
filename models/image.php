@@ -29,7 +29,7 @@ class Image {
             )
         );
         $num_results = $wpdb->last_result;
-            
+        
         if ($num_results) {
             $retval = $wpdb->last_result;
         

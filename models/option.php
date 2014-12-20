@@ -19,7 +19,7 @@ class Option {
         global $wpdb;
         $retval = [];
         $table = self::$table;
-        
+
         $wpdb->query(
             $wpdb->prepare(
                 "SELECT * FROM {$table} tx 
@@ -30,16 +30,17 @@ class Option {
             )
         );
         $num_results = $wpdb->last_result;
-            
+
         if ($num_results) {
-            $retval = $wpdb->last_result;
+            $results = $wpdb->last_result;
         
-            if (is_array($retval)) {
-                foreach($retval as &$ut) {       
+            if (is_array($results)) {
+                foreach($results as &$ut) {       
                     $ut->id = $ut->item_id;
                     unset($ut->table_name);
                     unset($ut->item_id);
                     unset($ut->time);
+                    $retval["{$ut->location}_options"][] = $ut;
                 }
             }        
         }
