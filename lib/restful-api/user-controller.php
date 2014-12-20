@@ -59,31 +59,6 @@ class user_controller {
         global $wpdb;
         $tables = array("labelgen_images", "labelgen_logos", "labelgen_makes", "labelgen_models", "labelgen_years", "labelgen_options", "labelgen_discounts");
         foreach($tables as $tbl) {          
-            $wpdb->query(
-        $wpdb->prepare(
-            "SELECT * FROM {$tbl} tx 
-        INNER JOIN labelgen_user_relationships ty
-        ON tx.id = ty.item_id 
-        WHERE ty.user_id = %d OR ty.user_id = 0 AND ty.table_name = %s", 
-            intval($id), $tbl
-        )
-            );
-            $num_results = $wpdb->last_result;
-            
-            if ($num_results) {
-        $user[$tbl] = $wpdb->last_result;
-        
-        if (is_array($user[$tbl])) {
-            foreach($user[$tbl] as &$ut) {
-        
-        $ut->id = $ut->item_id;
-        unset($ut->table_name);
-        unset($ut->item_id);
-        unset($ut->time);
-            }
-        }
-        
-            }            
         }
                 
         if (isset($user['labelgen_options']) && is_array($user['labelgen_options'])) {

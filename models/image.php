@@ -9,9 +9,41 @@ class Image {
     protected $caption;
     protected $owner;
     
+    protected static $table = 'labelgen_images';
+
     public function __construct() {
     }
 
+    public static function get_all($id) {
+        echo "Get All";
+        global $wpdb;
+        $retval = [];
+        $wpdb->query(
+            $wpdb->prepare(
+                "SELECT * FROM {$this->table} tx 
+                 INNER JOIN labelgen_user_relationships ty
+                 ON tx.id = ty.item_id 
+                 WHERE ty.user_id = %d OR ty.user_id = 0 AND ty.table_name = %s", 
+                 intval($id), $tbl
+            )
+        );
+        
+        $num_results = $wpdb->last_result;
+            
+        if ($num_results) {
+            $retval = $wpdb->last_result;
+        
+            if (is_array($retval)) {
+                foreach($retval as &$ut) {       
+                    $ut->id = $ut->item_id;
+                    unset($ut->table_name);
+                    unset($ut->item_id);
+                    unset($ut->time);
+                }
+            }
+        
+        }            
+    }
 }
 
 ?>

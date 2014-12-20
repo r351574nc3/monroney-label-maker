@@ -3,6 +3,7 @@
 namespace labelgen;
 
 require_once(LABEL_MAKER_ROOT.'/models/labelgen-user.php');
+require_once(LABEL_MAKER_ROOT.'/models/image.php');
 
 class backbone_controller {
     protected $wp_session;
@@ -16,7 +17,7 @@ class backbone_controller {
         return json_encode([
                 "success" => true,
                 "name"    => "",
-                "id"      => "0",
+                "id"      => "",
                 "secret"  => "",
                 "labelgen_images"  => $this->get_images(),
                 "labelgen_logos"   => $this->get_logos(),
@@ -27,7 +28,7 @@ class backbone_controller {
     }
 
     protected function get_images() {
-        return [];
+        return Image::get_all();
     }
 
     protected function get_logos() {

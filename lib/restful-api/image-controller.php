@@ -8,7 +8,6 @@ class image_controller {
 
 
     public function __construct($request, $session, $origin) {
-        $table = 'labelgen_images';
         $conditions = array();
     }
 
