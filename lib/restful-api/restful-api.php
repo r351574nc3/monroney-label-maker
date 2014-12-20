@@ -17,6 +17,7 @@ abstract class restful_api {
 	protected $allowed_exts;
 	protected $input_name = 'file';
     protected $request = NULL;
+    protected $original = NULL;
 	
 	protected $user_id;
 
@@ -26,6 +27,7 @@ abstract class restful_api {
         if (!$_FILES) header("Content-Type: application/json");
         $this->wp_session = $session;
 		$this->debug_values = array('debug_values'=>'none');
+        $this->original = $request;
         $this->args = explode('/', rtrim($request, '/'));
 		$this->endpoint = array_shift($this->args);
 
@@ -71,7 +73,6 @@ abstract class restful_api {
 		} else {
 			$this->_response('Invalid Method', 405);
 		}
-
 
 
 		//echo json_encode(array('endpoint'=>$this->endpoint, 'request'=>$this->request, 'verb'=>$this->verb, 'args'=>$this->args));

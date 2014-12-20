@@ -23,11 +23,13 @@ class backbone_controller {
                 "secret"  => "",
                 "labelgen_images"  => $this->get_images(),
                 "labelgen_logos"   => $this->get_logos(),
+                "labelgen_options" => [],
                 "labelgen_labels"  => []
         ];
 
         foreach ($this->get_options() as $key => $value) {
             $retval[$key] = $value;
+            array_push($retval['labelgen_options'], $value);
         }
 
         return json_encode($retval);

@@ -11,15 +11,54 @@ class user_controller {
         $this->wp_session = $wp_session;
     }
 
+    protected function check_credentials($request, $verb, $args) {
+        $user = $wp_session['user'];
+        return json_encode([ 'success' => true,
+                             'message' => (isset($user) && $user->is_admin()) ? current_user_can('manage_options') : true ]);
+    }
+
+    protected function get_unencrypted_secret() {
+        $auth_args = explode(":", $_SERVER['HTTP_AUTHENTICATION']);
+        $nonce = $auth_args[1];
+        $input_digest = $auth_args[2];
+
+        $PROTOCOL = ($_SERVER['HTTPS']) ? 'https://' : 'http://';
+        $path = $PROTOCOL.$_SERVER['HTTP_HOST'].$_SERVER['REDIRECT_URL'];
+        return "{$_SERVER['REQUEST_METHOD']}+{$path}+{$nonce}";
+    }
 
     public function get($request, $verb, $args) {
-        echo json_encode(["verb" => $verb, "args" => $args]); 
+        $username = '';
+        if (isset($verb) && is_array($args)) {
+            $action = array_pop($args);
+            
+            // If the action is a method, then evaluate it. If it is not, it must be a user.
+            if (method_exists($this, $action) > 0) {
+                return $this->{$action}($request, $verb, $args);
+            }
+            else {
+                $username = $verb;
+            }
+        }
+
         if (isset($verb)
             && array_key_exists('loginPassword', $request)) {
             // User is logging in
             echo "User is logging in\n";
             // $this->get_user_id_from_password($this->request['loginPassword'])
+
+            $user = new \labelgen\User\Builder()
+                    ->with_username($username)
+                    ->with_key(get_unencrypted_key())
+                    ->from_password($pw)
+                    ->build();
+            
+            if ($user->auth()) {
+                $this->wp_session['user'] = $user;
+                return $user->to_json();
+            }
         }
+
            /*
         
         $this->get_user_id_from_secret();
@@ -93,44 +132,7 @@ class user_controller {
     public function delete() {
     }
 
-    
-    /**
-     * 
-     */                             
-    protected function get_user_id_from_secret() {
-        $auth_args = explode(":", $_SERVER['HTTP_AUTHENTICATION']);
-        $user = substr($auth_args[0], 5, strlen($auth_args[0]));
-        $this->username = $user;
-        $nonce = $auth_args[1];
-        $input_digest = $auth_args[2];
-        
-        global $wpdb;
-        $wpdb->query($wpdb->prepare('SELECT secret, id FROM labelgen_users WHERE name = %s', array($this->verb)));
-        $results = $wpdb->last_result;
-        
-        
-        if ($results) {
-            $id = $results[0]->id;
-            
-            $PROTOCOL = ($_SERVER['HTTPS']) ? 'https://' : 'http://';
-            $path = $PROTOCOL.$_SERVER['HTTP_HOST'].$_SERVER['REDIRECT_URL'];       
-            $msg = "{$this->method}+{$path}+{$nonce}";
-            $hash = hash_hmac('sha1', $msg, $results[0]->secret, true);
-            $saved_digest = base64_encode($hash);
-
-            //echo json_encode(array('message'=>$msg, 'server_authentication'=>$_SERVER['HTTP_AUTHENTICATION'], 'saved_digest'=>$saved_digest, 'input_digest'=>$input_digest));
-            //exit;
-
-            if ($saved_digest == $input_digest) {
-        $this->user_id = $id;
-            } else {
-        throw new Exception("Are you sure you want to do that?");
-            }               
-        } else {
-            throw new Exception("No user by that name exists.");
-        }               
-    }
-    
+       
     private function signup_user($table, $fields) {
         //First Check that all the appropriate fields have been filled in
         if ($this->request['signupEmail'] && $this->request['signupPassword'] && $this->request['signupName']) {

@@ -116,16 +116,11 @@ class labelgen_api extends restful_api {
         echo json_encode(array('args'=>$this->args, 'endpoint'=>$this->endpoint, 'verb'=>$this->verb));
         //exit;     
     }
-    
-    protected function check_credentials() {
-        return json_encode([ 'success' => true,
-                             'message' => ($this->user_id == 0) ? current_user_can('manage_options') : true ]);
-    }
-    
+        
     protected function users($action, $args) {
         $method = strtolower($this->method);
         $controller = new \labelgen\user_controller($this->wp_session);
-        return $controller->{$method}($this->request, $action, args);
+        return $controller->{$method}($this->request, $action, $args);
     }
 
     protected function backbone($action, $args) {
