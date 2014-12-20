@@ -17,7 +17,8 @@ class Image {
     public static function get_all($id) {
         global $wpdb;
         $retval = [];
-        echo "Table self::$table";
+        $table = self::$table;
+        
         $wpdb->query(
             $wpdb->prepare(
                 "SELECT * FROM {$table} tx 
