@@ -15,7 +15,6 @@ class Image {
     }
 
     public static function get_all($id) {
-        echo "Get All";
         global $wpdb;
         $retval = [];
         $wpdb->query(
@@ -40,9 +39,11 @@ class Image {
                     unset($ut->item_id);
                     unset($ut->time);
                 }
-            }
-        
-        }            
+            }        
+        }
+
+        echo "Returning";
+        return $retval;
     }
 }
 
