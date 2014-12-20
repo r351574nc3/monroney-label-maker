@@ -28,7 +28,7 @@ class backbone_controller {
     }
 
     protected function get_images() {
-        return Image::get_all();
+        return Image::get_all(0);
     }
 
     protected function get_logos() {

@@ -17,16 +17,16 @@ class Image {
     public static function get_all($id) {
         global $wpdb;
         $retval = [];
+        echo "Table self::$table";
         $wpdb->query(
             $wpdb->prepare(
                 "SELECT * FROM {$table} tx 
                  INNER JOIN labelgen_user_relationships ty
                  ON tx.id = ty.item_id 
                  WHERE ty.user_id = %d OR ty.user_id = 0 AND ty.table_name = %s", 
-                 intval($id), $table;
+                 intval($id), $table
             )
         );
-        echo "Got here\n";
         $num_results = $wpdb->last_result;
             
         if ($num_results) {
