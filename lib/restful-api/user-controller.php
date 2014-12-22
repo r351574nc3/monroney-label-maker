@@ -1,5 +1,5 @@
 <?php
-
+// 
 namespace labelgen;
 
 require_once(LABEL_MAKER_ROOT.'/models/labelgen-user.php');
@@ -47,8 +47,8 @@ class user_controller {
             echo "User is logging in\n";
             // $this->get_user_id_from_password($this->request['loginPassword'])
 
-            $builder = new \labelgen\User\Builder();
-            $user = $builder->with_username($username)
+            $user = (new \labelgen\User\Builder())
+                    ->with_username($username)
                     ->with_key(get_unencrypted_key())
                     ->from_password($pw)
                     ->build();
@@ -126,7 +126,9 @@ class user_controller {
     }
 
     public function post() {
-        return $this->signup_user($table, $fields);
+        echo "Got here";
+        return json_encode([ 'success' => true ]);
+        // return $this->signup_user($table, $fields);
     }
 
     public function delete() {
