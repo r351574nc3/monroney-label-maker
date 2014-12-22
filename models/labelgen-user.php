@@ -5,7 +5,7 @@ namespace labelgen {
     /**
      *
      */
-    class User extends \labelgen {
+    class User {
      
         protected $id;
         protected $name;
@@ -90,22 +90,22 @@ namespace labelgen {
                 return false;
             }
         }
-    }
 
-    public function to_json() {
-        $retval = [
-                "success" => true,
-                "name"    => $this->username,
-                "id"      => $this->id,
-                "secret"  => $this->secret
-        ];
-
-        return json_encode($retval);
+        public function to_json() {
+            $retval = [
+                    "success" => true,
+                    "name"    => $this->username,
+                    "id"      => $this->id,
+                    "secret"  => $this->secret
+            ];
+     
+            return json_encode($retval);
+        }
     }
 }
 
-namespace labelgen\User {
-    class Builder extends \labelgen {
+namespace User {
+    class Builder {
 
         protected $username;
         protected $password;

@@ -47,8 +47,8 @@ class user_controller {
             echo "User is logging in\n";
             // $this->get_user_id_from_password($this->request['loginPassword'])
 
-            $user = new \labelgen\User\Builder()
-                    ->with_username($username)
+            $builder = new \labelgen\User\Builder();
+            $user = $builder->with_username($username)
                     ->with_key(get_unencrypted_key())
                     ->from_password($pw)
                     ->build();
