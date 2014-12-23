@@ -49,7 +49,6 @@ class user_controller {
 
             $user = (new \labelgen\User\Builder())
                     ->with_username($username)
-                    ->with_key(get_unencrypted_key())
                     ->from_password($pw)
                     ->build();
             

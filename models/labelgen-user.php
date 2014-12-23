@@ -120,11 +120,6 @@ namespace User {
             return $this;
         }
 
-        public function with_key($key) {
-            $this->key = $key;
-            return $this;
-        }
-
         public function from_password($password) {
            $this->password = $password;
            return $this;
@@ -136,11 +131,6 @@ namespace User {
             $retval->set_password($this->password);
             
             $retval->set_id(\labelgen\User::get_user_id_from($this->username, $this->password));
-
-            $key_secret = \labelgen\User::get_key_from($this->username, $this->key);
-
-            $retval->set_key($key_secret[0]);
-            $retval->set_secret($key_secret[1]);
         }
     }
 }
