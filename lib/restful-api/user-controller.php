@@ -27,6 +27,25 @@ class user_controller {
         return "{$_SERVER['REQUEST_METHOD']}+{$path}+{$nonce}";
     }
 
+    protected function signup_user($request, $verb, $args) {
+        $user = (new \labelgen\User\Builder())
+                ->with_username(trim($request['signupName']))
+                ->with_email($request['signupEmail'])
+                ->from_password($request['signupPassword'])                
+                ->build();
+
+        $return = \labelgen\User::save_new($user);
+        
+        
+        if ($return) {
+            // $retval = $user->to_array();
+            // $retval['success'] = true;
+            return $return;
+        } else {
+            throw new Exception('Something went wrong. We were not able to sign you up at this time.');             
+        }
+    }
+    
     protected function login($request, $verb, $args) {
         $user = (new \labelgen\User\Builder())
                 ->with_username($request['loginName'])
@@ -37,8 +56,7 @@ class user_controller {
             $this->wp_session['user'] = $user;
             $retval = $user->to_array();
             $retval['message'] = 'Login successful.';
-            echo json_encode((object) $retval, JSON_FORCE_OBJECT) . PHP_EOL;
-            return json_encode((object) $retval, JSON_FORCE_OBJECT);
+            return $retval;
         }
         return json_encode([ 'success' => true ]);
     }
@@ -146,64 +164,13 @@ class user_controller {
             // User is logging in
             return $this->login($request, $verb, $args);
         }
-        // return $this->signup_user($table, $fields);
+        else if (array_key_exists('signupName', $request)) {
+            return $this->signup_user($request, $verb, $args);
+        }
     }
 
     public function delete() {
     }
 
-       
-    private function signup_user($table, $fields) {
-        //First Check that all the appropriate fields have been filled in
-        if ($this->request['signupEmail'] && $this->request['signupPassword'] && $this->request['signupName']) {
-            
-            $request['email'] = is_email($this->request['signupEmail']) ? $this->request['signupEmail'] : NULL;
-            if (is_null($request['email']))
-        throw new Exception('Not a valid email address!');
-
-            
-            $request['name'] = trim($this->request['signupName']);
-            
-        
-            if ($request['name']) {
-        if (!ctype_alnum($request['name'])) throw new Exception(INVALID_CHARACTERS_IN_NAME);
-        
-        global $wpdb;
-        $wpdb->query(
-            $wpdb->prepare(
-        "SELECT email, name FROM labelgen_users WHERE email = %s OR name = %s", 
-        array($request['email'], $request['name'])
-            )
-        );
-        $result = $wpdb->last_result[0];
-        if ($result) {
-            if ($result->email == $request['email']) {
-        throw new Exception(EMAIL_ALREADY_REGISTERED);
-            } else if ($result->name == $request['name']) {
-        throw new Exception(NAME_ALREADY_REGISTERED);
-            }
-        }
-            } else {
-        throw new Exception(INVALID_USER_NAME);
-            }
-            
-            $request['password'] = $this->encrypt(trim($this->request['signupPassword']));
-            $request['secret'] = sha1(microtime(true).mt_rand(22222,99999));
-            
-        } else {
-            throw new Exception('Missing Vital Sign Up Information.');
-        }
-        
-        $return = $this->parse_post_request($table, $request, true);
-        
-        if ($return) {
-            
-            return array('success'=>true, 'id'=>$return['id'], 'secret'=>$return['secret'], 'email'=>$return['email'], 'name'=>$return['name']);
-        } else {
-            throw new Exception('Something went wrong. We were not able to sign you up at this time.');             
-        }
-
-    }
-    
 }
 ?>

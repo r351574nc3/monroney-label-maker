@@ -2,6 +2,7 @@
 
 namespace labelgen {
 
+
     /**
      *
      */
@@ -16,7 +17,11 @@ namespace labelgen {
         protected $fields;
      
         protected static $table = "labelgen_users";
-     
+
+        protected static $SELECT_BY_ID_FORMAT       = "SELECT * from labelgen_users where id = %d";
+        protected static $SELECT_BY_CONTENT_FORMAT  = "SELECT * from labelgen_users where name = %s AND email = %s";
+        protected static $SELECT_LU_FORMAT = "SELECT * from labelgen_user_relationships where id = %d";
+
         public function __construct() {
             $this->table = 'labelgen_users';
             $this->fields = array('email', 'password', 'name', 'id', 'secret');
@@ -45,6 +50,11 @@ namespace labelgen {
 
         public function set_secret($secret) {
             $this->secret = $secret;
+        }
+
+        public function set_email($email) {
+           $this->email = $email;
+           return $this;
         }
 
         public static function get_user_id_from($username) {
@@ -126,10 +136,29 @@ namespace labelgen {
             }
         }
 
+        protected function encrypt($passw, $cost = 10) {
+            
+            //Create initialization vector from random source, size 16
+            $iv = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
+     
+            // Create a random salt     
+            $salt = strtr(base64_encode($iv), '+', '.');        
+            
+            // Prefix information about the hash so PHP knows how to verify it later.
+            // "$2a$" Means we're using the Blowfish algorithm. The following two digits are the cost parameter.
+            $prefixed_salt = sprintf("$2a$%02d$", $cost) . $salt;
+            
+            // Hash the password with the salt
+            $hash = crypt($passw, $prefixed_salt);
+     
+            return $hash;
+        }
+
         public function to_array() {
             $retval = [
                     'success' => true,
                     'name'    => $this->username,
+                    'email'   => $this->email,
                     'id'      => $this->id,
                     'secret'  => $this->secret
             ];
@@ -140,6 +169,58 @@ namespace labelgen {
      
             return json_encode($this->to_array(), JSON_FORCE_OBJECT);
         }
+
+        public static function save_new($user) {
+            if (is_null($user->username) || is_null($user->password) || is_nulL($user->email)) {
+                throw new Exception('Missing Vital Sign Up Information.');
+            }
+
+            if (!is_email($user->email)) {
+                throw new Exception('Not a valid email address!');
+            }
+     
+            if (ctype_alnum($user->username)) { throw new Exception(INVALID_CHARACTERS_IN_NAME); }
+            
+            global $wpdb;
+            $table = self::$table;
+            $wpdb->query(
+                $wpdb->prepare("SELECT email, name FROM ${table} WHERE email = %s OR name = %s", [ $this->email, $this->username ])
+            );
+            
+            $result = $wpdb->last_result[0];
+            if ($result) {
+                if ($result->email == $request['email']) {
+                    throw new Exception(EMAIL_ALREADY_REGISTERED);
+                } else if ($result->name == $request['name']) {
+                    throw new Exception(NAME_ALREADY_REGISTERED);
+                }
+            }
+            else {
+                throw new Exception(INVALID_USER_NAME);
+            }
+                
+            $user->password = self::encrypt(trim($user->password));
+            $user->secret = sha1(microtime(true).mt_rand(22222,99999));
+
+    		$time = current_time('mysql');
+        	$wpdb->insert(self::$table, [ 'id'        => $user->id, 
+                                          'name'      => $user->username, 
+                                          'email'     => $user->email, 
+                                          'time'      => $time, 
+                                          'password'  => $user->password, 
+                                          'secret'    => $user->secret ]);
+        	
+        	$user->set_id($wpdb->insert_id);
+     
+            $retval = $user->to_array();
+            $retval['success'] = true;
+        	if ($retval['id']) {
+                return $retval;
+        	} 
+            else {
+        		throw new Exception(json_encode(array('last_error'=>$wpdb->last_error, 'last_query'=>$wpdb->last_query)));
+        	}
+        }		
     }
 }
 
@@ -150,6 +231,7 @@ namespace labelgen\User {
         protected $password;
         protected $key;
         protected $secret;
+        protected $email;
 
         public function __construct() {
         }
@@ -164,10 +246,16 @@ namespace labelgen\User {
            return $this;
         }
 
+        public function with_email($email) {
+           $this->email = $email;
+           return $this;
+        }
+
         public function build() {
             $retval = new \labelgen\User();
             $retval->set_username($this->username);
             $retval->set_password($this->password);
+            $retval->set_email($this->email);
             
             $retval->set_id(\labelgen\User::get_user_id_from($this->username));
             return $retval;
