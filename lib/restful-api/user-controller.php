@@ -29,15 +29,17 @@ class user_controller {
 
     protected function login($request, $verb, $args) {
         $user = (new \labelgen\User\Builder())
-                ->with_username($username)
-                ->from_password($pw)
+                ->with_username($request['loginName'])
+                ->from_password($request['loginPassword'])
                 ->build();
         
         if ($user->auth()) {
             $this->wp_session['user'] = $user;
-            return $user->to_json();
+            $retval = $user->to_array();
+            $retval['message'] = 'Login successful.';
+            echo json_encode((object) $retval, JSON_FORCE_OBJECT) . PHP_EOL;
+            return json_encode((object) $retval, JSON_FORCE_OBJECT);
         }
-
         return json_encode([ 'success' => true ]);
     }
 
@@ -142,11 +144,9 @@ class user_controller {
         if (isset($verb)
             && array_key_exists('loginPassword', $request)) {
             // User is logging in
-            $this->login($request, $verb, $args);
+            return $this->login($request, $verb, $args);
         }
-        else {
-            // return $this->signup_user($table, $fields);
-        }
+        // return $this->signup_user($table, $fields);
     }
 
     public function delete() {

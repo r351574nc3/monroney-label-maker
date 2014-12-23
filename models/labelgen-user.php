@@ -17,7 +17,7 @@ namespace labelgen {
      
         protected static $table = "labelgen_users";
      
-        public function __construct($request) {
+        public function __construct() {
             $this->table = 'labelgen_users';
             $this->fields = array('email', 'password', 'name', 'id', 'secret');
         }
@@ -35,25 +35,28 @@ namespace labelgen {
             $this->key = $key;
         }
 
+        public function set_username($username) {
+            $this->username = $username;
+        }
+
+        public function set_password($password) {
+            $this->password = $password;
+        }
+
         public function set_secret($secret) {
             $this->secret = $secret;
         }
 
-        public static function get_user_id_from($username, $password) {
+        public static function get_user_id_from($username) {
             global $wpdb;
             $table = self::$table;
             
-            $wpdb->query($wpdb->prepare('SELECT * FROM {$table} WHERE name = %s', [ $username ]));
+            $wpdb->query($wpdb->prepare("SELECT * FROM {$table} WHERE name = %s", [ $username ]));
             $result = $wpdb->last_result;
             if ($result && is_array($result)) {
-                if (self::decrypt($password, $result[0]->password)) {
-                    return intval($result[0]->id);
-                }
-                else {
-                    throw new Exception("Either the name or password you entered is invalid");
-                }
+                return intval($result[0]->id);
             } else {
-                throw new Exception("Invalid Password.");           
+                throw new \Exception("Invalid Password for " . $username);           
             }
         }
 
@@ -61,7 +64,7 @@ namespace labelgen {
             global $wpdb;
             $table = self::$table;
             
-            $wpdb->query($wpdb->prepare('SELECT secret, id FROM {$table} WHERE name = %s', [ $this->username ]));
+            $wpdb->query($wpdb->prepare("SELECT secret, id FROM {$table} WHERE name = %s", [ $this->username ]));
             $results = $wpdb->last_result;
 
             if ($results) {
@@ -69,7 +72,7 @@ namespace labelgen {
                 return [ base64_encode($hash), $results[0]->secret ];
             }
             else {
-                throw new Exception("No user by that name exists.");
+                throw new \Exception("No user by that name exists.");
             }
         }
 
@@ -91,21 +94,21 @@ namespace labelgen {
         /**
          * Validate authentication of a user by comparing password hashes.
          */
-        protected function auth($password) {
+        public function auth() {
             global $wpdb;
             $table = self::$table;
 
-            $wpdb->query($wpdb->prepare('SELECT * FROM {$table} WHERE name = %s', [ $this->username ]));
+            $wpdb->query($wpdb->prepare("SELECT * FROM {$table} WHERE name = %s", [ $this->username ]));
             $result = $wpdb->last_result;
             if ($result && is_array($result)) {
-                if (self::decrypt($password, $result[0]->password)) {
+                if (self::decrypt($this->password, $result[0]->password)) {
                     return true;
                 }
                 else {
-                    throw new Exception("Either the name or password you entered is invalid");
+                    throw new \Exception("Either the name or password you entered is invalid");
                 }
             } else {
-                throw new Exception("Invalid Password.");
+                throw new \Exception("Invalid Password");
             }
         }
 
@@ -123,20 +126,24 @@ namespace labelgen {
             }
         }
 
-        public function to_json() {
+        public function to_array() {
             $retval = [
-                    "success" => true,
-                    "name"    => $this->username,
-                    "id"      => $this->id,
-                    "secret"  => $this->secret
+                    'success' => true,
+                    'name'    => $this->username,
+                    'id'      => $this->id,
+                    'secret'  => $this->secret
             ];
+            return $retval;
+        }
+
+        public function to_json() {
      
-            return json_encode($retval);
+            return json_encode($this->to_array(), JSON_FORCE_OBJECT);
         }
     }
 }
 
-namespace User {
+namespace labelgen\User {
     class Builder {
 
         protected $username;
@@ -158,11 +165,12 @@ namespace User {
         }
 
         public function build() {
-            $retval = new User();
+            $retval = new \labelgen\User();
             $retval->set_username($this->username);
             $retval->set_password($this->password);
             
-            $retval->set_id(\labelgen\User::get_user_id_from($this->username, $this->password));
+            $retval->set_id(\labelgen\User::get_user_id_from($this->username));
+            return $retval;
         }
     }
 }
