@@ -27,6 +27,20 @@ class user_controller {
         return "{$_SERVER['REQUEST_METHOD']}+{$path}+{$nonce}";
     }
 
+    protected function login($request, $verb, $args) {
+        $user = (new \labelgen\User\Builder())
+                ->with_username($username)
+                ->from_password($pw)
+                ->build();
+        
+        if ($user->auth()) {
+            $this->wp_session['user'] = $user;
+            return $user->to_json();
+        }
+
+        return json_encode([ 'success' => true ]);
+    }
+
     public function get($request, $verb, $args) {
         $username = '';
         if (isset($verb) && is_array($args)) {
@@ -124,24 +138,15 @@ class user_controller {
 
     }
 
-    public function post() {
+    public function post($request, $verb, $args) {
         if (isset($verb)
             && array_key_exists('loginPassword', $request)) {
             // User is logging in
-            echo "User is logging in\n";
-            // $this->get_user_id_from_password($this->request['loginPassword'])
-
-            $user = (new \labelgen\User\Builder())
-                    ->with_username($username)
-                    ->from_password($pw)
-                    ->build();
-            
-            if ($user->auth()) {
-                $this->wp_session['user'] = $user;
-                return $user->to_json();
-            }
+            $this->login($request, $verb, $args);
         }
-        // return $this->signup_user($table, $fields);
+        else {
+            // return $this->signup_user($table, $fields);
+        }
     }
 
     public function delete() {
