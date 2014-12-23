@@ -73,8 +73,40 @@ namespace labelgen {
             }
         }
 
-        protected function auth($input_digest) {
-            return $this->key == $input_digest;
+        /**
+         * Used for users that are already logged in to verify if the user is the same user or if there is some kind of malicious
+         * thing happening.
+         */
+        public function verify($input_digest, $key) {
+            $saved_digest = \labelgen\User::get_key_from($this->username, $key);
+
+            /*
+            $retval->set_key($key_secret[0]);
+            $retval->set_secret($key_secret[1]);
+            */
+            
+            return $saved_digest == $input_digest;
+        }
+
+        /**
+         * Validate authentication of a user by comparing password hashes.
+         */
+        protected function auth($password) {
+            global $wpdb;
+            $table = self::$table;
+
+            $wpdb->query($wpdb->prepare('SELECT * FROM {$table} WHERE name = %s', [ $this->username ]));
+            $result = $wpdb->last_result;
+            if ($result && is_array($result)) {
+                if (self::decrypt($password, $result[0]->password)) {
+                    return true;
+                }
+                else {
+                    throw new Exception("Either the name or password you entered is invalid");
+                }
+            } else {
+                throw new Exception("Invalid Password.");
+            }
         }
 
         protected static function decrypt($input, $hash) {      
