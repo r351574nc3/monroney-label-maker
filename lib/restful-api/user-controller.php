@@ -125,8 +125,22 @@ class user_controller {
     }
 
     public function post() {
-        echo "Got here";
-        return json_encode([ 'success' => true ]);
+        if (isset($verb)
+            && array_key_exists('loginPassword', $request)) {
+            // User is logging in
+            echo "User is logging in\n";
+            // $this->get_user_id_from_password($this->request['loginPassword'])
+
+            $user = (new \labelgen\User\Builder())
+                    ->with_username($username)
+                    ->from_password($pw)
+                    ->build();
+            
+            if ($user->auth()) {
+                $this->wp_session['user'] = $user;
+                return $user->to_json();
+            }
+        }
         // return $this->signup_user($table, $fields);
     }
 
