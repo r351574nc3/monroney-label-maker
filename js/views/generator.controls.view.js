@@ -1,80 +1,81 @@
 define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 'user', 'util/uniqid', 'util/authenticate', 'label', 'labels'], function($, _, Backbone, Dialog, YesNoDialog, Modal, User, uniqid, authenticate, Label, Labels) {
 
-	//PDFJS.workerSrc = workerSrc;
-	var INVALID_USER_NAME = 1;
-	var NAME_ALREADY_REGISTERED = 2;
-	var EMAIL_ALREADY_REGISTERED = 3;
-	var INVALID_CHARACTERS_IN_NAME = 4;
-	
-	var PDFControls = Backbone.View.extend({
+    //PDFJS.workerSrc = workerSrc;
+    var INVALID_USER_NAME = 1;
+    var NAME_ALREADY_REGISTERED = 2;
+    var EMAIL_ALREADY_REGISTERED = 3;
+    var INVALID_CHARACTERS_IN_NAME = 4;
+    
+    var PDFControls = Backbone.View.extend({
 
-		initialize: function(attrs, opts) {
-			this.collection = attrs.collection;
-			this.user = attrs.user;
-			this.render();			
-			$('.tooltip').parent().hover(function(){ 
-				$(this).children('.tooltip').css('visibility', 'visible'); 
-			}, function(){
-				$(this).children('.tooltip').css('visibility', 'none'); 
-			});
-		},
+        initialize: function(attrs, opts) {
+            this.collection = attrs.collection;
+            this.user = attrs.user;
+            this.render();          
+            $('.tooltip').parent().hover(function(){ 
+                $(this).children('.tooltip').css('visibility', 'visible'); 
+            }, function(){
+                $(this).children('.tooltip').css('visibility', 'none'); 
+            });
+        },
 
-		render: function() {
-			this.scale = .7;
-			this.stopListening();
-			
-			this.$save = $('#save-label');
-			this.$load = $('#load-label');
-			this.$inspect = $('#inspect-label');
-			this.$reset = $('#reset-label');
-			this.$print = $('#print-label');
-			this.$login = $('#login-label');
-			this.$signup = $('#signup-label');
-			
-			this.$login.off('click');
-			this.$login.on('click', $.proxy(this.log_in, this));
+        render: function() {
+            this.scale = .7;
+            this.stopListening();
+            
+            this.$save = $('#save-label');
+            this.$load = $('#load-label');
+            this.$inspect = $('#inspect-label');
+            this.$reset = $('#reset-label');
+            this.$print = $('#print-label');
+            this.$login = $('#login-label');
+            this.$signup = $('#signup-label');
+            
+            this.$login.off('click');
+            this.$login.on('click', $.proxy(this.log_in, this));
 
-			this.$signup.off('click');
-			this.$signup.on('click', $.proxy(this.sign_up, this));
+            this.$signup.off('click');
+            this.$signup.on('click', $.proxy(this.sign_up, this));
 
-			this.$save.off('click');
-			this.$save.on('click', $.proxy(this.save_form, this));
+            this.$save.off('click');
+            this.$save.on('click', $.proxy(this.save_form, this));
 
-			this.$load.off('click');
-			this.$load.on('click', $.proxy(this.load_form, this));
+            this.$load.off('click');
+            this.$load.on('click', $.proxy(this.load_form, this));
 
-			this.$inspect.off('click');
-			this.$inspect.on('click', $.proxy(this.inspect_form, this));
+            this.$inspect.off('click');
+            this.$inspect.on('click', $.proxy(this.inspect_form, this));
 
-			this.$reset.off('click');
-			this.$reset.on('click', $.proxy(this.reset_form, this));
-			
-			this.$print.off('click');
-			this.$print.on('click', $.proxy(this.print_form, this));
+            this.$reset.off('click');
+            this.$reset.on('click', $.proxy(this.reset_form, this));
+            
+            this.$print.off('click');
+            this.$print.on('click', $.proxy(this.print_form, this));
 
-			this.listenTo(Backbone, "labelSelected", this.replace_model);
-			this.listenTo(Backbone, "showFailMessage", this.show_fail_message);
-			this.listenTo(Backbone, "destroyImage", this.destroy_item_model);
-			this.listenTo(Backbone, "destroyOption", this.destroy_item_model);
-			this.listenTo(Backbone, "checkUserCredentials", this.check_user_credentials);
+            this.listenTo(Backbone, "labelSelected", this.replace_model);
+            this.listenTo(Backbone, "showFailMessage", this.show_fail_message);
+            this.listenTo(Backbone, "destroyImage", this.destroy_item_model);
+            this.listenTo(Backbone, "destroyOption", this.destroy_item_model);
+            this.listenTo(Backbone, "checkUserCredentials", this.check_user_credentials);
             this.listenTo(Backbone, "loadSession", this.load_session);
 
             Backbone.trigger('loadSession', this);
-		},
+        },
 
         load_session : function(view) {
-			var message = {message: false};
-			var url = restful.url + "users/" + "session";
-			var auth = authenticate(this.collection.user, url, 'GET');
-			$.ajax({
-				url: url,
-				dataType: 'json',
-				method: 'GET',
-				headers: {Authentication: auth}
-			}).success(function(data) {
-				// data = $.parseJSON(data);
-				console.log("Success", data);
-                view.on_successful_log_user_in(data);
+            var message = {message: false};
+            var url = restful.url + "users/" + "session";
+            var auth = authenticate(this.collection.user, url, 'GET');
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                method: 'GET',
+                headers: {Authentication: auth}
+            }).success(function(data) {
+                // data = $.parseJSON(data);
+                console.log("Success", data);
+    			view._init_user(data);
+                // view.on_successful_log_user_in(data);
 			});
         },
 		
