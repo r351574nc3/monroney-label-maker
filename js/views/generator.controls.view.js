@@ -609,7 +609,7 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 			var message = {message: false};
 			var url = restful.url + "users/" + this.collection.user.get('name') + "/check_credentials";
 			var auth = authenticate(this.collection.user, url, 'GET');
-			//console.log("Check User Cred", url, auth);
+			console.log("Check User Cred", url, auth);
 			$.ajax({
 				url: url,
 				dataType: 'json',

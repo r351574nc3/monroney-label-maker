@@ -7,13 +7,10 @@ define(
 	var initialize = function(){
 		var rootUser;
 
-        console.log("Accessing: " + backbone_data.url)
-        
 		$.ajax({
 			url: backbone_data.url
 		}).done(function(data) {
 			if (typeof data !== "object") {
-				console.log("User", data);
 				var json = $.parseJSON(data);
 			}
 			
