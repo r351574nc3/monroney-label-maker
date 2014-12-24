@@ -75,7 +75,7 @@ class user_controller {
     public function get($request, $verb, $args) {
         $username = '';
         if ($verb == 'session') {
-            return load_session();
+            return $this->load_session();
         }
         
         if (isset($verb) && is_array($args)) {
