@@ -1,6 +1,13 @@
 <?php
 
+
 namespace labelgen {
+
+    //Define Exceptions
+    define('INVALID_USER_NAME', 1);
+    define('NAME_ALREADY_REGISTERED', 2);
+    define('EMAIL_ALREADY_REGISTERED', 3);
+    define('INVALID_CHARACTERS_IN_NAME', 4);
 
 
     /**
@@ -179,7 +186,7 @@ namespace labelgen {
                 throw new Exception('Not a valid email address!');
             }
      
-            if (ctype_alnum($user->username)) { throw new Exception(INVALID_CHARACTERS_IN_NAME); }
+            if (ctype_alnum($user->username)) { throw new \Exception(INVALID_CHARACTERS_IN_NAME); }
             
             global $wpdb;
             $table = self::$table;
@@ -190,13 +197,13 @@ namespace labelgen {
             $result = $wpdb->last_result[0];
             if ($result) {
                 if ($result->email == $request['email']) {
-                    throw new Exception(EMAIL_ALREADY_REGISTERED);
+                    throw new \Exception(EMAIL_ALREADY_REGISTERED);
                 } else if ($result->name == $request['name']) {
-                    throw new Exception(NAME_ALREADY_REGISTERED);
+                    throw new \Exception(NAME_ALREADY_REGISTERED);
                 }
             }
             else {
-                throw new Exception(INVALID_USER_NAME);
+                throw new \Exception(INVALID_USER_NAME);
             }
                 
             $user->password = self::encrypt(trim($user->password));
@@ -218,7 +225,7 @@ namespace labelgen {
                 return $retval;
         	} 
             else {
-        		throw new Exception(json_encode(array('last_error'=>$wpdb->last_error, 'last_query'=>$wpdb->last_query)));
+        		throw new \Exception(json_encode(array('last_error'=>$wpdb->last_error, 'last_query'=>$wpdb->last_query)));
         	}
         }		
     }

@@ -16,11 +16,6 @@ require_once 'user-controller.php';
 // Apply namespaces
 use \labelgen;
 
-//Define Exceptions
-define('INVALID_USER_NAME', 1);
-define('NAME_ALREADY_REGISTERED', 2);
-define('EMAIL_ALREADY_REGISTERED', 3);
-define('INVALID_CHARACTERS_IN_NAME', 4);
 
 /**
  * Controller for Label Generator ReST API
