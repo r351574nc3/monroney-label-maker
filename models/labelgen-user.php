@@ -72,9 +72,8 @@ namespace labelgen {
             $result = $wpdb->last_result;
             if ($result && is_array($result)) {
                 return intval($result[0]->id);
-            } else {
-                throw new \Exception("Invalid Password for " . $username);           
             }
+            return NULL;
         }
 
         public static function get_key_from($username, $key) {
