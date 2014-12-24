@@ -64,7 +64,7 @@ class user_controller {
 
     protected function load_session() {
         echo "In load session\n";
-        $user = $wp_session['user'];
+        $user = $this->wp_session['user'];
 
         echo $user . "\n";
 
