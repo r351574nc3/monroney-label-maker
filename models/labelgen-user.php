@@ -194,7 +194,7 @@ namespace labelgen {
             global $wpdb;
             $table = self::$table;
             $wpdb->query(
-                $wpdb->prepare("SELECT email, name FROM ${table} WHERE email = %s OR name = %s", [ $this->email, $this->username ])
+                $wpdb->prepare("SELECT * FROM ${table} WHERE email = %s OR name = %s", [ $user->email, $user->username ])
             );
             
             $result = $wpdb->last_result[0];
