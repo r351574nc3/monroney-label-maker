@@ -66,7 +66,6 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 			var message = {message: false};
 			var url = restful.url + "users/" + "session";
 			var auth = authenticate(this.collection.user, url, 'GET');
-            console.log("Loading session");
 			$.ajax({
 				url: url,
 				dataType: 'json',

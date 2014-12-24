@@ -64,7 +64,8 @@ class user_controller {
 
     protected function load_session() {
         $user = $wp_session['user'];
-        if (isset($user)) {
+        
+        if (!is_null($user)) {
             $retval = $user->to_array();
             $retval['success'] = true;
             return $retval;
