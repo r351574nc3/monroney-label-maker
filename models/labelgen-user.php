@@ -204,9 +204,9 @@ namespace labelgen {
                 } else if ($result->name == $request['name']) {
                     throw new \Exception(NAME_ALREADY_REGISTERED);
                 }
-            }
-            else {
-                throw new \Exception(INVALID_USER_NAME);
+                else {
+                    throw new \Exception(INVALID_USER_NAME);
+                }
             }
                 
             $user->password = self::encrypt(trim($user->password));
