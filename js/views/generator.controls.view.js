@@ -57,9 +57,27 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 			this.listenTo(Backbone, "destroyImage", this.destroy_item_model);
 			this.listenTo(Backbone, "destroyOption", this.destroy_item_model);
 			this.listenTo(Backbone, "checkUserCredentials", this.check_user_credentials);
+            this.listenTo(Backbone, "loadSession", this.load_session);
 
-            console.log("Rendering");
+            Backbone.trigger('loadSession');			
 		},
+
+        load_session : function() {
+			var message = {message: false};
+			var url = restful.url + "users/" + "session";
+			var auth = authenticate(this.collection.user, url, 'GET');
+			console.log("Check User Cred", url, auth);
+			$.ajax({
+				url: url,
+				dataType: 'json',
+				method: 'GET',
+				headers: {Authentication: auth}
+			}).success(function(data) {
+				data = $.parseJSON(data);
+				//console.log("success", data);
+                this.on_successful_log_user_in(data);
+			});
+        },
 		
 		replace_model: function(model) {
 			if (model) {

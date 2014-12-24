@@ -62,8 +62,22 @@ class user_controller {
         return json_encode([ 'success' => true ]);
     }
 
+    protected function load_session() {
+        $user = $wp_session['user'];
+        if (isset($user)) {
+            $retval = $user->to_array();
+            $retval['success'] = true;
+            return $retval;
+        }
+        return [ 'success' => false ];
+    }
+
     public function get($request, $verb, $args) {
         $username = '';
+        if ($verb == 'session') {
+            return load_session();
+        }
+        
         if (isset($verb) && is_array($args)) {
             $action = array_pop($args);
             
