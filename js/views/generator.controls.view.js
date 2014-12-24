@@ -57,6 +57,8 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 			this.listenTo(Backbone, "destroyImage", this.destroy_item_model);
 			this.listenTo(Backbone, "destroyOption", this.destroy_item_model);
 			this.listenTo(Backbone, "checkUserCredentials", this.check_user_credentials);
+
+            console.log("Rendering");
 		},
 		
 		replace_model: function(model) {
