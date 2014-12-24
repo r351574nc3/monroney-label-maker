@@ -55,6 +55,7 @@ class user_controller {
         
         if ($user->auth()) {
             $this->wp_session['user'] = $user;
+
             $retval = $user->to_array();
             $retval['message'] = 'Login successful.';
             return $retval;
@@ -63,10 +64,7 @@ class user_controller {
     }
 
     protected function load_session() {
-        echo "In load session\n";
         $user = $this->wp_session['user'];
-
-        echo $user . "\n";
 
         if (!is_null($user)) {
             $retval = $user->to_array();

@@ -59,10 +59,10 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 			this.listenTo(Backbone, "checkUserCredentials", this.check_user_credentials);
             this.listenTo(Backbone, "loadSession", this.load_session);
 
-            Backbone.trigger('loadSession');			
+            Backbone.trigger('loadSession', this);
 		},
 
-        load_session : function() {
+        load_session : function(view) {
 			var message = {message: false};
 			var url = restful.url + "users/" + "session";
 			var auth = authenticate(this.collection.user, url, 'GET');
@@ -72,9 +72,9 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 				method: 'GET',
 				headers: {Authentication: auth}
 			}).success(function(data) {
-				data = $.parseJSON(data);
-				console.log("success", data);
-                this.on_successful_log_user_in(data);
+				// data = $.parseJSON(data);
+				console.log("Success", data);
+                view.on_successful_log_user_in(data);
 			});
         },
 		
