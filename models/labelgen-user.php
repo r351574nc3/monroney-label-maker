@@ -189,7 +189,7 @@ namespace labelgen {
                 throw new Exception('Not a valid email address!');
             }
      
-            if (ctype_alnum($user->username)) { throw new \Exception(INVALID_CHARACTERS_IN_NAME); }
+            if (!ctype_alnum($user->username)) { throw new \Exception(INVALID_CHARACTERS_IN_NAME); }
             
             global $wpdb;
             $table = self::$table;
