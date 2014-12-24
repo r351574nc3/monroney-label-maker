@@ -114,6 +114,10 @@ namespace labelgen {
             global $wpdb;
             $table = self::$table;
 
+            if (is_null($this->id)) {
+               throw new \Exception("No such user exists.");
+            }
+
             $wpdb->query($wpdb->prepare("SELECT * FROM {$table} WHERE name = %s", [ $this->username ]));
             $result = $wpdb->last_result;
             if ($result && is_array($result)) {
