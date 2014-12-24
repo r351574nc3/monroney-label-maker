@@ -74,7 +74,7 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 				headers: {Authentication: auth}
 			}).success(function(data) {
 				data = $.parseJSON(data);
-				//console.log("success", data);
+				console.log("success", data);
                 this.on_successful_log_user_in(data);
 			});
         },
