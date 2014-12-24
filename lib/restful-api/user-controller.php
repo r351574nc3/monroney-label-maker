@@ -40,6 +40,7 @@ class user_controller {
         if ($return) {
             // $retval = $user->to_array();
             // $retval['success'] = true;
+            $this->wp_session['user'] = $user;
             return $return;
         } else {
             throw new Exception('Something went wrong. We were not able to sign you up at this time.');             
