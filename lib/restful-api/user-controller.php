@@ -92,7 +92,7 @@ class user_controller {
                 ->with_logo_id($request['dealership_logo_id'])
                 ->with_display_logo($request['display_logo'])
                 ->with_image_id($request['custom_image_id'])
-                ->with_user($user);
+                ->with_user($user)->build();
         return \labelgen\Label::save_new($label);
     }
 
