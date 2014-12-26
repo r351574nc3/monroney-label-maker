@@ -23,6 +23,10 @@ namespace labelgen {
         public function __construct() {
         }
 
+        public function set_id($id) {
+            $this->id = $id;
+        }
+
         public function set_color($color) {
             $this->color = $color;
         }
@@ -117,6 +121,11 @@ namespace labelgen {
                                           'user_id'              => $label->get_user()->get_id(), 
                                           'display_logo'         => $label->get_display_logo ]);
         	$label->set_id($wpdb->insert_id);
+
+        	if (!$label->get_id()) {
+        		throw new \Exception(json_encode(array('last_error'=>$wpdb->last_error, 'last_query'=>$wpdb->last_query)));
+        	}
+
 
         	$wpdb->insert('labelgen_user_relationships',
                                         [ 'id'                   => NULL, 
