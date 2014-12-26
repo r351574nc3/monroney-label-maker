@@ -57,6 +57,42 @@ namespace labelgen {
         public function set_display_logo($display_logo) {
             $this->display_logo = $display_logo;
         }
+
+        public function get_color() {
+            return $this->color;
+        }
+        public function get_user() {
+            return $this->user;
+        }
+        public function get_name() {
+            return $thos->name;
+        }
+        public function get_logo_id() {
+            return $this->logo_id;
+        }
+
+        public function get_font_style() {
+            return $this->font_style;
+        }
+        public function get_font_weight() {
+            return $this->font_weight;
+        }
+        public function get_font_family() {
+            return $this->font_family;
+        }
+        public function get_dealership() {
+            return $this->dealership;
+        }
+        public function get_dealership_tagline() {
+            return $this->dealership_tagline;
+        }
+        public function get_image_id() {
+            return $this->image_id;
+        }
+        public function get_display_logo() {
+            return $this->display_logo;
+        }
+        
         public function set_time($time) {
             $this->time = $time;
         }
@@ -68,18 +104,18 @@ namespace labelgen {
         
     		$time = current_time('mysql');
         	$wpdb->insert(self::$table, [ 'id'                   => $label->id, 
-                                          'name'                 => $label->name, 
-                                          'label_color'          => $label->color, 
+                                          'name'                 => $label->get_name(),
+                                          'label_color'          => $label->get_color(), 
                                           'time'                 => $time, 
-                                          'font_style'           => $label->font_style, 
-                                          'font_family'          => $label->font_family, 
-                                          'font_weight'          => $label->font_weight, 
-                                          'dealership_name'      => $label->dealership, 
-                                          'dealership_tagline'   => $label->dealership_tagline, 
-                                          'custom_image_id'      => $label->image_id, 
-                                          'dealership_logo_id'   => $label->logo_id, 
-                                          'user_id'              => $label->user->id, 
-                                          'display_logo'         => $label->display_logo ]);
+                                          'font_style'           => $label->get_font_style(), 
+                                          'font_family'          => $label->get_font_family(), 
+                                          'font_weight'          => $label->get_font_weight(), 
+                                          'dealership_name'      => $label->get_dealership(), 
+                                          'dealership_tagline'   => $label->get_dealership_tagline(), 
+                                          'custom_image_id'      => $label->get_image_id(), 
+                                          'dealership_logo_id'   => $label->get_logo_id(), 
+                                          'user_id'              => $label->get_user()->id, 
+                                          'display_logo'         => $label->get_display_logo ]);
         	$label->set_id($wpdb->insert_id);
 
         	$wpdb->insert('labelgen_user_relationships',
