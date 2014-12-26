@@ -210,7 +210,7 @@ class user_controller {
         $action = array_shift($args);
 
         if ($action == 'labels') {
-            return new_label($request, $verb, $args);
+            return $this->new_label($request, $verb, $args);
         }
     }
 
