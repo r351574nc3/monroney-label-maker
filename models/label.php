@@ -324,7 +324,7 @@ namespace labelgen\Label {
         }
 
         public function build() {
-            $label = new Label();
+            $label = new \labelgen\Label();
             $label->set_color($this->color);
             $label->set_user($this->user);
             $label->set_image_id($this->image_id);
