@@ -43,6 +43,10 @@ namespace labelgen {
             $this->id = $id;
         }
 
+        public function get_id() {
+            return $this->id;
+        }
+
         public function set_key($key) {
             $this->key = $key;
         }
