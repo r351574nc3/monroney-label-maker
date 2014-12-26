@@ -58,6 +58,11 @@ class user_controller {
             $this->wp_session['user'] = $user;
 
             $retval = $user->to_array();
+
+            $retval['labelgen_labels'] = Label::query_for($user);
+            $retval['labelgen_images'] = Image::query_for($user);
+            $retval['labelgen_logos']  = Logo::query_for($user);
+
             $retval['message'] = 'Login successful.';
             return $retval;
         }
@@ -201,7 +206,7 @@ class user_controller {
         if (isset($verb)
             && array_key_exists('loginPassword', $request)) {
             // User is logging in
-            return $this->login($request, $verb, $args);
+            $retval = $this->login($request, $verb, $args);
         }
         else if (array_key_exists('signupName', $request)) {
             return $this->signup_user($request, $verb, $args);

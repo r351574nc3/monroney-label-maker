@@ -6,6 +6,7 @@ require_once(LABEL_MAKER_ROOT.'/models/labelgen-user.php');
 require_once(LABEL_MAKER_ROOT.'/models/image.php');
 require_once(LABEL_MAKER_ROOT.'/models/logo.php');
 require_once(LABEL_MAKER_ROOT.'/models/option.php');
+require_once(LABEL_MAKER_ROOT.'/models/label.php');
 
 class backbone_controller {
     protected $wp_session;
@@ -16,6 +17,8 @@ class backbone_controller {
 
 
     public function get($request, $verb, $args) {
+        $user = $this->wp_session['user'];
+        echo("null user? " . !is_null($user));
         $retval = [
                 "success" => true,
                 "name"    => "",
@@ -24,7 +27,7 @@ class backbone_controller {
                 "labelgen_images"  => $this->get_images(),
                 "labelgen_logos"   => $this->get_logos(),
                 "labelgen_options" => [],
-                "labelgen_labels"  => []
+                "labelgen_labels"  => !is_null($user) ? [] : $this->get_labels($user)
         ];
 
         foreach ($this->get_options() as $key => $value) {
@@ -33,6 +36,10 @@ class backbone_controller {
         }
 
         return json_encode($retval);
+    }
+
+    protected function get_labels($user) {
+         Label::query_for($user);
     }
 
     protected function get_images() {

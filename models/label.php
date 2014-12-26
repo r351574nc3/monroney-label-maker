@@ -62,6 +62,9 @@ namespace labelgen {
             $this->display_logo = $display_logo;
         }
 
+        public function get_id() {
+            return $this->id;
+        }
         public function get_color() {
             return $this->color;
         }
@@ -107,7 +110,7 @@ namespace labelgen {
             $table = self::$table;
         
     		$time = current_time('mysql');
-        	$wpdb->insert(self::$table, [ 'id'                   => $label->id, 
+        	$wpdb->insert(self::$table, [ 'id'                   => $label->get_id(), 
                                           'name'                 => $label->get_name(),
                                           'label_color'          => $label->get_color(), 
                                           'time'                 => $time, 
@@ -120,7 +123,7 @@ namespace labelgen {
                                           'dealership_logo_id'   => $label->get_logo_id(), 
                                           'user_id'              => $label->get_user()->get_id(), 
                                           'display_logo'         => $label->get_display_logo ]);
-        	$label->set_id($wpdb->insert_id);
+        	$label->set_id(intval($wpdb->insert_id));
 
         	if (!$label->get_id()) {
         		throw new \Exception(json_encode(array('last_error'=>$wpdb->last_error, 'last_query'=>$wpdb->last_query)));
@@ -130,14 +133,14 @@ namespace labelgen {
         	$wpdb->insert('labelgen_user_relationships',
                                         [ 'id'                   => NULL, 
                                           'table_name'           => self::$table, 
-                                          'item_id'              => $label->id, 
-                                          'user_id'              => $user->id ]);
+                                          'item_id'              => $label->get_id(), 
+                                          'user_id'              => $label->get_user()->get_id() ]);
 
             $retval = $label->to_array();
             $retval['success'] = true;
 
 
-        	if ($retval['id']) {
+        	if (intval($wpdb->insert_id)) {
                 return $retval;
         	} 
             else {
@@ -157,7 +160,7 @@ namespace labelgen {
                      INNER JOIN labelgen_user_relationships ty
                      ON tx.id = ty.item_id 
                      WHERE ty.user_id = %d OR ty.user_id = 0 AND ty.table_name = %s", 
-                     intval($user->id), $table
+                     intval($user->get_id()), $table
                 )
             );
 
