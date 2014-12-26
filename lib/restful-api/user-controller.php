@@ -81,7 +81,6 @@ class user_controller {
 
     protected function new_label($request, $verb, $args) {
         $user = $this->wp_session['user'];
-        echo "Got user " . json_encode($user->to_array());
         $label = (new \labelgen\Label\Builder())
                 ->with_name($request['name'])
                 ->with_color($request['label_color'])
