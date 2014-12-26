@@ -87,7 +87,7 @@ abstract class restful_api {
 		if ((int) method_exists($this, $this->endpoint) > 0) {
             $retval = $this->{$this->endpoint}($this->verb, $this->args);
             if (isset($retval['status'])) {
-                return $retval['success'] ? $this->_response($retval) : $this->_respone($retval, $retval['status']);
+                return $retval['success'] ? $this->_response($retval) : $this->_response($retval, $retval['status']);
             }
             return $this->_response($retval);
         } else {

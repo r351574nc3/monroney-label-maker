@@ -3,6 +3,7 @@
 namespace labelgen;
 
 require_once(LABEL_MAKER_ROOT.'/models/labelgen-user.php');
+require_once(LABEL_MAKER_ROOT.'/models/label.php');
 
 class user_controller {
     protected $wp_session;
@@ -74,8 +75,25 @@ class user_controller {
         return [ 'success' => false, 'status' => 403 ];
     }
 
-    public function labels($request, $verb, $args) {
-        echo "Getting labels";
+    protected function labels($request, $verb, $args) {
+        $user = $this->wp_session['user'];
+    }
+
+    protected function new_label($request, $verb, $args) {
+        $user = $this->wp_session['user'];
+        $label = (new \labelgen\Label\Builder())
+                ->with_name($request['name'])
+                ->with_color($request['label_color'])
+                ->with_dealership($request['dealership_name'])
+                ->with_dealership_tagline($request['dealership_tagline'])
+                ->with_font_family($request['font_family'])
+                ->with_font_style($request['font_style'])
+                ->with_font_weight($request['font_weight'])
+                ->with_logo_id($request['dealership_logo_id'])
+                ->with_display_logo($request['display_logo'])
+                ->with_image_id($request['custom_image_id'])
+                ->with_user($user);
+        return \labelgen\Label::save_new($label);
     }
 
     public function get($request, $verb, $args) {
@@ -187,6 +205,12 @@ class user_controller {
         }
         else if (array_key_exists('signupName', $request)) {
             return $this->signup_user($request, $verb, $args);
+        }
+
+        $action = array_shift($args);
+
+        if ($action == 'labels') {
+            return new_label($request, $verb, $args);
         }
     }
 
