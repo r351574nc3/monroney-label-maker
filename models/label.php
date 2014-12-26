@@ -65,7 +65,7 @@ namespace labelgen {
             return $this->user;
         }
         public function get_name() {
-            return $thos->name;
+            return $this->name;
         }
         public function get_logo_id() {
             return $this->logo_id;
