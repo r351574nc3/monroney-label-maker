@@ -71,7 +71,11 @@ class user_controller {
             $retval['success'] = true;
             return $retval;
         }
-        return [ 'success' => false ];
+        return [ 'success' => false, 'status' => 403 ];
+    }
+
+    public function labels($request, $verb, $args) {
+        echo "Getting labels";
     }
 
     public function get($request, $verb, $args) {
