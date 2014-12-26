@@ -114,7 +114,7 @@ namespace labelgen {
                                           'dealership_tagline'   => $label->get_dealership_tagline(), 
                                           'custom_image_id'      => $label->get_image_id(), 
                                           'dealership_logo_id'   => $label->get_logo_id(), 
-                                          'user_id'              => $label->get_user()->id, 
+                                          'user_id'              => $label->get_user()->get_id(), 
                                           'display_logo'         => $label->get_display_logo ]);
         	$label->set_id($wpdb->insert_id);
 
