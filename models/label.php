@@ -217,7 +217,7 @@ namespace labelgen {
     }
 }
 
-namespace \labelgen\Label {
+namespace labelgen\Label {
 
     class Builder {
         protected $color;
