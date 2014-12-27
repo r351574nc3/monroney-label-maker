@@ -19,6 +19,7 @@ class backbone_controller {
     public function get($request, $verb, $args) {
         $user = $this->wp_session['user'];
         echo "Got user " . $user;
+        echo "Done";
         $retval = [
                 "success" => true,
                 "name"    => "",
