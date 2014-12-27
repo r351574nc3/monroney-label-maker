@@ -18,7 +18,6 @@ class backbone_controller {
 
     public function get($request, $verb, $args) {
         $user = $this->wp_session['user'];
-        echo("null user? " . !is_null($user));
         $retval = [
                 "success" => true,
                 "name"    => "",
@@ -27,7 +26,7 @@ class backbone_controller {
                 "labelgen_images"  => $this->get_images(),
                 "labelgen_logos"   => $this->get_logos(),
                 "labelgen_options" => [],
-                "labelgen_labels"  => !is_null($user) ? [] : $this->get_labels($user)
+                "labelgen_labels"  => is_null($user) ? [] : $this->get_labels($user)
         ];
 
         foreach ($this->get_options() as $key => $value) {
