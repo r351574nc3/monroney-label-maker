@@ -208,7 +208,7 @@ class user_controller {
             && array_key_exists('loginPassword', $request)) {
             // User is logging in
             $retval = $this->login($request, $verb, $args);
-            retsurn $retval;
+            return $retval;
         }
         else if (array_key_exists('signupName', $request)) {
             return $this->signup_user($request, $verb, $args);
