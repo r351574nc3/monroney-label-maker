@@ -4,15 +4,17 @@ $user = "admin";
 $pw = "Wh005eAfra!d0fV!rginaW0Olf?";
 $api_url = "{$_SERVER['HTTP_HOST']}/monroney/addendum-generator/api/backbone/all";
 
+// $header_passthrough = get_headers("{$_SERVER['HTTP_HOST']}/monroney/addendum-generator");
+$heacer_passthrough = getallheaders();
+
 $headers = array(
-	//"Authentication: hmac {$user}:{$nonce}:{$digest}",
+	// "Authentication: hmac {$user}:{$nonce}:{$digest}",
 	"Content Type: application/json; charset=utf-8",
 	"Accept: application/json",
+    "Cookie: " . $header_passthrough['Cookie']
 );
 
 $curl = curl_init();
-
-echo $api_url;
 
 $options = array(
 	CURLOPT_URL				=>	$api_url,
