@@ -4,8 +4,7 @@ $user = "admin";
 $pw = "Wh005eAfra!d0fV!rginaW0Olf?";
 $api_url = "{$_SERVER['HTTP_HOST']}/monroney/addendum-generator/api/backbone/all";
 
-// $header_passthrough = get_headers("{$_SERVER['HTTP_HOST']}/monroney/addendum-generator");
-$heacer_passthrough = getallheaders();
+$header_passthrough = getallheaders();
 
 $headers = array(
 	// "Authentication: hmac {$user}:{$nonce}:{$digest}",

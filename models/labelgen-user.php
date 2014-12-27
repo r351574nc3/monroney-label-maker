@@ -55,8 +55,16 @@ namespace labelgen {
             $this->username = $username;
         }
 
+        public function get_username() {
+            return $this->username;
+        }
+
         public function set_password($password) {
             $this->password = $password;
+        }
+
+        public function get_secret() {
+            return $this->secret;
         }
 
         public function set_secret($secret) {

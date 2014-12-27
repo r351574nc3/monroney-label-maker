@@ -53,7 +53,7 @@ class user_controller {
                 ->with_username($request['loginName'])
                 ->from_password($request['loginPassword'])
                 ->build();
-        
+
         if ($user->auth()) {
             $this->wp_session['user'] = $user;
 
@@ -64,9 +64,10 @@ class user_controller {
             $retval['labelgen_logos']  = Logo::query_for($user);
 
             $retval['message'] = 'Login successful.';
+          
             return $retval;
         }
-        return json_encode([ 'success' => true ]);
+        return [ 'success' => false, 'message' => 'Login failed.' ];
     }
 
     protected function load_session() {
@@ -207,6 +208,7 @@ class user_controller {
             && array_key_exists('loginPassword', $request)) {
             // User is logging in
             $retval = $this->login($request, $verb, $args);
+            retsurn $retval;
         }
         else if (array_key_exists('signupName', $request)) {
             return $this->signup_user($request, $verb, $args);

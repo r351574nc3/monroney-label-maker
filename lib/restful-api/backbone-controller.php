@@ -18,13 +18,11 @@ class backbone_controller {
 
     public function get($request, $verb, $args) {
         $user = $this->wp_session['user'];
-        echo "Got user " . $user->get_id();
-        echo "Done";
         $retval = [
                 "success" => true,
-                "name"    => "",
-                "id"      => "",
-                "secret"  => "",
+                "name"    => is_null($user) ? '' : $user->get_username(),
+                "id"      => '',
+                "secret"  => is_null($user) ? '' : $user->get_secret(),
                 "labelgen_images"  => $this->get_images(),
                 "labelgen_logos"   => $this->get_logos(),
                 "labelgen_options" => [],
@@ -41,7 +39,7 @@ class backbone_controller {
     }
 
     protected function get_labels($user) {
-         Label::query_for($user);
+        return Label::query_for($user);
     }
 
     protected function get_images() {
