@@ -12,6 +12,8 @@ $headers = array(
 
 $curl = curl_init();
 
+echo $api_url;
+
 $options = array(
 	CURLOPT_URL				=>	$api_url,
 	CURLOPT_RETURNTRANSFER	=>	1,
