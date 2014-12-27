@@ -34,7 +34,8 @@ class backbone_controller {
             array_push($retval['labelgen_options'], $value);
         }
 
-        return json_encode($retval);
+        // return json_encode($retval);
+        return $retval;
     }
 
     protected function get_labels($user) {
