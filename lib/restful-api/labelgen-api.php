@@ -145,17 +145,16 @@ class labelgen_api extends restful_api {
         }
     }
     
-    protected function labels($action) {
+    protected function labels($action, $args) {
         $method = strtolower($this->method);
-        $controller = new \labelgen\label_controller($this->wp_session);
+        $controller = new \labelgen\label_controller($this, $this->wp_session);
         return $controller->{$method}($this->request, $action, $args);
     }
     
-    protected function discounts() {
-        /*
+    protected function discounts($action, $args) {
         $method = strtolower($this->method);
-        return new discount_controller()->{$method}();
-        */
+        $controller = new \labelgen\discount_controller($this->wp_session);
+        return $controller->{$method}($this->request, $action, $args);
     }
     
     protected function get_location($loc) {
@@ -170,46 +169,40 @@ class labelgen_api extends restful_api {
 
     }
     
-    protected function options($location, $args) {
-        /*
+    protected function options($action, $args) {
         $method = strtolower($this->method);
-        return new option_controller()->{$method}();
-        */
+        $controller = new \labelgen\option_controller($this, $this->wp_session);
+        return $controller->{$method}($this->request, $action, $args);
     }
 
-    protected function logos($id) {
-        /*
+    protected function logos($action, $args) {
         $method = strtolower($this->method);
-        return new logo_controller()->{$method}();
-        */
+        $controller = new \labelgen\logo_controller($this, $this->wp_session);
+        return $controller->{$method}($this->request, $action, $args);
     }
     
-    protected function images($id) {
-        /*
+    protected function images($action, $args) {
         $method = strtolower($this->method);
-        return new image_controller()->{$method}();
-        */
+        $controller = new \labelgen\image_controller($this, $this->wp_session);
+        return $controller->{$method}($this->request, $action, $args);
     }
 
-    protected function models() {
-        /*
+    protected function models($action, $args) {
         $method = strtolower($this->method);
-        return new model_controller()->{$method}();
-        */
+        $controller = new \labelgen\model_controller($this, $this->wp_session);
+        return $controller->{$method}($this->request, $action, $args);
     }
      
-    protected function makes() {
-        /*
+    protected function makes($action, $args) {
         $method = strtolower($this->method);
-        return new make_controller()->{$method}();
-        */
+        $controller = new \labelgen\make_controller($this, $this->wp_session);
+        return $controller->{$method}($this->request, $action, $args);
     }
 
-    protected function years() {
-        /*
+    protected function years($action, $args) {
         $method = strtolower($this->method);
-        return new year_controller()->{$method}();
-        */
-    }
+        $controller = new \labelgen\year_controller($this, $this->wp_session);
+        return $controller->{$method}($this->request, $action, $args); 
+   }
      
 }
