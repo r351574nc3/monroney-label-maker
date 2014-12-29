@@ -36,15 +36,7 @@ class labelgen_api extends restful_api {
                 // throw new Exception("You are not authorized to perform this action!");                  
             }
         }
-/*
-        
-        if (!preg_match('/GET/i', $this->method) && $this->user->is_admin()) {
-            if (!current_user_can('manage_options')) {
-                // throw new Exception("You do not have sufficient privilege to perform this action.");
-            }
-        } 
 
-        */
         if ($_FILES) {
             switch($this->endpoint) {
                 case('images'): 
@@ -59,7 +51,7 @@ class labelgen_api extends restful_api {
 
             $this->pathname = WP_CONTENT_DIR.'/uploads/label-maker/user_data/'.$this->file_dir.'/';
             $this->baseurl = content_url('uploads/label-maker/user_data/'.$this->file_dir.'/');
-            $this->allowed_exts = array("image"=>array("gif", "jpeg", "jpg", "pjpeg", "x-png", "bmp", "tiff", "png"));
+            $this->allowed_exts = [ "image" => [ "gif", "jpeg", "jpg", "pjpeg", "x-png", "bmp", "tiff", "png" ] ];
         
             if (!is_dir(WP_CONTENT_DIR.'/uploads/label-maker')) {
                 mkdir(WP_CONTENT_DIR.'/uploads/label-maker');
@@ -154,10 +146,9 @@ class labelgen_api extends restful_api {
     }
     
     protected function labels($action) {
-        /*
         $method = strtolower($this->method);
-        return new label_controller()->{$method}();
-        */
+        $controller = new \labelgen\label_controller($this->wp_session);
+        return $controller->{$method}($this->request, $action, $args);
     }
     
     protected function discounts() {
