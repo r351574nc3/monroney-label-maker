@@ -15,9 +15,11 @@ class option_controller {
 
 
     public function get($request, $verb, $args) {
-        $conditions = $this->verb ? [ 'location' => $this->location($this->verb) ] : [];
+        $user = $this->wp_session['user'];
+        
+        $conditions = $verb ? [ 'location' => array_pop($args) ] : [];
         $fields = [ 'id', 'option_name', 'owner', 'price', 'location' ];
-        if ($this->user_id) {
+        if (!is_null($user)) {
             global $wpdb;
             $wpdb->query(
                 $wpdb->prepare(
@@ -32,7 +34,7 @@ class option_controller {
             $results['success'] = true;
             return $results;                
         } else {
-           return $this->parse_get_request($table, $fields, $conditions);
+           return $this->api->parse_get_request($table, $fields, $conditions);
         }
     }
 
@@ -40,7 +42,9 @@ class option_controller {
         $location = array_pop($args);
         $user = $this->wp_session['user'];
 
+        echo "Got here";
         if (isset($request['option_name']) && isset($location)) {
+            echo "Inserting option";
             $request['option_name'] = sanitize_text_field($request['option_name']);
             $request['price'] = floatval($request['price']);  
             $request['location'] = $location;

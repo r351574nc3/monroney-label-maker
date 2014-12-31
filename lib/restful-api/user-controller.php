@@ -85,7 +85,7 @@ class user_controller {
         $user = $this->wp_session['user'];
     }
 
-    protected function new_label($request, $verb, $args) {
+    protected function post_labels($request, $verb, $args) {
         $user = $this->wp_session['user'];
         $label = (new \labelgen\Label\Builder())
                 ->with_name($request['name'])
@@ -214,11 +214,13 @@ class user_controller {
             return $this->signup_user($request, $verb, $args);
         }
 
-        $action = array_shift($args);
+        $action = "post_" . array_shift($args);
 
-        if ($action == 'labels') {
-            return $this->new_label($request, $verb, $args);
-        }
+        return $this->{$action}($request, $verb, $args);
+    }
+
+    protected function post_options($request, $verb, $args) {
+        echo "Got here";
     }
 
     public function delete() {
