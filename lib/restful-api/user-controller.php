@@ -220,11 +220,12 @@ class user_controller {
     }
 
     protected function post_options($request, $verb, $args) {
-        echo "Got here";
+        $controller = new \labelgen\option_controller($this->api, $this->wp_session);
+        return $controller->post($request, $verb, $args);    
     }
 
     public function delete() {
     }
 
 }
-?>
+?>    

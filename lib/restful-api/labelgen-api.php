@@ -169,7 +169,6 @@ class labelgen_api extends restful_api {
     }
     
     protected function options($action, $args) {
-        echo "Got here";
         $method = strtolower($this->method);
         $controller = new \labelgen\option_controller($this, $this->wp_session);
         return $controller->{$method}($this->request, $action, $args);

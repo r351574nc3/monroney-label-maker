@@ -9,8 +9,8 @@ class option_controller {
     protected $api;
 
     public function __construct($api, $wp_session) {
-        $table = 'labelgen_options'; 
-        $conditions = array();
+        $this->api = $api;
+        $this->wp_sesison = $wp_session;
     }
 
 
