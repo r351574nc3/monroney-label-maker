@@ -79,7 +79,6 @@ class labelgen_api extends restful_api {
      */
     protected function is_user_logged_in() {
         return isset($wp_session['user']);
-        // return array_key_exists('secret', $this->request) && isset($this->verb);
     }
 
     protected function user_relationships($item_table, $item_id) {

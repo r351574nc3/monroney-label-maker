@@ -5,15 +5,16 @@ namespace labelgen;
 require_once(LABEL_MAKER_ROOT.'/models/option.php');
 
 class option_controller {
+    protected $wp_session;
+    protected $api;
 
-
-    public function __construct($request, $session, $origin) {
+    public function __construct($api, $wp_session) {
         $table = 'labelgen_options'; 
         $conditions = array();
     }
 
 
-    public function get() {
+    public function get($request, $verb, $args) {
         $conditions = $this->verb ? [ 'location' => $this->location($this->verb) ] : [];
         $fields = [ 'id', 'option_name', 'owner', 'price', 'location' ];
         if ($this->user_id) {
@@ -35,22 +36,25 @@ class option_controller {
         }
     }
 
-    public function post() {
-        if (isset($this->request['option_name']) && isset($location)) {
-            $request['option_name'] = sanitize_text_field($this->request['option_name']);
-            $request['price'] = floatval($this->request['price']);  
-            $request['location'] = $this->get_location($location);                        
-            $request['owner'] = $this->user_id;
+    public function post($request, $verb, $args) {
+        $location = 'interior';
+        $user = $this->wp_session['user'];
+        
+        if (isset($request['option_name']) && isset($location)) {
+            $request['option_name'] = sanitize_text_field($request['option_name']);
+            $request['price'] = floatval($request['price']);  
+            $request['location'] = $location;
+            $request['owner'] = $user->get_id();
 
-            $result = $this->parse_post_request($table, $request);        
-            $this->user_relationships($table, $result['id']);
+            $result = $this->api->parse_post_request($table, $request);        
+            $this->api->user_relationships($table, $result['id']);
             return $result;
         } else {
             throw new Exception('Fields Not Set');
         }
     }
 
-    public function delete() {
+    public function delete($request, $verb, $args) {
         global $wpdb;
         $id = intval($args[0]);
         
