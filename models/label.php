@@ -19,6 +19,22 @@ namespace labelgen {
         protected $display_logo;
      
         protected static $table = 'labelgen_labels';
+        protected static $UPDATE_LABELS_FORMAT = <<<EOL
+        UPDATE labelgen_labels SET
+        label_color = '%s',
+        font_style = '%s', 
+        font_weight = '%s', 
+        font_family = '%s', 
+        dealership_name = '%s', 
+        dealership_tagline = '%s', 
+        dealership_logo_id = '%d', 
+        custom_image_id = '%d', 
+        time = '%s', 
+        user_id = '%d', 
+        name = '%s', 
+        display_logo = '%s' 
+        WHERE id = '%d'
+EOL;
      
         public function __construct() {
         }
@@ -104,7 +120,7 @@ namespace labelgen {
             $this->time = $time;
         }
 
-        public static function save_new($label) {
+        public static function insert($label) {
             global $wpdb;
             $retval = [];
             $table = self::$table;
@@ -148,7 +164,35 @@ namespace labelgen {
         	}
 
         }
+
+        public static function update($label) {
+            global $wpdb;
+            $retval = [];
+            $table = self::$table;
      
+    		$time = current_time('mysql');
+
+            $wpdb->query($wpdb->prepare(self::$UPDATE_LABELS_FORMAT, [
+                $label->get_color(),
+                $label->get_font_style(),
+                $label->get_font_weight(),
+                $label->get_font_family(),
+                $label->get_dealership(),
+                $label->get_dealership_tagline(),
+                $label->get_logo_id(),
+                $label->get_image_id(),
+                $time,
+                $label->get_user()->get_id(),
+                $label->get_name(),
+                $label->get_display_logo(),
+                $label->get_id()
+            ]));
+     
+            $retval = $label->to_array();
+            $retval['success'] = true;
+            return retval;
+        }
+
         public static function query_for($user) {
             global $wpdb;
             $retval = [];
@@ -268,6 +312,7 @@ namespace labelgen {
 namespace labelgen\Label {
 
     class Builder {
+        protected $id;
         protected $color;
         protected $font_style;
         protected $font_weight;
@@ -285,6 +330,10 @@ namespace labelgen\Label {
         
         }
 
+        public function with_id($id) {
+            $this->id = $id;
+            return $this;
+        }
         public function with_color($color) {
             $this->color = $color;
             return $this;
@@ -337,6 +386,7 @@ namespace labelgen\Label {
 
         public function build() {
             $label = new \labelgen\Label();
+            $label->set_id($this->id);
             $label->set_color($this->color);
             $label->set_user($this->user);
             $label->set_image_id($this->image_id);

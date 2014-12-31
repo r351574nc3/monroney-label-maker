@@ -8,9 +8,11 @@ class option_controller {
     protected $wp_session;
     protected $api;
 
+    protected static $table = "labelgen_options";
+
     public function __construct($api, $wp_session) {
         $this->api = $api;
-        $this->wp_sesison = $wp_session;
+        $this->wp_session = $wp_session;
     }
 
 
@@ -41,10 +43,9 @@ class option_controller {
     public function post($request, $verb, $args) {
         $location = array_pop($args);
         $user = $this->wp_session['user'];
-
-        echo "Got here";
+        $table = self::$table;
+        
         if (isset($request['option_name']) && isset($location)) {
-            echo "Inserting option";
             $request['option_name'] = sanitize_text_field($request['option_name']);
             $request['price'] = floatval($request['price']);  
             $request['location'] = $location;

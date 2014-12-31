@@ -81,7 +81,7 @@ class labelgen_api extends restful_api {
         return isset($wp_session['user']);
     }
 
-    protected function user_relationships($item_table, $item_id) {
+    public function user_relationships($item_table, $item_id) {
         global $wpdb;
         $table = 'labelgen_user_relationships';
         $wpdb->insert($table, array( 
@@ -105,7 +105,7 @@ class labelgen_api extends restful_api {
         
     protected function users($action, $args) {
         $method = strtolower($this->method);
-        $controller = new \labelgen\user_controller($this->wp_session);
+        $controller = new \labelgen\user_controller($this, $this->wp_session);
         return $controller->{$method}($this->request, $action, $args);
     }
 

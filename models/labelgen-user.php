@@ -192,7 +192,59 @@ namespace labelgen {
             return json_encode($this->to_array(), JSON_FORCE_OBJECT);
         }
 
-        public static function save_new($user) {
+        public static function insert($user) {
+            if (is_null($user->username) || is_null($user->password) || is_nulL($user->email)) {
+                throw new Exception('Missing Vital Sign Up Information.');
+            }
+
+            if (!is_email($user->email)) {
+                throw new Exception('Not a valid email address!');
+            }
+     
+            if (!ctype_alnum($user->username)) { throw new \Exception(INVALID_CHARACTERS_IN_NAME); }
+            
+            global $wpdb;
+            $table = self::$table;
+            $wpdb->query(
+                $wpdb->prepare("SELECT * FROM ${table} WHERE email = %s OR name = %s", [ $user->email, $user->username ])
+            );
+            
+            $result = $wpdb->last_result[0];
+            if ($result) {
+                if ($result->email == $request['email']) {
+                    throw new \Exception(EMAIL_ALREADY_REGISTERED);
+                } else if ($result->name == $request['name']) {
+                    throw new \Exception(NAME_ALREADY_REGISTERED);
+                }
+                else {
+                    throw new \Exception(INVALID_USER_NAME);
+                }
+            }
+                
+            $user->password = self::encrypt(trim($user->password));
+            $user->secret = sha1(microtime(true).mt_rand(22222,99999));
+
+    		$time = current_time('mysql');
+        	$wpdb->insert(self::$table, [ 'id'        => $user->id, 
+                                          'name'      => $user->username, 
+                                          'email'     => $user->email, 
+                                          'time'      => $time, 
+                                          'password'  => $user->password, 
+                                          'secret'    => $user->secret ]);
+        	
+        	$user->set_id($wpdb->insert_id);
+     
+            $retval = $user->to_array();
+            $retval['success'] = true;
+        	if ($retval['id']) {
+                return $retval;
+        	} 
+            else {
+        		throw new \Exception(json_encode(array('last_error'=>$wpdb->last_error, 'last_query'=>$wpdb->last_query)));
+        	}
+        }
+
+        public static function update($user) {
             if (is_null($user->username) || is_null($user->password) || is_nulL($user->email)) {
                 throw new Exception('Missing Vital Sign Up Information.');
             }
@@ -243,6 +295,8 @@ namespace labelgen {
         		throw new \Exception(json_encode(array('last_error'=>$wpdb->last_error, 'last_query'=>$wpdb->last_query)));
         	}
         }		
+
+
     }
 }
 
