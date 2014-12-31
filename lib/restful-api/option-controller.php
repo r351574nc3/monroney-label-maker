@@ -37,9 +37,9 @@ class option_controller {
     }
 
     public function post($request, $verb, $args) {
-        $location = 'interior';
+        $location = array_pop($args);
         $user = $this->wp_session['user'];
-        
+
         if (isset($request['option_name']) && isset($location)) {
             $request['option_name'] = sanitize_text_field($request['option_name']);
             $request['price'] = floatval($request['price']);  
