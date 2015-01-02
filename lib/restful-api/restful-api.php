@@ -95,9 +95,10 @@ abstract class restful_api {
 		}
     }
 
-    private function _response($data, $status = 200) {
+    protected function _response($data, $status = 200) {
         header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
        	$data = (!is_array($data)) ? array($data) : $data;
+        array_push($data, $this->method);
 	    return json_encode($data);
     }
 
@@ -384,7 +385,7 @@ abstract class restful_api {
 						$data[$field] = $result[0]->$field;
 					}
 					$data['success'] = true;		
-					$wpdb->insert($this->user_table, array('user_id'=>$this->user_id, 'table_name'=>$table, 'item_id'=>$data['id'], 'time'=>current_time('mysql')));
+					$wpdb->insert('labelgen_user_relationships', array('user_id'=>$this->user_id, 'table_name'=>$table, 'item_id'=>$data['id'], 'time'=>current_time('mysql')));
 					return $data;
 				}
 			}
