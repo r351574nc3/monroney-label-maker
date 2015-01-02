@@ -20,20 +20,20 @@ namespace labelgen {
      
         protected static $table = 'labelgen_labels';
         protected static $UPDATE_LABELS_FORMAT = <<<EOL
-        UPDATE labelgen_labels SET
-        label_color = '%s',
-        font_style = '%s', 
-        font_weight = '%s', 
-        font_family = '%s', 
-        dealership_name = '%s', 
-        dealership_tagline = '%s', 
-        dealership_logo_id = '%d', 
-        custom_image_id = '%d', 
-        time = '%s', 
-        user_id = '%d', 
-        name = '%s', 
-        display_logo = '%s' 
-        WHERE id = '%d'
+                UPDATE labelgen_labels SET
+                        label_color = '%s',
+                        font_style = '%s', 
+                        font_weight = '%s', 
+                        font_family = '%s', 
+                        dealership_name = '%s', 
+                        dealership_tagline = '%s', 
+                        dealership_logo_id = '%d', 
+                        custom_image_id = '%d', 
+                        time = '%s', 
+                        user_id = '%d', 
+                        name = '%s', 
+                        display_logo = '%s' 
+                WHERE id = '%d'
 EOL;
      
         public function __construct() {
