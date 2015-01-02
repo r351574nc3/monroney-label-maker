@@ -43,7 +43,7 @@ class option_controller {
     public function post($request, $verb, $args) {
         $location = array_pop($args);
         $user = $this->wp_session['user'];
-        $table = self::$table;
+        $table = "labelgen_options";
         
         if (isset($request['option_name']) && isset($location)) {
             $request['option_name'] = sanitize_text_field($request['option_name']);

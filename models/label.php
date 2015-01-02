@@ -190,7 +190,7 @@ EOL;
      
             $retval = $label->to_array();
             $retval['success'] = true;
-            return retval;
+            return $retval;
         }
 
         public static function query_for($user) {
