@@ -167,21 +167,8 @@ class user_controller {
     }
 
     public function put_labels($request, $verb, $args) {
-        $user = $this->wp_session['user'];
-        $label = (new \labelgen\Label\Builder())
-                ->with_id($request['id'])
-                ->with_name($request['name'])
-                ->with_color($request['label_color'])
-                ->with_dealership($request['dealership_name'])
-                ->with_dealership_tagline($request['dealership_tagline'])
-                ->with_font_family($request['font_family'])
-                ->with_font_style($request['font_style'])
-                ->with_font_weight($request['font_weight'])
-                ->with_logo_id($request['dealership_logo_id'])
-                ->with_display_logo($request['display_logo'])
-                ->with_image_id($request['custom_image_id'])
-                ->with_user($user)->build();
-        return \labelgen\Label::update($label);
+        $controller = new \labelgen\label_controller($this->api, $this->wp_session);
+        return $controller->put($request, $verb, $args);    
     }
 
     public function delete() {
