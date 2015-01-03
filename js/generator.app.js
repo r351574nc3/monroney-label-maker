@@ -1,34 +1,37 @@
 define(
-	['jquery', 'underscore', 'backbone', 'label', 'labels', 'label-view', 'controls', 'imgs-view', 'vehicle-view', 'options-view', 'options', 'discounts-view', 'generic-controls', 'vehicle-make', 'vehicle-model', 'vehicle-year', 'user', 'util/queue'], 
-	function($, _, Backbone, Label, Labels, LabelView, Controls, ImgsView, VehicleView, OptionsList, Options, DiscountList, DiscountControls, VehicleMake, VehicleModel, VehicleYear, User, Queue) {
-	
-	var thread_space = '';
-	
-	var initialize = function(){
-		var rootUser;
+    ['jquery', 'underscore', 'backbone', 'label', 'labels', 'label-view', 'controls', 'imgs-view', 'vehicle-view', 'options-view', 'options', 'discounts-view', 'generic-controls', 'vehicle-make', 'vehicle-model', 'vehicle-year', 'user', 'util/queue'], 
+    function($, _, Backbone, Label, Labels, LabelView, Controls, ImgsView, VehicleView, OptionsList, Options, DiscountList, DiscountControls, VehicleMake, VehicleModel, VehicleYear, User, Queue) {
+    
+    var thread_space = '';
+    
+    var initialize = function(){
+        var rootUser;
 
-		$.ajax({
-			url: backbone_data.url
-		}).done(function(data) {
-			if (typeof data !== "object") {
-				var json = $.parseJSON(data);
-			}
-			
-			//console.log("User", json);
-			if (json.success == true) {
-				rootUser = new User(json, {parse: true});
+        $.ajax({
+            url: backbone_data.url
+        }).done(function(data) {
+            if (typeof data !== "object") {
+                var json = $.parseJSON(data);
+            }
+            
+            if (json.success == true) {
+                rootUser = new User(json, {parse: true});                
 			} else {
 				rootUser = new User({name: "admin", id: 0}, {parse: true});
 			}
-			
-			$(document).ready(function() {		
-				
+
+			$(document).ready(function() {				
 				var label = new Label({user: rootUser, user_id: rootUser.get('id')});
 				var labels = new Labels([label], {user: rootUser});
+
 				var view = LabelView.initialize({model: label, collection: labels});
 				var pdfControls = Controls.initialize({model: label, collection: labels, user: rootUser});
 	
 				view.render();
+                if (labels.user.get('id') > 0) { // Check if user is logged in
+                    labels.fetch({ reset : true });
+                    pdfControls._init_user(json);
+                }
 		
 				var label_images_view = ImgsView.initialize(
 					{

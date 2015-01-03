@@ -146,7 +146,7 @@ class user_controller {
             // User is logging in
             $retval = $this->login($request, $verb, $args);
             if (!isset($retval['method'])) {
-               $retval['method'] = $this->method;
+               $retval['method'] = $this->api->get_method();
             }
             return $retval;
         }
@@ -158,7 +158,7 @@ class user_controller {
 
         $retval = $this->{$action}($request, $verb, $args);
         if (!isset($retval['method'])) {
-           $retval['method'] = $this->method;
+           $retval['method'] = $this->api->get_method();
         }
         return $retval;
     }
@@ -172,7 +172,7 @@ class user_controller {
         $action = "put_" . array_shift($args);
         $retval = $this->{$action}($request, $verb, $args);
         if (!isset($retval['method'])) {
-           $retval['method'] = $this->method;
+           $retval['method'] = $this->api->get_method();
         }
         return $retval;
     }

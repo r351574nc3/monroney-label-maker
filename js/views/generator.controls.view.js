@@ -57,9 +57,6 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
             this.listenTo(Backbone, "destroyImage", this.destroy_item_model);
             this.listenTo(Backbone, "destroyOption", this.destroy_item_model);
             this.listenTo(Backbone, "checkUserCredentials", this.check_user_credentials);
-            this.listenTo(Backbone, "loadSession", this.load_session);
-
-            Backbone.trigger('loadSession', this);
         },
 
         load_session : function(view) {
@@ -208,7 +205,7 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 		},
 		
 		get_label_select: function(selector_id, selected_id, appendAddNew) {
-			appendAddNew = appendAddNew || true;
+			appendAddNew = appendAddNew || true;  // Always true? Tautology?
 			selected_id = selected_id || 0;
 								
 			$select = $('<select>', {id: selector_id, class: 'tag-select', style: 'width: 250px; display: block; margin: 0 auto;'});			
@@ -511,8 +508,9 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 		**/		
 
 		_init_user: function(data) {
+            console.log("data " + data.id);
+            console.log("collection " + this.collection.user.get('id'));
 			if (data.id != this.collection.user.get('id')) {
-						
 				var user = new User(data, {parse: true});
 				//var coll = this.collection.parse(data.labelgen_labels);		
 				var labels = user.get('labels');

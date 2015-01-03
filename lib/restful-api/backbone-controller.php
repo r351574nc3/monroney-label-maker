@@ -21,7 +21,7 @@ class backbone_controller {
         $retval = [
                 "success" => true,
                 "name"    => is_null($user) ? '' : $user->get_username(),
-                "id"      => '',
+                "id"      => is_null($user) ? '' : $user->get_id(),
                 "secret"  => is_null($user) ? '' : $user->get_secret(),
                 "labelgen_images"  => $this->get_images(),
                 "labelgen_logos"   => $this->get_logos(),

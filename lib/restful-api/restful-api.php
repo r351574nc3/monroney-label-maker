@@ -82,6 +82,10 @@ abstract class restful_api {
     public function verifyKey($key, $origin) {
         
     }
+
+    public function get_method() {
+        return $this->method;
+    }
     
     public function processAPI() {
         if ((int) method_exists($this, $this->endpoint) > 0) {
