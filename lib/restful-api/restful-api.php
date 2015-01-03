@@ -98,7 +98,7 @@ abstract class restful_api {
     protected function _response($data, $status = 200) {
         header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
         $data = (!is_array($data)) ? array($data) : $data;
-        if (!isset($data['method')) {
+        if (!isset($data['method'])) {
            $data['method'] = $this->method;
         }
         return json_encode($data);
