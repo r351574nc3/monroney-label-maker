@@ -145,6 +145,9 @@ class user_controller {
             && array_key_exists('loginPassword', $request)) {
             // User is logging in
             $retval = $this->login($request, $verb, $args);
+            if (!isset($retval['method'])) {
+               $retval['method'] = $this->method;
+            }
             return $retval;
         }
         else if (array_key_exists('signupName', $request)) {
@@ -153,7 +156,11 @@ class user_controller {
 
         $action = "post_" . array_shift($args);
 
-        return $this->{$action}($request, $verb, $args);
+        $retval = $this->{$action}($request, $verb, $args);
+        if (!isset($retval['method'])) {
+           $retval['method'] = $this->method;
+        }
+        return $retval;
     }
 
     protected function post_options($request, $verb, $args) {
@@ -163,7 +170,11 @@ class user_controller {
 
     public function put($request, $verb, $args) {
         $action = "put_" . array_shift($args);
-        return $this->{$action}($request, $verb, $args);
+        $retval = $this->{$action}($request, $verb, $args);
+        if (!isset($retval['method'])) {
+           $retval['method'] = $this->method;
+        }
+        return $retval;
     }
 
     public function put_labels($request, $verb, $args) {
