@@ -212,7 +212,7 @@ class label_controller {
 			//$retval['trim'] = $request['trim'] ? sanitize_text_field($request['trim']) : '';
 		}
         else {
-			throw new Exception('Please log in or sign up to save your form.');
+			throw new \Exception('Please log in or sign up to save your form.');
 		}
 	    return $retval;
 	}
