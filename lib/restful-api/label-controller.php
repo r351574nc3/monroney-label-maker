@@ -18,7 +18,7 @@ class label_controller {
     }
 
     protected function is_logged_in() {
-        return is_null($this->wp_session['user']);
+        return !is_null($this->wp_session['user']);
     }
  
     public function get($request, $verb, $args) {
