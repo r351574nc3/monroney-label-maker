@@ -71,446 +71,444 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
             }).success(function(data) {
                 // data = $.parseJSON(data);
                 console.log("Success", data);
-    			view._init_user(data);
+                view._init_user(data);
                 // view.on_successful_log_user_in(data);
-			});
+            });
         },
-		
-		replace_model: function(model) {
-			if (model) {
-				this.model.stopListening();
-				this.model = model;
-				this.render();
-			}			
-		},
-		
-		/**
-		**		Manage User Resources
-		**/
-		destroy_item_model: function(model, url, msg) {
-			//console.log("Attempt Image Destruction", model);
-			var user = this.collection.user;
-			var self = this;
-			YesNoDialog.initialize(
-				msg,				
-				function() {
-					model.destroy({
-						beforeSend: function (xhr) {
-							//console.log("xhr", xhr);
-							xhr.setRequestHeader('Authentication', authenticate(user, url, 'DELETE'));
-						},
-						
-						success: function(model, response) {
-							console.log(response);
-							//response = $.parseJSON(response);							
-							if (response.success) {
-								Backbone.trigger("optionDestroyed", model, model.get("price"));	
-							} else {
-								self.show_fail_message(response.message);
-							}							
-						},
-						error: function(model, response) {
-							//response = $.parseJSON(response);
-							self.show_fail_message('We were not able to complete your request');	
-							console.log("Model Destruction Error", response); 
-						}
-					});		
-					Modal.close();				
-				}, 
-				
-				function() {
-					Modal.close();
-				}
-			);
-		},
-		
-		
-		/**
-		**		On Save Click
-		**/
-		save_form: function() {
-			if (!this.validate_user()) return false;
-			//console.log("Model", this.model);
+        
+        replace_model: function(model) {
+            if (model) {
+                this.model.stopListening();
+                this.model = model;
+                this.render();
+            }           
+        },
+        
+        /**
+        **      Manage User Resources
+        **/
+        destroy_item_model: function(model, url, msg) {
+            //console.log("Attempt Image Destruction", model);
+            var user = this.collection.user;
+            var self = this;
+            YesNoDialog.initialize(
+                msg,                
+                function() {
+                    model.destroy({
+                        beforeSend: function (xhr) {
+                            //console.log("xhr", xhr);
+                            xhr.setRequestHeader('Authentication', authenticate(user, url, 'DELETE'));
+                        },
+                        
+                        success: function(model, response) {
+                            console.log(response);
+                            //response = $.parseJSON(response);                         
+                            if (response.success) {
+                                Backbone.trigger("optionDestroyed", model, model.get("price")); 
+                            } else {
+                                self.show_fail_message(response.message);
+                            }                           
+                        },
+                        error: function(model, response) {
+                            //response = $.parseJSON(response);
+                            self.show_fail_message('We were not able to complete your request');    
+                            console.log("Model Destruction Error", response); 
+                        }
+                    });     
+                    Modal.close();              
+                }, 
+                
+                function() {
+                    Modal.close();
+                }
+            );
+        },
+        
+        
+        /**
+        **      On Save Click
+        **/
+        save_form: function() {
+            if (!this.validate_user()) return false;
+            //console.log("Model", this.model);
 
-			$name = $('<input>', {type: 'text', class: 'tag-input nonmandatory', name: 'labelName'});
+            $name = $('<input>', {type: 'text', class: 'tag-input nonmandatory', name: 'labelName'});
 
-			var id = (this.model) ? this.model.get('id') : null;
-			$select = this.get_label_select('label-save-selector', id, false); 	
+            var id = (this.model) ? this.model.get('id') : null;
+            $select = this.get_label_select('label-save-selector', id, false);  
 
-			var dialog = new Dialog(
-				{fields: 
-					[
-						{label: 'Save new label:', field: $name},
-						{label: 'Save as label:', field: $select} 
-					],
-					id: 'saveForm', 
-					submitText: 'Save',
-					submitId: 'save-button'
-				},
-				{callback: this.on_user_save, context: this}
-			);
+            var dialog = new Dialog(
+                {fields: 
+                    [
+                        {label: 'Save new label:', field: $name},
+                        {label: 'Save as label:', field: $select} 
+                    ],
+                    id: 'saveForm', 
+                    submitText: 'Save',
+                    submitId: 'save-button'
+                },
+                {callback: this.on_user_save, context: this}
+            );
 
 
-		},
-		
-		_gather_save_data: function() {
-			
-			var data = {
-					//font_style: this.model.get('fontStyle'),
-					//font_weight: this.model.get('fontWeight'),
-					label_color: this.model.get('labelColor'),
-					//font_family: this.model.get('fontFamily'),
-					dealership_name: this.model.get('dealershipName'),
-					dealership_tagline: this.model.get('dealershipTagline'),
-					//dealership_info: this.model.get('dealershipInfo'),
-					dealership_logo_id: this.model.get('dealershipLogoId'),
-					custom_image_id: this.model.get('customImageId'),
-					display_logo: this.model.get('displayLogo'),
-					option_ids: this.model.get('optionIds'),
-					option_prices: this.model.get('optionPrices'),
-					//discount_ids: this.model.get('discount_ids')
-					user_id: this.collection.user.get('id'),
-					id: (parseInt(this.model.get('id')) > 0) ? this.model.get('id') : null,
-					name: this.model.get('name')
-				};
-			return data;		
-		},
+        },
+        
+        _gather_save_data: function() {
+            
+            var data = {
+                    //font_style: this.model.get('fontStyle'),
+                    //font_weight: this.model.get('fontWeight'),
+                    label_color: this.model.get('labelColor'),
+                    //font_family: this.model.get('fontFamily'),
+                    dealership_name: this.model.get('dealershipName'),
+                    dealership_tagline: this.model.get('dealershipTagline'),
+                    //dealership_info: this.model.get('dealershipInfo'),
+                    dealership_logo_id: this.model.get('dealershipLogoId'),
+                    custom_image_id: this.model.get('customImageId'),
+                    display_logo: this.model.get('displayLogo'),
+                    option_ids: this.model.get('optionIds'),
+                    option_prices: this.model.get('optionPrices'),
+                    //discount_ids: this.model.get('discount_ids')
+                    user_id: this.collection.user.get('id'),
+                    id: (parseInt(this.model.get('id')) > 0) ? this.model.get('id') : null,
+                    name: this.model.get('name')
+                };
+            return data;        
+        },
 
-		on_user_save: function(data) {
-			var data = _.extend(this._gather_save_data(), {name: data.labelName});
-			//console.log('save_form', data);
-			var request;
-			var id = $('#label-save-selector option:selected').val();
-			
-			if (id > 0) {
-				request = 'PUT';	
-			} else {
-				request = 'POST';
-			}
-			
-			//console.log("on_user_save:collection.url", this.collection);
-			
-			this._do_ajax(data, request, this.collection.url(), this.on_save_successful);			
-		},
+        on_user_save: function(data) {
+            var data = _.extend(this._gather_save_data(), {name: data.labelName});
+            //console.log('save_form', data);
+            var request;
+            var id = $('#label-save-selector option:selected').val();
+            
+            if (id > 0) {
+                request = 'PUT';    
+            } else {
+                request = 'POST';
+            }
+            
+            //console.log("on_user_save:collection.url", this.collection);
+            
+            this._do_ajax(data, request, this.collection.url(), this.on_save_successful);           
+        },
 
-		on_save_successful: function(data) {
-			Modal.displayMessage('Form saved.', 'success-message align-center');			
+        on_save_successful: function(data) {
+            Modal.displayMessage('Form saved.', 'success-message align-center');            
 
-			if (data.method.match(/post/i)) {
-				Backbone.trigger('modelSavedAs', data.id);
-			}
+            if (data.method.match(/post/i)) {
+                Backbone.trigger('modelSavedAs', data.id);
+            }
 
-			this.model.set('id', data.id);
-			this.model.set('name', data.name);
-		},
-		
-		get_label_select: function(selector_id, selected_id, appendAddNew) {
-			appendAddNew = appendAddNew || true;  // Always true? Tautology?
-			selected_id = selected_id || 0;
-								
-			$select = $('<select>', {id: selector_id, class: 'tag-select', style: 'width: 250px; display: block; margin: 0 auto;'});			
-			//console.log("Loading Selector", $select);
+            this.model.set('id', data.id);
+            this.model.set('name', data.name);
+        },
+        
+        get_label_select: function(selector_id, selected_id, appendAddNew) {
+            appendAddNew = appendAddNew || true;  // Always true? Tautology?
+            selected_id = selected_id || 0;
+                                
+            $select = $('<select>', {id: selector_id, class: 'tag-select', style: 'width: 250px; display: block; margin: 0 auto;'});            
+            //console.log("Loading Selector", $select);
 
-			if (appendAddNew) {
-				$newLabel = $('<option>', {text: 'New Label', id: 'new_selection', value: '0'});
-				$select.append($newLabel);	
-			}
-			var labels = this.collection.models;
-			//console.log("get Label Select", labels);
-			
-			for (var l in labels) {
-				var name = labels[l].get('name');
-				var label_id = labels[l].get('id');
-				if (name) {
-					var vals = {text: name, value: label_id};
-					if (selected_id == label_id) {
-						$select.append('<option selected value="' + label_id + '">' + name + '</option>');
-						//$select.val(label_id);
-						//console.log("Get Label Select", $select, selected_id, label_id);
-					} else {
-						$select.append($('<option>', vals));
-					}
-				}
-			}
+            if (appendAddNew) {
+                $newLabel = $('<option>', {text: 'New Label', id: 'new_selection', value: '0'});
+                $select.append($newLabel);  
+            }
+            var labels = this.collection.models;
+            //console.log("get Label Select", labels);
+            
+            for (var l in labels) {
+                var name = labels[l].get('name');
+                var label_id = labels[l].get('id');
+                if (name) {
+                    var vals = {text: name, value: label_id};
+                    if (selected_id == label_id) {
+                        $select.append('<option selected value="' + label_id + '">' + name + '</option>');
+                        //$select.val(label_id);
+                        //console.log("Get Label Select", $select, selected_id, label_id);
+                    } else {
+                        $select.append($('<option>', vals));
+                    }
+                }
+            }
 
-			$('#' + selector_id).on('change', function() {
-				//console.log("Selector Changed", $(this).children(':selected'));
-			});
+            $('#' + selector_id).on('change', function() {
+                //console.log("Selector Changed", $(this).children(':selected'));
+            });
 
-			return $select;
-			
-		},
-		
-		/**
-		**		On Load Click
-		**/		
-		load_form: function() {
-			if (!this.validate_user()) return false;
-			
-			var select_id = 'label-load-selector';
-			$select = this.get_label_select(select_id);
-			var dialog = new Dialog({
-				fields: [{label: 'Please Select a Form to Load', field: $select}], 
-				id: 'loadForm', 
-				class: 'dialogForm',
-				submitText: 'Load',
-				submitClass: 'tag-button',
-				submitId: 'load-button'
-			},
-				{callback: $.proxy(this.on_label_load, this, select_id), context: this}
-			);
-		},
-		
-		on_label_load: function(select_id) {
-			this.reset_form();			
-			if (typeof select_id == 'object') {
-				$select = select_id;
-			} else {
-				$select = $('#' + select_id);
-			}
-			//console.log("Select", $select);
-			$selected = $select.children(':selected');
-			var name = $selected.text() || ""; 
-			var id = $selected.val() || 0;
-			
-			//console.log('on_label_load', id);
-			
-			Modal.close();	
-			var model = this.collection.get(id);
-			//console.log("Loaded Label", id, model.get('id'));
-			this.model = model;
-			Backbone.trigger('labelSelected', this.model); 
-		},
-		
-		reset_form: function() {
-			$('input.tag-input').not(".option-price .tag-input").val('');
-			Backbone.trigger('requestReset');
-		},
-		
-		_gather_data: function() {
-			var tree = Array();
-			tree.push(this.get_sizing($('#tag-preview-window')));
-			var data = {
-				scale: this.scale,
-				root_element: JSON.stringify(this.get_sizing($('#tag-preview-window'))),
-				elements: JSON.stringify(this.get_elements($('#tag-preview-window'), tree)),
-			};
-			
-			return data;
-		},
-		
-		get_elements: function($root, tree) {	
-			var controls = this;					
-			$root.children().each(function() {
-				if ($(this).is(":visible")) {
-					var branch = controls.get_sizing($(this));
-					tree.push(branch);
-					controls.get_elements($(this), tree);				
-				}
-			});
-			return tree;
-		},
-		
-		
-		get_sizing: function($thing) {
-		return {	width: $thing.css('width'), 
-					height: $thing.css('height'), 
-					padding: $thing.css('padding'),
-					margin: $thing.css('margin'),
-					background: $thing.css('background-color'),
-					children: this.get_children_ids($thing),
-					parent: this.get_parent_id($thing),
-					border: this.get_border($thing),
-					position: $thing.css('position'),
-					tag: $thing.prop('tagName'),
-					id: $thing.attr('id'),
-					display: $thing.css('display'),
-					siblings: this.get_siblings($thing),
-					text: this.get_text($thing),
-					color: $thing.css('color'),
-					fontsize: $thing.css('font-size'),
-					fontfamily: $thing.css('font-family'),
-					fontweight: $thing.css('font-weight'),
-					fontstyle: $thing.css('font-style'),
-					textalign: $thing.css('text-align'),
-					float: $thing.css('float'),
-					top: $thing.css('top'),
-					right: $thing.css('right'),
-					bottom: $thing.css('bottom'),
-					left: $thing.css('left'),
-					image: $thing.attr('src'),
-					zindex: $thing.css('z-index'),
-					verticalalign: $thing.css('vertical-align')
-				};
-		},
-	
-		get_border: function($thing) {
-			var o = {
-			top: $thing.css('border-top'),
-			right: $thing.css('border-right'),
-			bottom: $thing.css('border-bottom'),
-			left: $thing.css('border-left')
-			}
-			return o;
-		},
-		
-		get_text: function($thing) {
-			if ($thing.val()) return $thing.val().trim(); 
-			else return $thing.clone().children().remove().end().text().trim();
-		},
+            return $select;
+            
+        },
+        
+        /**
+        **      On Load Click
+        **/     
+        load_form: function() {
+            if (!this.validate_user()) return false;
+            
+            var select_id = 'label-load-selector';
+            $select = this.get_label_select(select_id);
+            var dialog = new Dialog({
+                fields: [{label: 'Please Select a Form to Load', field: $select}], 
+                id: 'loadForm', 
+                class: 'dialogForm',
+                submitText: 'Load',
+                submitClass: 'tag-button',
+                submitId: 'load-button'
+            },
+                {callback: $.proxy(this.on_label_load, this, select_id), context: this}
+            );
+        },
+        
+        on_label_load: function(select_id) {
+            this.reset_form();          
+            if (typeof select_id == 'object') {
+                $select = select_id;
+            } else {
+                $select = $('#' + select_id);
+            }
+            //console.log("Select", $select);
+            $selected = $select.children(':selected');
+            var name = $selected.text() || ""; 
+            var id = $selected.val() || 0;
+            
+            //console.log('on_label_load', id);
+            
+            Modal.close();  
+            var model = this.collection.get(id);
+            //console.log("Loaded Label", id, model.get('id'));
+            this.model = model;
+            Backbone.trigger('labelSelected', this.model); 
+        },
+        
+        reset_form: function() {
+            $('input.tag-input').not(".option-price .tag-input").val('');
+            Backbone.trigger('requestReset');
+        },
+        
+        _gather_data: function() {
+            var tree = Array();
+            tree.push(this.get_sizing($('#tag-preview-window')));
+            var data = {
+                scale: this.scale,
+                root_element: JSON.stringify(this.get_sizing($('#tag-preview-window'))),
+                elements: JSON.stringify(this.get_elements($('#tag-preview-window'), tree)),
+            };
+            
+            return data;
+        },
+        
+        get_elements: function($root, tree) {   
+            var controls = this;                    
+            $root.children().each(function() {
+                if ($(this).is(":visible")) {
+                    var branch = controls.get_sizing($(this));
+                    tree.push(branch);
+                    controls.get_elements($(this), tree);               
+                }
+            });
+            return tree;
+        },
+        
+        
+        get_sizing: function($thing) {
+        return {    width: $thing.css('width'), 
+                    height: $thing.css('height'), 
+                    padding: $thing.css('padding'),
+                    margin: $thing.css('margin'),
+                    background: $thing.css('background-color'),
+                    children: this.get_children_ids($thing),
+                    parent: this.get_parent_id($thing),
+                    border: this.get_border($thing),
+                    position: $thing.css('position'),
+                    tag: $thing.prop('tagName'),
+                    id: $thing.attr('id'),
+                    display: $thing.css('display'),
+                    siblings: this.get_siblings($thing),
+                    text: this.get_text($thing),
+                    color: $thing.css('color'),
+                    fontsize: $thing.css('font-size'),
+                    fontfamily: $thing.css('font-family'),
+                    fontweight: $thing.css('font-weight'),
+                    fontstyle: $thing.css('font-style'),
+                    textalign: $thing.css('text-align'),
+                    float: $thing.css('float'),
+                    top: $thing.css('top'),
+                    right: $thing.css('right'),
+                    bottom: $thing.css('bottom'),
+                    left: $thing.css('left'),
+                    image: $thing.attr('src'),
+                    zindex: $thing.css('z-index'),
+                    verticalalign: $thing.css('vertical-align')
+                };
+        },
+    
+        get_border: function($thing) {
+            var o = {
+            top: $thing.css('border-top'),
+            right: $thing.css('border-right'),
+            bottom: $thing.css('border-bottom'),
+            left: $thing.css('border-left')
+            }
+            return o;
+        },
+        
+        get_text: function($thing) {
+            if ($thing.val()) return $thing.val().trim(); 
+            else return $thing.clone().children().remove().end().text().trim();
+        },
 
-		get_siblings: function($thing) {
-			var siblings = Array();
-			
-			$thing.parent().children().each(function() {
-				if ($(this).attr('id') == $thing.attr('id')) {
-					return false;
-				}
-			//console.log('IDS(' + $thing.attr('id') + ')', $(this).attr('id'));
-				siblings.push($(this).attr('id'));
-			});
-			return siblings;
-		},
-		
-		get_parent_id: function($child) {
-			return $child.parent().attr('id');
-		},
-		
-		get_children_ids: function($parent) {
-			var ids = Array();
-			$parent.children().each(function() {
-				ids.push($(this).attr('id'));				
-			});
-			return ids;
-		},
-		
-		/**
-		** Show PDF
-		**/
-		
-		print_form: function() {
-			this._get_form(this.print_pdf);
-		},
-		
-		inspect_form: function() {
-			console.log("Inspect Form");
-			this._get_form(this.show_pdf, {preview: true});
-		},
+        get_siblings: function($thing) {
+            var siblings = Array();
+            
+            $thing.parent().children().each(function() {
+                if ($(this).attr('id') == $thing.attr('id')) {
+                    return false;
+                }
+            //console.log('IDS(' + $thing.attr('id') + ')', $(this).attr('id'));
+                siblings.push($(this).attr('id'));
+            });
+            return siblings;
+        },
+        
+        get_parent_id: function($child) {
+            return $child.parent().attr('id');
+        },
+        
+        get_children_ids: function($parent) {
+            var ids = Array();
+            $parent.children().each(function() {
+                ids.push($(this).attr('id'));               
+            });
+            return ids;
+        },
+        
+        /**
+        ** Show PDF
+        **/
+        
+        print_form: function() {
+            this._get_form(this.print_pdf);
+        },
+        
+        inspect_form: function() {
+            console.log("Inspect Form");
+            this._get_form(this.show_pdf, {preview: true});
+        },
 
-		_get_form: function(callback, options) {
-			options = options || {};			
-			console.log("User", this.collection.user.get('name'));
-			var data = _.extend(this._gather_data(), _.extend({
-				callback: 'generate_pdf_label',
-				username: this.collection.user.get('name'),
-				labelname: this.model.get('name') || "nothing" 				
-			}, options));
-			console.log("Data", data);
-			this._do_ajax(data, 'POST', ajax.url, callback, {contentType: 'application/x-www-form-urlencoded', processData: true});					
-		},
-		
-		print_pdf: function(data) {
-			var win = window.open(data.pdf, '_blank');
-			Modal.close();
-			if (!win) {
-				this.show_fail_message("Please Disable Popup Blocking to Use this Feature");
-			}
-			//var pdf = window.open(data.pdf);
-			//pdf.print();
-		},
+        _get_form: function(callback, options) {
+            options = options || {};            
+            console.log("User", this.collection.user.get('name'));
+            var data = _.extend(this._gather_data(), _.extend({
+                callback: 'generate_pdf_label',
+                username: this.collection.user.get('name'),
+                labelname: this.model.get('name') || "nothing"              
+            }, options));
+            console.log("Data", data);
+            this._do_ajax(data, 'POST', ajax.url, callback, {contentType: 'application/x-www-form-urlencoded', processData: true});                 
+        },
+        
+        print_pdf: function(data) {
+            var win = window.open(data.pdf, '_blank');
+            Modal.close();
+            if (!win) {
+                this.show_fail_message("Please Disable Popup Blocking to Use this Feature");
+            }
+            //var pdf = window.open(data.pdf);
+            //pdf.print();
+        },
 
-		show_pdf: function(data) {
-			//console.log('Canvas', data.pdf);
-			//PDFJS.disableWorker = true;
-			PDFJS.workerSrc = pdfjs_ext.worker_url;
-			console.log("PDF WORKER", PDFJS.workerSrc);
+        show_pdf: function(data) {
+            //console.log('Canvas', data.pdf);
+            //PDFJS.disableWorker = true;
+            PDFJS.workerSrc = pdfjs_ext.worker_url;
+            console.log("PDF WORKER", PDFJS.workerSrc);
 
-			PDFJS.getDocument(data.pdf).then(function(pdf) {
-				// Using promise to fetch the page
-				//console.log('Canvas:getDocument', pdf);
-				
-				pdf.getPage(1).then(function(page) {
-					var scale = 1.333;
-					var viewport = page.getViewport(scale);
-					//var canvas = $('<canvas', {id: 'pdfviewer'});
-					//$('#modal-content').append(canvas);
-					Modal.replaceContent('canvas', {id: 'pdfviewer', style: 'display:none'});
-					
-					var canvas = document.getElementById('pdfviewer');
-					var context = canvas.getContext('2d');
-					canvas.height = viewport.height;
-					canvas.width = viewport.width;
-					var renderContext = {
-						canvasContext: context,
-						viewport: viewport
-					};
-					page.render(renderContext);
-					//console.log("Canvas:", data.height, canvas.width);
-					Modal.setContentProperties({overflow: "hidden"});
-					Modal.setModalProperties({width: data.width, height: data.height, maxHeight: window.innerHeight - 100, overflowY: 'auto'});					
-					$('#pdfviewer').show();
+            PDFJS.getDocument(data.pdf).then(function(pdf) {
+                // Using promise to fetch the page
+                //console.log('Canvas:getDocument', pdf);
+                
+                pdf.getPage(1).then(function(page) {
+                    var scale = 1.333;
+                    var viewport = page.getViewport(scale);
+                    //var canvas = $('<canvas', {id: 'pdfviewer'});
+                    //$('#modal-content').append(canvas);
+                    Modal.replaceContent('canvas', {id: 'pdfviewer', style: 'display:none'});
+                    
+                    var canvas = document.getElementById('pdfviewer');
+                    var context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    var renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    page.render(renderContext);
+                    //console.log("Canvas:", data.height, canvas.width);
+                    Modal.setContentProperties({overflow: "hidden"});
+                    Modal.setModalProperties({width: data.width, height: data.height, maxHeight: window.innerHeight - 100, overflowY: 'auto'});                 
+                    $('#pdfviewer').show();
 
-			  });
-			})
-			//src: viewer.url + data.pdf;
-			//var path = {src: src, id: "viewer", width: 400, height: 1000};
-			
-		},
-		
-		/** 
-		**	Called when user clicks on log in button
-		**/
-		log_in: function() {
-			$name = $('<input>', {type: 'text', class: 'tag-input', value: (DEBUG.MODE) ? "CandyDarling" : "", name: 'loginName'});
-			$passw = $('<input>', {type: 'password', class: 'tag-input', value: (DEBUG.MODE) ? "candy" : "", name: 'loginPassword'});
-			
-			var dialog = new Dialog(
-				{	fields: 
-					[
-						{label: 'Name', field: $name}, 
-						{label: 'Enter a Password', field: $passw}, 
-					],
-					id: 'loginForm', 
-					submitText: 'Log In',
-					submitId: 'loginButton'
-				},
-				
-				{
-					callback: $.proxy(function(data) {
-							//console.log("Data", data);
-							this._do_ajax(data, 'POST', restful.url + '/users/' + data.loginName, this.on_successful_log_user_in);
-						}, this),
-					context: this
-				}
-			);
-		},
+              });
+            })
+            //src: viewer.url + data.pdf;
+            //var path = {src: src, id: "viewer", width: 400, height: 1000};
+            
+        },
+        
+        /** 
+        **  Called when user clicks on log in button
+        **/
+        log_in: function() {
+            $name = $('<input>', {type: 'text', class: 'tag-input', value: (DEBUG.MODE) ? "CandyDarling" : "", name: 'loginName'});
+            $passw = $('<input>', {type: 'password', class: 'tag-input', value: (DEBUG.MODE) ? "candy" : "", name: 'loginPassword'});
+            
+            var dialog = new Dialog(
+                {   fields: 
+                    [
+                        {label: 'Name', field: $name}, 
+                        {label: 'Enter a Password', field: $passw}, 
+                    ],
+                    id: 'loginForm', 
+                    submitText: 'Log In',
+                    submitId: 'loginButton'
+                },
+                
+                {
+                    callback: $.proxy(function(data) {
+                            //console.log("Data", data);
+                            this._do_ajax(data, 'POST', restful.url + '/users/' + data.loginName, this.on_successful_log_user_in);
+                        }, this),
+                    context: this
+                }
+            );
+        },
 
-		on_successful_log_user_in: function(data) {
-			this._init_user(data);
-			$doc = $('<div>');
-			$head = $('<h3>', {text: 'Welcome back, ' + data.name + '. Please select a label:', class: 'success-message align-center'});			
+        on_successful_log_user_in: function(data) {
+            this._init_user(data);
+            $doc = $('<div>');
+            $head = $('<h3>', {text: 'Welcome back, ' + data.name + '. Please select a label:', class: 'success-message align-center'});            
 
-			var select_id = 'label-login-selector';
-			$select = this.get_label_select(select_id); 
+            var select_id = 'label-login-selector';
+            $select = this.get_label_select(select_id); 
 
-			$ok = $('<button>', {text: 'OK', class: 'tag-button ok-button', style: 'margin-bottom: 50px'});
-			$doc.append($head, $select, $ok);
-			
-			Modal.openDomDocument($doc);
-			$options = [];
-						
-			$ok.one('click', $.proxy(this.on_label_load, this, $select));
-		},
+            $ok = $('<button>', {text: 'OK', class: 'tag-button ok-button', style: 'margin-bottom: 50px'});
+            $doc.append($head, $select, $ok);
+            
+            Modal.openDomDocument($doc);
+            $options = [];
+                        
+            $ok.one('click', $.proxy(this.on_label_load, this, $select));
+        },
 
-		/** 
-		**	Initializes the user element
-		**	TRIGGERS--Backbone: userLoggedIn
-		**/		
+        /** 
+        **  Initializes the user element
+        **  TRIGGERS--Backbone: userLoggedIn
+        **/     
 
-		_init_user: function(data) {
-            console.log("data " + data.id);
-            console.log("collection " + this.collection.user.get('id'));
-			if (data.id != this.collection.user.get('id')) {
+        _init_user: function(data) {
+			if (data.id >= 0) {
 				var user = new User(data, {parse: true});
 				//var coll = this.collection.parse(data.labelgen_labels);		
 				var labels = user.get('labels');
