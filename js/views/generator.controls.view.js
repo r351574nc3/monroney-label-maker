@@ -512,8 +512,7 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
         **/     
 
         _init_user: function(data) {
-            console.log("data " + data.id + " " + (data.id >= 0));
-			if (!_.isNumber(data.id) && data.id >= 0) {                
+			if (_.isNumber(data.id) && data.id >= 0) {                
 				var user = new User(data, {parse: true});
 				//var coll = this.collection.parse(data.labelgen_labels);		
 				var labels = user.get('labels');
