@@ -17,6 +17,7 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
             }, function(){
                 $(this).children('.tooltip').css('visibility', 'none'); 
             });
+            console.log("Model " + this.model.get('id'));
         },
 
         render: function() {
