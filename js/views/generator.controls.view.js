@@ -134,6 +134,8 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
             $name = $('<input>', {type: 'text', class: 'tag-input nonmandatory', name: 'labelName'});
 
+            console.log("model " + this.model.get('id'));
+
             var id = (this.model) ? this.model.get('id') : null;
             $select = this.get_label_select('label-save-selector', id, false);  
 
