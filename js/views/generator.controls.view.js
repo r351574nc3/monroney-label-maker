@@ -58,7 +58,7 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
             this.listenTo(Backbone, "destroyOption", this.destroy_item_model);
             this.listenTo(Backbone, "checkUserCredentials", this.check_user_credentials);
 
-            this.model.on('change:dealershipName', this.dealer_change);
+            this.model.on('blur:dealershipName', this.dealer_change);
         },
 
         dealer_change : function(eventName) {

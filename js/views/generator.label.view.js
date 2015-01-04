@@ -71,7 +71,7 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 			this.$dealershipText = $('#dealershipText');
 
 			this.$dealershipName = $('[name="dealershipName"]');
-			this.$dealershipTagline = $('#dealershipTagline');
+			this.$dealershipTagline = $('[name="dealershipTagline"]');
 			this.$customImage = $('#customImage');
 			
 			var labelView = this;
@@ -94,7 +94,7 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 
 			this.model.on('change:fontFamily change:fontWeight change:fontStyle', this.renderTextStyle, this);
 			
-			this.model.on('change:dealershipName change:dealershipTagline', this.renderText, this);
+			this.model.on('blur:dealershipName blur:dealershipTagline', this.renderText, this);
 			this.renderTextByValue({key: 'dealershipTagline', value: this.model.get('dealershipTagline')});
 			this.renderTextByValue({key: 'dealershipName', value: this.model.get('dealershipName')});
 
