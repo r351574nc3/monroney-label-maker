@@ -70,8 +70,8 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 			this.$dealershipLogo = $('#dealershipLogo');
 			this.$dealershipText = $('#dealershipText');
 
-			this.$dealershipName = $('[name="dealershipName"]');
-			this.$dealershipTagline = $('[name="dealershipTagline"]');
+			this.$dealershipName = $('#dealershipName');
+			this.$dealershipTagline = $('#dealershipTagline');
 			this.$customImage = $('#customImage');
 			
 			var labelView = this;
@@ -94,7 +94,7 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 
 			this.model.on('change:fontFamily change:fontWeight change:fontStyle', this.renderTextStyle, this);
 			
-			this.model.on('blur:dealershipName blur:dealershipTagline', this.renderText, this);
+			this.model.on('change:dealershipName change:dealershipTagline', this.renderText, this);
 			this.renderTextByValue({key: 'dealershipTagline', value: this.model.get('dealershipTagline')});
 			this.renderTextByValue({key: 'dealershipName', value: this.model.get('dealershipName')});
 
@@ -114,7 +114,7 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 			
 			this.listenTo(Backbone, 'dealershipLogoAdded', this.toggle_visibility);
 
-			$('[name="model"], [name="make"], [name="stockNo"], [name="year"], [name="vin"], [name="trim"]').on('blur', null, $.proxy(this.setText, null, this, this.model));
+			$('[name="model"], [name="make"], [name="stockNo"], [name="year"], [name="vin"], [name="trim"], [name="dealershipName"], [name="dealershipTagline"]').on('blur', null, $.proxy(this.setText, null, this, this.model));
 
 			this.$fontFamily.on('change', null, $.proxy(this.setAttr, null, this, this.model));
 
@@ -270,7 +270,6 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 		
 		//text
 		renderText: function(model, value, options) {
-            console.log("Got here");
 			this.renderTextByValue(model.get_change());
 		},
 

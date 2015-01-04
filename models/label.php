@@ -190,6 +190,7 @@ EOL;
      
             $retval = $label->to_array();
             $retval['success'] = true;
+            $retval['time'] = $time;
             return $retval;
         }
 
@@ -292,19 +293,18 @@ EOL;
         }
 
         public function to_array() {
-            return [ 'id'                   => $label->id, 
-                     'name'                 => $label->name, 
-                     'label_color'          => $label->color, 
-                     'time'                 => $time, 
-                     'font_style'           => $label->font_style, 
-                     'font_family'          => $label->font_family, 
-                     'font_weight'          => $label->font_weight, 
-                     'dealership_name'      => $label->dealership, 
-                     'dealership_tagline'   => $label->dealership_tagline, 
-                     'custom_image_id'      => $label->image_id, 
-                     'dealership_logo_id'   => $label->logo_id, 
-                     'user_id'              => $label->user->id, 
-                     'display_logo'         => $label->display_logo ];
+            return [ 'id'                   => $this->id, 
+                     'name'                 => $this->name, 
+                     'this_color'           => $this->color, 
+                     'font_style'           => $this->font_style, 
+                     'font_family'          => $this->font_family, 
+                     'font_weight'          => $this->font_weight, 
+                     'dealership_name'      => $this->dealership, 
+                     'dealership_tagline'   => $this->dealership_tagline, 
+                     'custom_image_id'      => $this->image_id, 
+                     'dealership_logo_id'   => $this->logo_id, 
+                     'user_id'              => $this->user->id, 
+                     'display_logo'         => $this->display_logo ];
         }
     }
 }
