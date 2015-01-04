@@ -303,7 +303,7 @@ EOL;
                      'dealership_tagline'   => $this->dealership_tagline, 
                      'custom_image_id'      => $this->image_id, 
                      'dealership_logo_id'   => $this->logo_id, 
-                     'user_id'              => $this->user->id, 
+                     'user_id'              => $this->user->get_id(), 
                      'display_logo'         => $this->display_logo ];
         }
     }
