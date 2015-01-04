@@ -84,9 +84,15 @@ class user_controller {
     }
 
     protected function labels($request, $verb, $args) {
-        $user = $this->wp_session['user'];
+        if (!$this->is_user($verb)) {
+            return [ success => 'false', message => 'User does not exist.' ];
+        }
         $controller = new \labelgen\label_controller($this->api, $this->wp_session);
-        return $controller->get($request, $verb, $args);    
+        return $controller->get($request, $verb, $args);
+    }
+
+    protected function is_user($name) {
+        return !is_null(\labelgen\User::get_user_id_from($verb));
     }
 
     protected function post_labels($request, $verb, $args) {
@@ -127,7 +133,6 @@ class user_controller {
         if (isset($verb)
             && array_key_exists('loginPassword', $request)) {
             // User is logging in
-            echo "User is logging in\n";
             // $this->get_user_id_from_password($this->request['loginPassword'])
 
             $user = (new \labelgen\User\Builder())

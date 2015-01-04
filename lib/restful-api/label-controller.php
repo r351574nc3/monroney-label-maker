@@ -21,8 +21,10 @@ class label_controller {
         return !is_null($this->wp_session['user']);
     }
  
-    public function get($request, $verb, $args) {
-        $user = $this->wp_session['user'];
+    public function get($request, $username, $args) {
+        $user = (new \labelgen\User\Builder())
+                    ->with_username($username)
+                    ->build();
         $table = self::$table;
 		$fields = [ 'id', 'label_color', 'font_style', 'font_weight', 'font_family', 'dealership_name', 'dealership_logo_id', 'dealership_tagline', 'custom_image_id', 'user_id', 'name', 'display_logo' ];
         $conditions = [];
@@ -34,7 +36,7 @@ class label_controller {
                 $conditions['id'] = intval($request['id']);
             }               
 
-            $results = $this->parse_get_request($table, $fields, $conditions);
+            $results = $this->api->parse_get_request($table, $fields, $conditions);
             if ($results) {
                     
                 foreach ($results as &$result) {

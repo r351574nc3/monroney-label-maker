@@ -27,7 +27,7 @@ namespace labelgen {
 
         protected static $SELECT_BY_ID_FORMAT       = "SELECT * from labelgen_users where id = %d";
         protected static $SELECT_BY_CONTENT_FORMAT  = "SELECT * from labelgen_users where name = %s AND email = %s";
-        protected static $SELECT_LU_FORMAT = "SELECT * from labelgen_user_relationships where id = %d";
+        protected static $SELECT_LU_FORMAT          = "SELECT * from labelgen_user_relationships where id = %d";
 
         public function __construct() {
             $this->table = 'labelgen_users';
