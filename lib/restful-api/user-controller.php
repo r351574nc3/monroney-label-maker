@@ -85,6 +85,8 @@ class user_controller {
 
     protected function labels($request, $verb, $args) {
         $user = $this->wp_session['user'];
+        $controller = new \labelgen\label_controller($this->api, $this->wp_session);
+        return $controller->get($request, $verb, $args);    
     }
 
     protected function post_labels($request, $verb, $args) {

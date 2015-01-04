@@ -28,7 +28,7 @@ define(
 				var pdfControls = Controls.initialize({model: label, collection: labels, user: rootUser});
 	
 				view.render();
-                if (labels.user.get('id') > 0) { // Check if user is logged in
+                if (labels.user.has('id')) { // Check if user is logged in
                     labels.fetch({ reset : true });
                     pdfControls._init_user(json);
                 }

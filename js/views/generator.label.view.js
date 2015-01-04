@@ -70,7 +70,7 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 			this.$dealershipLogo = $('#dealershipLogo');
 			this.$dealershipText = $('#dealershipText');
 
-			this.$dealershipName = $('#dealershipName');
+			this.$dealershipName = $('[name="dealershipName"]');
 			this.$dealershipTagline = $('#dealershipTagline');
 			this.$customImage = $('#customImage');
 			
@@ -270,6 +270,7 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 		
 		//text
 		renderText: function(model, value, options) {
+            console.log("Got here");
 			this.renderTextByValue(model.get_change());
 		},
 

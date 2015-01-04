@@ -17,7 +17,6 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
             }, function(){
                 $(this).children('.tooltip').css('visibility', 'none'); 
             });
-            console.log("Model " + this.model.get('id'));
         },
 
         render: function() {
@@ -58,6 +57,12 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
             this.listenTo(Backbone, "destroyImage", this.destroy_item_model);
             this.listenTo(Backbone, "destroyOption", this.destroy_item_model);
             this.listenTo(Backbone, "checkUserCredentials", this.check_user_credentials);
+
+            this.model.on('change:dealershipName', this.dealer_change);
+        },
+
+        dealer_change : function(eventName) {
+            console.log("Got dealer change");
         },
 
         load_session : function(view) {
@@ -135,8 +140,6 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
             $name = $('<input>', {type: 'text', class: 'tag-input nonmandatory', name: 'labelName'});
 
-            console.log("model " + this.model.get('id'));
-
             var id = (this.model) ? this.model.get('id') : null;
             $select = this.get_label_select('label-save-selector', id, false);  
 
@@ -179,8 +182,12 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
             return data;        
         },
 
-        on_user_save: function(data) {
-            var data = _.extend(this._gather_save_data(), {name: data.labelName});
+        on_user_save: function(input) {
+            var labelData = this._gather_save_data();
+            var tosave = _.extend(labelData, {name: input.labelName});
+            console.log("labelname " + input.labelName);
+            console.log("data name " + labelData.name);
+            console.log("input " + input);
             //console.log('save_form', data);
             var request;
             var id = $('#label-save-selector option:selected').val();
@@ -193,7 +200,7 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
             
             //console.log("on_user_save:collection.url", this.collection);
             
-            this._do_ajax(data, request, this.collection.url(), this.on_save_successful);           
+            this._do_ajax(tosave, request, this.collection.url(), this.on_save_successful);           
         },
 
         on_save_successful: function(data) {
