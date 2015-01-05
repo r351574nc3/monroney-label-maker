@@ -28,7 +28,7 @@ class label_controller {
         $table = self::$table;
 		$fields = [ 'id', 'label_color', 'font_style', 'font_weight', 'font_family', 'dealership_name', 'dealership_logo_id', 'dealership_tagline', 'custom_image_id', 'user_id', 'name', 'display_logo' ];
         $conditions = [];
-        
+
         if ($this->is_logged_in()) {
             $conditions['user_id'] = intval($user->get_id());
             
