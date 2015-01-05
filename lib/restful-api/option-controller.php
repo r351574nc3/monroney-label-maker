@@ -44,6 +44,10 @@ class option_controller {
         $location = array_pop($args);
         $user = $this->wp_session['user'];
         $table = self::$table;
+
+        if (is_null($user)) {
+			throw new \Exception('Please log in or sign up to save your form.');
+        }
         
         if (isset($request['option_name']) && isset($location)) {
             $request['option_name'] = sanitize_text_field($request['option_name']);

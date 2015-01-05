@@ -204,6 +204,7 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
                 Backbone.trigger('modelSavedAs', data.id);
             }
 
+            this.collection.fetch();
             this.model.set('id', data.id);
             this.model.set('name', data.name);
         },
@@ -219,6 +220,7 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
                 $newLabel = $('<option>', {text: 'New Label', id: 'new_selection', value: '0'});
                 $select.append($newLabel);  
             }
+            
             var labels = this.collection.models;
             //console.log("get Label Select", labels);
             
