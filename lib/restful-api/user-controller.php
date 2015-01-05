@@ -92,6 +92,7 @@ class user_controller {
     }
 
     protected function is_user($name) {
+        echo "Checking if $name is a user";
         return !is_null(\labelgen\User::get_user_id_from($verb));
     }
 
