@@ -1,50 +1,51 @@
 define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 	return Backbone.Model.extend({
-		defaults: {
-			user: null,
-			id: null,
-			name: null,
-			labelColor: '#23498a',
-			stockNo: '',
-			
-			fontStyle: 'normal',
-			fontWeight: 'normal',
-			fontFamily: 'sans-serif',
-			
-			dealershipName: '[Dealership Name]',
-			dealershipTagline: '',
-			
-			dealershipLogo: null,
-			dealershipLogoId: null,
-			customImage: null,
-			customImageId: null,	
-			
-			make: '',
-			make_id: '',
+		
+			defaults: {
+				user: null,
+				id: null,
+				name: null,
+				labelColor: '#23498a',
+				stockNo: '',
+				
+				fontStyle: 'normal',
+				fontWeight: 'normal',
+				fontFamily: 'sans-serif',
+				
+				dealershipName: window.localStorage.getItem('dealershipName') || '[Dealership Name]',
+				dealershipTagline: window.localStorage.getItem('dealershipTagline') || '',
+				
+				dealershipLogo: null,
+				dealershipLogoId: null,
+				customImage: null,
+				customImageId: null,	
+				
+				make: '',
+				make_id: '',
 
-			model: '',
-			model_id: '',
-			
-			year: new Date().getFullYear(),
-			year_id: '',
-			
-			trim: '',
-			vin: '',
-			mrsp: '',
-			
-			optionsInterior: [],
-			optionsExterior: [],
-			
-			optionIds: [],
-			discountIds: [],
-			optionPrices: {},
-			
-			discounts: [],
-			
-			displayLogo: false,
-			
-			total: 0.00,
-		},
+				model: '',
+				model_id: '',
+				
+				year: new Date().getFullYear(),
+				year_id: '',
+				
+				trim: '',
+				vin: '',
+				mrsp: '',
+				
+				optionsInterior: [],
+				optionsExterior: [],
+				
+				optionIds: [],
+				discountIds: [],
+				optionPrices: {},
+				
+				discounts: [],
+				
+				displayLogo: false,
+				
+				total: 0.00,
+			},
 				
 		initialize: function(attrs, opts) {
 			this.on("change:user", function(model, name) {
@@ -53,6 +54,8 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 					old_user.stopListening();
 				}
 			});
+			dealershipName = 'abcde';
+			dealershipTagline = 'cdef';
 		},
 
 		set_all_attributes: function() {
@@ -89,7 +92,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 		add_option: function(id, price) {
 			//console.log("label.model:Add Option", id, price);
 			this.attributes.optionIds.push(id);
-			this.attributes.optionPrices[id] = this.parse_value(price);
+			this.attributes.optionPrices[id] = this.parse_value(price);			
 			this.update_total();
 		},
 
@@ -100,7 +103,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 
 			if (this.attributes.optionPrices[id]) {
 				console.log("update_option", id, price, this.attributes.optionIds[id]);
-				this.attributes.optionPrices[id] = this.parse_value(price);		
+				this.attributes.optionPrices[id] = this.parse_value(price);						
 				this.update_total();
 			}
 		},
@@ -108,16 +111,43 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 		remove_option: function(id, price) {
 			var index = this.attributes.optionIds.indexOf(id);		
 			this.attributes.optionIds.splice(index, 1);
-			delete this.attributes.optionPrices[id];		
-			this.update_total();
+			delete this.attributes.optionPrices[id];
+			var total = this.get('total');
+			//for (var id in this.attributes.optionPrices) { 
+				//var price = this.get_option_price(id);
+				total -= price;
+				if(isNaN(total)){
+					total = 0;
+				}
+				console.log('price',price);
+				/*
+				if (price.match(/%/)) {
+					price = price.replace(/%/, '');
+					var x =  msrp - (msrp * (1 + (price/100)));  
+					total += x;							
+				} else {
+					total += price;				
+				}
+				*/
+			//}
+			//total = total+msrp;					
+			
+			this.set('total', total);
+			//this.update_total();
 		},
 		
 		update_total: function() {
 			var msrp = this.get_msrp();
-			var total = msrp;
+			//var msrp = $("#msrp").html().replace('$','').replace(',','');	
+			//var total = parseFloat(msrp);
+			// console.log("total + msrp", total, msrp);
+			//total = this.model.get_total();
+			//var total = this.get('total');
+			var total = 0;
 			for (var id in this.attributes.optionPrices) {
 				var price = this.get_option_price(id);
 				total += price;
+				console.log('price',price);
 				/*
 				if (price.match(/%/)) {
 					price = price.replace(/%/, '');
@@ -128,8 +158,8 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 				}
 				*/
 			}
-								
-			console.log("total + msrp", total, msrp);
+			total = total+msrp;					
+			
 			this.set('total', total);			
 		},
 		
@@ -191,7 +221,11 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 		},
 
 		get_msrp: function() {
-			return this.get("msrp") || 0;
+			//return this.get("msrp") || 0;
+			//var msrp = Math.round(parseFloat((this.get('msrp') || "0").replace(/[^0-9\.]/g, '')) * 100) / 100;  //gsk
+			
+			var msrp = parseFloat (this.get('msrp') || 0);
+			return msrp;
 		},
 		
 		reset_attributes: function() {

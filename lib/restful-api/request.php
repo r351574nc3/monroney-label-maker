@@ -1,7 +1,4 @@
 <?php
-/**
- * File handles requests that are converted using URL rewriting in Apache
- */
 //Load Wordpress
 define('WP_USE_THEMES', false);
 global $wp, $wp_query, $wp_the_query, $wp_rewrite, $wp_did_header;
@@ -17,11 +14,9 @@ if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
 
 try {
     $API = new labelgen_api(
-    	$_REQUEST['request'],
-        WP_Session::get_instance(),
+    	$_REQUEST['request'], 
     	$_SERVER['HTTP_ORIGIN']
-    );
-    
+    );	
 	echo $API->processAPI();
 	exit;
 } catch (Exception $e) {

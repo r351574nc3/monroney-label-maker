@@ -14,7 +14,7 @@ $default = array(
 //'<li><input class="tag-checkbox" type="checkbox" /><span>'.$option_name.'</span><div class="option-price float-right"><span class="dollar-sign">&#36;</span><input class="tag-input" type="text"/></div></li>';
 
 ?>
-
+<style>.block-list-container{height:400px;}</style>
 <div id="tag-generator">
 	<div id="generator-spinner-overlay"></div>
 	<img id="generator-page-loader" src="<?php echo plugins_url('label-maker/js/lib/modal/loader.gif'); ?>">          
@@ -48,14 +48,27 @@ $default = array(
         </div>
          <div id="login-info" class="inline-block">
             <ul class="login-links">
-				<li id="login-message">
-                	<h3 class="welcome-user-text tag-h2 invisible"></h3>
+				<li id="login-message"><!--gsk-->
+				<h3 class="welcome-user-text tag-h2"></h3>
+				<?php if( isset( $_SESSION['wp_user_id'] ) ){ ?>
+					<h3 class="welcome-user-text tag-h2"><?php echo 'Welcome '.$_SESSION['wp_user_name']; ?></h3>
+					<?php }?>
+                	
 				</li>
+				<?php if( !isset ( $_SESSION['wp_user_id'] ) ) { ?>
                	<li id="login-label" class="">
                     <button class="icon-button black-text"><span class="icon-key2"></span><span class="login-txt">Log In</span></button>        
                 </li>
                 <li id="signup-label" class="">
                     <button class="icon-button black-text"><span class="icon-pencil"></span><span class="login-txt">Sign Up</span></button>        
+                </li>
+				<?php }else{?>
+				<li id="logout-label" class="">
+                    <button class="icon-button black-text"><span class="icon-key2"></span><span class="login-txt">Log out</span></button>        
+                </li>
+				<?php } ?>
+				<li id="logout-label" class="invisible">
+                    <button class="icon-button black-text"><span class="icon-key2"></span><span class="login-txt">Log out</span></button>        
                 </li>
 
             </ul>
@@ -91,7 +104,7 @@ $default = array(
                 
                 <ul id="addendumOptions" class="no-left-padding">
                     <li id="addendumOptionsExteriorList">
-                        <input id="addendumOptionsExteriorHead" class="list-head basal-font" value="Exterior Options">
+                        <input id="addendumOptionsExteriorHead" class="list-head basal-font" value="Options">
                         <ul id="exteriorOptions" class="indent-1">
                             <?php if ($debug) { ?>
                                 <li class="option font-arial px-10" id="option_Wings">
@@ -102,7 +115,7 @@ $default = array(
                         </ul>
                     </li>
                     
-                    <li id="addendumOptionsInteriorList">
+                    <?php /* <li id="addendumOptionsInteriorList">
                         <input id="addendumOptionsInteriorHead" class="list-head" value="Interior Options">
                         <ul id="interiorOptions" class="indent-1">
                         <?php if ($debug) { ?>
@@ -112,7 +125,8 @@ $default = array(
                             </li>
                          <? } ?>		
                         </ul>
-                    </li>
+                    </li> 
+					*/?>
 
                     <!--
                     <li id="addendumDiscountsItems">
@@ -209,7 +223,7 @@ $default = array(
                     </div> -->	
                 </div>
                 <div class="tag-row divider divider-bottom row-2 full-width">
-                    <h4 class="tag-h4">Select One</h4>
+                    <h4 class="tag-h4" style="text-align:left;margin-left:30px;">Select One</h4>
                     <div class="tag-col col-1 quarter-width">
                         <div class="tag-col col-1 full-width">
                             <h5 id="text-branding-option" class="branding-option tag-h4 selected-option">Add Text</h5>
@@ -234,7 +248,7 @@ $default = array(
                     </div>
                 </div>
                 <div class="tag-row row-3">
-                   <h4 class="tag-h4">Label Bottom</h4>
+                   <h4 class="tag-h4" style="text-align:left;margin-left:30px;">Label Bottom</h4>
                     <div class="tag-gallery">
 						<form id="upload-label" class="red-text">
 							Drag or Click to Upload a .png, .jpg, or .gif
@@ -311,7 +325,7 @@ $default = array(
 
                 <div class="tag-row row-1">
                     <div class="tag-col col-1">
-                        <h4 class="tag-h4 block-label">Exterior Options</h4>
+                        <h4 class="tag-h4 block-label">Options</h4>
                      </div>
                      <div class="tag-col col-2">
                      	<div class="block-list-container">
@@ -328,7 +342,7 @@ $default = array(
 						</div>                     
                     </div>
                 </div>
-
+<?php /*
                 <div class="tag-row row-2">
                     <div class="tag-col col-1">
                         <h4 class="tag-h4 block-label">Interior Options</h4>
@@ -347,7 +361,7 @@ $default = array(
                             </div>
 						</div>
                      </div>
-                </div>
+                </div>  */ ?>
 
             </div>
             <div class="tag-frame invisible" id="tag-frame-3" name="discounts_and_deals">
@@ -395,3 +409,29 @@ $default = array(
 
     </div>
 </div>
+<script>
+jQuery(document).ready(function (){
+		if(sessionStorage.length > 0){
+				var logo = sessionStorage.getItem("logo");
+				var custom = sessionStorage.getItem("custom");
+				var name = sessionStorage.getItem("dealershipName");console.log("name",name);
+				var tag = sessionStorage.getItem("dealershipTagline");
+				if(typeof logo != "undefined"){
+					jQuery("#dealershipLogo").attr('src', logo);
+					jQuery("#dealershipName").removeClass('invisible');
+					jQuery("#dealershipLogo").addClass('invisible');
+				}
+				if(typeof custom != "undefined"){
+					jQuery("#customImage").attr('src', custom);
+				}
+				if(typeof name != "undefined"){
+					jQuery("input[name='dealershipName']").val(name);
+					jQuery("#dealershipName").text(name);					
+				}
+				if(typeof tag != "undefined"){
+					jQuery("input[name='dealershipTagline']").val(tag);
+					jQuery("#dealershipTagline").text(tag);					
+				}
+			}
+});
+</script>

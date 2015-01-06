@@ -23,16 +23,20 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
             this.scale = .7;
             this.stopListening();
             
-            this.$save = $('#save-label');
-            this.$load = $('#load-label');
+            this.$save  = $('#save-label');
+            this.$load  = $('#load-label');
             this.$inspect = $('#inspect-label');
-            this.$reset = $('#reset-label');
-            this.$print = $('#print-label');
-            this.$login = $('#login-label');
+            this.$reset  = $('#reset-label');
+            this.$print  = $('#print-label');
+            this.$login  = $('#login-label');
+            this.$logout = $('#logout-label');
             this.$signup = $('#signup-label');
             
             this.$login.off('click');
             this.$login.on('click', $.proxy(this.log_in, this));
+
+            this.$logout.off('click');
+            this.$logout.on('click', $.proxy(this.log_out, this));
 
             this.$signup.off('click');
             this.$signup.on('click', $.proxy(this.sign_up, this));
@@ -466,6 +470,31 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
         /** 
         **  Called when user clicks on log in button
         **/
+        log_in: function() {
+            $name = $('<input>', {type: 'text', class: 'tag-input', value: (DEBUG.MODE) ? "CandyDarling" : "", name: 'loginName'});
+            $passw = $('<input>', {type: 'password', class: 'tag-input', value: (DEBUG.MODE) ? "candy" : "", name: 'loginPassword'});
+            
+            var dialog = new Dialog(
+                {   fields: 
+                    [
+                        {label: 'Name', field: $name}, 
+                        {label: 'Enter a Password', field: $passw}, 
+                    ],
+                    id: 'loginForm', 
+                    submitText: 'Log In',
+                    submitId: 'loginButton'
+                },
+                
+                {
+                    callback: $.proxy(function(data) {
+                            //console.log("Data", data);
+                            this._do_ajax(data, 'POST', restful.url + '/users/' + data.loginName, this.on_successful_log_user_in);
+                        }, this),
+                    context: this
+                }
+            );
+        },
+
         log_in: function() {
             $name = $('<input>', {type: 'text', class: 'tag-input', value: (DEBUG.MODE) ? "CandyDarling" : "", name: 'loginName'});
             $passw = $('<input>', {type: 'password', class: 'tag-input', value: (DEBUG.MODE) ? "candy" : "", name: 'loginPassword'});

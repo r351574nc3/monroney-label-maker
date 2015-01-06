@@ -82,7 +82,7 @@ define(['jquery', 'underscore', 'backbone', 'util/authenticate'], function($, _,
 			_.each(camel, function(el, i, li) {
 				camels.push(el);
 			}, this);
-			// console.log('Parse(ExtendedCollection)', snake, camel, camels, options);
+			console.log('Parse(ExtendedCollection)', snake, camel, camels, options);
 			return camels;
 		},
 		

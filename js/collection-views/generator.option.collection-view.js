@@ -102,7 +102,7 @@ define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backb
 		},
 		
 		add_new_option: function() {
-
+                          
 			var new_option_name = $(this.input).val();
 			
 			if (new_option_name) {

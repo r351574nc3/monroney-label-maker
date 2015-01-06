@@ -128,9 +128,8 @@ define(['jquery', 'underscore', 'backbone', 'options', 'discounts', 'imgs', 'veh
 					}
 				);
 			}
-
-            this.set(attrs);
-
+			
+			//console.log("Parsing New User", attrs);
 			return attrs;
 		},
 		
