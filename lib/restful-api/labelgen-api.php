@@ -82,7 +82,7 @@ class labelgen_api extends restful_api {
         return isset($wp_session['user']);
     }
 
-    protected function user_relationships($item_table, $item_id) {
+    public function user_relationships($item_table, $item_id) {
         global $wpdb;
         $table = 'labelgen_user_relationships';
         $wpdb->insert($table, array( 
@@ -95,10 +95,10 @@ class labelgen_api extends restful_api {
         if ($wpdb->insert_id) {
             return;
         } else {
-            throw new Exception($this->db_values());
+            throw new \Exception($this->db_values());
         }
     }
-    
+
     protected function parse_args() {
         //echo json_encode(array('args'=>$this->args, 'endpoint'=>$this->endpoint, 'verb'=>$this->verb));
         //exit;     

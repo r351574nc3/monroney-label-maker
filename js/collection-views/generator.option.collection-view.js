@@ -133,10 +133,10 @@ define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backb
 					}
 				);
 			} else {
-                $('#generator-spinner-overlay').fadeOut();
-                $('#generator-page-loader').fadeOut();
 				Backbone.trigger("showFailMessage", "Please Enter an Option Name!");
 			}
+            $('#generator-spinner-overlay').fadeOut();
+            $('#generator-page-loader').fadeOut();
 		}
 		
 	});	
