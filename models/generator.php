@@ -297,13 +297,16 @@ class PDFAddendumGenerator {
 			$filename = $matches[3];
 			$username = $matches[2];
 			$filecat = $matches[1];
-			$filepath = "{$this->filepath}/{$username}/{$filename}";
+			//$filepath = "{$this->filepath}/{$username}/{$filename}";
+			$filepath = "{$this->filepath}/{$filecat}/{$username}/{$filename}";
 			$filetype = $finfo->file($filepath);
+			//$filetype = filetype($filepath);
 			
 			//echo json_encode(array('user'=>$username, 'cat'=>$filecat, 'name'=>$filename, 'path'=>$filepath, 'type'=>$filetype));
 			//exit;			
 			
 			$approved_type = false;
+			
 			foreach($this->allowed_image_exts as $key=>$mime_type) {
 				if ($filetype == $mime_type) {
 					$approved_type = $key;
@@ -314,9 +317,10 @@ class PDFAddendumGenerator {
 					'file' => $filepath,
 					'mime' => $approved_type
 				);
-			} else {
+			} else {//gsk
 				echo json_encode(array('file_path'=> $filepath, 'message'=> $filetype . ' is not an approved image type. Please upload a .GIF, .JPG, or, .PNG.'));
 				exit;
+				
 			}
 		} else {
 			return NULL;

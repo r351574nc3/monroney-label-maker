@@ -7,6 +7,7 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 		},
 		
 		render: function() {
+			window.localStorage.removeItem("msrp");
 			this.stopListening();
 			$('[name=toggleVisibility]').off("change");
 			$('.colorbox').off('click');
@@ -93,28 +94,37 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 			});
 
 			this.model.on('change:fontFamily change:fontWeight change:fontStyle', this.renderTextStyle, this);
-			
 			this.model.on('change:dealershipName change:dealershipTagline', this.renderText, this);
+			//this.model.on('change:dealershipName', this.renderTextName, this);
+			//this.model.on('change:dealershipTagline', this.renderTextTag, this);//gsk
+			
 			this.renderTextByValue({key: 'dealershipTagline', value: this.model.get('dealershipTagline')});
 			this.renderTextByValue({key: 'dealershipName', value: this.model.get('dealershipName')});
 
 			/* Deal with images */
 			this.model.on('change:dealershipLogo', $.proxy(function(model, value) {
 				//console.log("Dealership Logo", model, value);
-				
+				window.localStorage.setItem("logo",value);//gsk
 				this.$dealershipLogo.attr('src', value);
-				this.$dealershipText.addClass('invisible');
-				this.$dealershipLogo.removeClass('invisible');
+				if($("#text-branding-option").hasClass("selected-option")){
+					this.$dealershipText.removeClass('invisible');
+					this.$dealershipLogo.addClass('invisible');
+				}else{
+					this.$dealershipText.addClass('invisible');
+					this.$dealershipLogo.removeClass('invisible');
+				}
+				
 			}, this));
 
 			this.listenTo(this.model, 'change:customImage', $.proxy(function(model, value) {
 				//console.log('change:customImage', this.$customImage, model, value);
+				window.localStorage.setItem("custom",value);//gsk
 				this.$customImage.attr('src', value);				
 			}, this));
 			
 			this.listenTo(Backbone, 'dealershipLogoAdded', this.toggle_visibility);
-
-			$('[name="model"], [name="make"], [name="stockNo"], [name="year"], [name="vin"], [name="trim"], [name="dealershipName"], [name="dealershipTagline"]').on('blur', null, $.proxy(this.setText, null, this, this.model));
+			//$('.tag-input[type=text]').on('blur', null, $.proxy(this.setText, null, this, this.model));  //gsk
+			$('[name="dealershipName"], [name="dealershipTagline"], [name="model"], [name="make"], [name="stockNo"], [name="year"], [name="vin"], [name="trim"]').on('blur', null, $.proxy(this.setText, null, this, this.model));
 
 			this.$fontFamily.on('change', null, $.proxy(this.setAttr, null, this, this.model));
 
@@ -178,8 +188,13 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 			var old_option = this.label_options[model.get('location')][model.get('optionName')];		
 						
 			price = (price) ? parseFloat(price).toFixed(2) : 0.00;
+			//var cost = parseFloat(price);//gsk
 			model.set("price", price);
-			
+			//var msrp = $("#msrp").html().replace('$','').replace(',','');console.log('msrp+cost',parseFloat(msrp),cost);
+			//msrp = parseFloat(msrp)+cost; 
+			//msrp = msrp.toFixed(2);
+			//msrp = msrp.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')
+			//$('#msrp').html("$"+msrp);
 			if (old_option) {
 				old_option.render();
 			} else {
@@ -191,8 +206,14 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 		},
 		
 		remove_option: function(model, price) {
-			price = (price) ? parseFloat(price).toFixed(2) : 0.00;
+			price = (price) ? parseFloat(price).toFixed(2) : 0.00;			
 			//console.log("Remove Option", model, price);
+			//var cost = parseFloat(price);//gsk
+			//var msrp = $("#msrp").html().replace('$','').replace(',','');console.log('msrp+cost',parseFloat(msrp),cost);
+			//msrp = parseFloat(msrp)-cost; 
+			//msrp = msrp.toFixed(2);
+			//msrp = msrp.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')
+			//$('#msrp').html("$"+msrp);
 			
 			this.label_options[model.get('location')][model.get('optionName')].detach_from_view(this);	
 			this.model.remove_option(model.get('id'), price);
@@ -221,12 +242,32 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 		},
 
 		update_msrp: function(model, value, options) {
-			value = parseFloat(value).toFixed(2);
-			value = value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')
-			//console.log("Update MSRP", value);
-
-			$("#msrp").text("$" + value);		
-			this.$msrp.val("$" + value);		
+			/*if( window.localStorage.getItem("msrp") === null ){
+				window.localStorage.setItem("msrp",value);				
+			}*/
+			if(isNaN(value)){
+				value = 0;
+			}
+			var msrp = $("#msrp").html().replace('$','').replace(',','');
+			if( window.localStorage.getItem("msrp")!= null ){
+				var old_msrp = window.localStorage.getItem("msrp");
+				old_msrp = parseFloat(old_msrp);
+				window.localStorage.setItem("msrp",value);
+				value = parseFloat(value) + parseFloat(msrp)-old_msrp;
+			}else{
+				window.localStorage.setItem("msrp",value);
+				value = parseFloat(value) + parseFloat(msrp);
+			}
+			
+			console.log("Updated MSRP", parseFloat(value));
+			
+			//gsk
+			
+			if(!isNaN(value)){
+				value = parseFloat(value).toFixed(2);
+				value = value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')
+				$("#msrp").html("$" + value);				
+			}			
 
 		},
 				
@@ -269,16 +310,26 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 		},
 		
 		//text
-		renderText: function(model, value, options) {
+		renderText: function(model, value, options) {			
 			this.renderTextByValue(model.get_change());
 		},
-
+		/*renderTextName: function(model, value, options) {
+			window.localStorage.setItem("name",value); console.log('hhhhh',value);
+			this.renderTextByValue(model.get_change());
+		},
+		
+		renderTextTag: function(model, value, options) {//gsk 
+			window.localStorage.setItem("tag",value);
+			this.renderTextByValue(model.get_change());
+		},*/
 		renderTextByValue: function(change) {
 			//console.log("renderTextByValue", change);
 			$el = $('[name="' + change.key + '"]');
 			var tag = $el.prop("tagName");
 			//console.log("Render Text", change.key, change.value, tag);
-
+			if((typeof change.value != "undefined") && (change.value != "[Dealership Name]") && (change.value != "") ){
+				window.localStorage.setItem(change.key,change.value);console.log("changekey",change.value);
+			}
 			if (tag.match(/INPUT/i)) {
 				$el.val(change.value);
 			} else {
