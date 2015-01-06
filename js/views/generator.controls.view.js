@@ -14,9 +14,9 @@ function fireClick(node){
 
 	} else if (typeof node.onclick == 'function' ) {
 
-		node.onclick();	
+        node.onclick(); 
 
-	}
+    }
 
 }
 
@@ -24,526 +24,494 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
 
 
-	//PDFJS.workerSrc = workerSrc;
+    //PDFJS.workerSrc = workerSrc;
 
-	var INVALID_USER_NAME = 1;
+    var INVALID_USER_NAME = 1;
 
-	var NAME_ALREADY_REGISTERED = 2;
+    var NAME_ALREADY_REGISTERED = 2;
 
-	var EMAIL_ALREADY_REGISTERED = 3;
+    var EMAIL_ALREADY_REGISTERED = 3;
 
-	var INVALID_CHARACTERS_IN_NAME = 4;
+    var INVALID_CHARACTERS_IN_NAME = 4;
 
-	
+    
 
-	var PDFControls = Backbone.View.extend({		
+    var PDFControls = Backbone.View.extend({        
 
-		initialize: function(attrs, opts) {
+        initialize: function(attrs, opts) {
 
-			this.collection = attrs.collection;
+            this.collection = attrs.collection;
 
-			this.user = attrs.user;
+            this.user = attrs.user;
 
-			this.render();			
+            this.render();          
 
-			$('.tooltip').parent().hover(function(){ 
+            $('.tooltip').parent().hover(function(){ 
 
-				$(this).children('.tooltip').css('visibility', 'visible'); 
+                $(this).children('.tooltip').css('visibility', 'visible'); 
 
-			}, function(){
+            }, function(){
 
-				$(this).children('.tooltip').css('visibility', 'none'); 
+                $(this).children('.tooltip').css('visibility', 'none'); 
 
-			});
+            });
 
-			
+            
 
-			/*if(sessionStorage.length > 0){ //gsk
+            /*if(sessionStorage.length > 0){ //gsk
 
-				var selID = sessionStorage.getItem("sel_id")
+                var selID = sessionStorage.getItem("sel_id")
 
-				var model = this.collection.get(selID);
+                var model = this.collection.get(selID);
 
-				//console.log("Loaded Label", selID, model.get('selID'));
+                //console.log("Loaded Label", selID, model.get('selID'));
 
-				this.model = model;			
+                this.model = model;         
 
-				Backbone.trigger('labelSelected', this.model);
+                Backbone.trigger('labelSelected', this.model);
 
-			}*/
+            }*/
 
-		},
+        },
 
 
 
-		render: function() {				
+        render: function() {                
 
-			this.scale = .7;
+            this.scale = .7;
 
-			this.stopListening();
+            this.stopListening();
 
-			
+            
 
-			this.$save = $('#save-label');
+            this.$save = $('#save-label');
 
-			this.$load = $('#load-label');
+            this.$load = $('#load-label');
 
-			this.$inspect = $('#inspect-label');
+            this.$inspect = $('#inspect-label');
 
-			this.$reset = $('#reset-label');
+            this.$reset = $('#reset-label');
 
-			this.$print = $('#print-label');
+            this.$print = $('#print-label');
 
-			this.$login = $('#login-label');
+            this.$login = $('#login-label');
 
-			this.$signup = $('#signup-label');
+            this.$signup = $('#signup-label');
 
-			//*** Logout gsk ***
+            //*** Logout gsk ***
 
-			this.$logout = $("#logout-label");
+            this.$logout = $("#logout-label");
 
-			this.$logout.off('click');
+            this.$logout.off('click');
 
-			this.$logout.on('click', $.proxy(this.log_out, this));
+            this.$logout.on('click', $.proxy(this.log_out, this));
 
-			// \*** End Logout gsk ***
+            // \*** End Logout gsk ***
 
-			
+            
 
-			this.$login.off('click');
+            this.$login.off('click');
 
-			this.$login.on('click', $.proxy(this.log_in, this));
+            this.$login.on('click', $.proxy(this.log_in, this));
 
 
 
-			this.$signup.off('click');
+            this.$signup.off('click');
 
-			this.$signup.on('click', $.proxy(this.sign_up, this));
+            this.$signup.on('click', $.proxy(this.sign_up, this));
 
 
 
-			this.$save.off('click');
+            this.$save.off('click');
 
-			this.$save.on('click', $.proxy(this.save_form, this));
+            this.$save.on('click', $.proxy(this.save_form, this));
 
 
 
-			this.$load.off('click');
+            this.$load.off('click');
 
-			this.$load.on('click', $.proxy(this.load_form, this));
+            this.$load.on('click', $.proxy(this.load_form, this));
 
 
 
-			this.$inspect.off('click');
+            this.$inspect.off('click');
 
-			this.$inspect.on('click', $.proxy(this.inspect_form, this));
+            this.$inspect.on('click', $.proxy(this.inspect_form, this));
 
 
 
-			this.$reset.off('click');
+            this.$reset.off('click');
 
-			this.$reset.on('click', $.proxy(this.reset_form, this));
+            this.$reset.on('click', $.proxy(this.reset_form, this));
 
-			
+            
 
-			this.$print.off('click');
+            this.$print.off('click');
 
-			this.$print.on('click', $.proxy(this.print_form, this));
+            this.$print.on('click', $.proxy(this.print_form, this));
 
 
 
-			this.listenTo(Backbone, "labelSelected", this.replace_model);
+            this.listenTo(Backbone, "labelSelected", this.replace_model);
 
-			this.listenTo(Backbone, "showFailMessage", this.show_fail_message);
+            this.listenTo(Backbone, "showFailMessage", this.show_fail_message);
 
-			this.listenTo(Backbone, "destroyImage", this.destroy_item_model);
+            this.listenTo(Backbone, "destroyImage", this.destroy_item_model);
 
-			this.listenTo(Backbone, "destroyOption", this.destroy_item_model);
+            this.listenTo(Backbone, "destroyOption", this.destroy_item_model);
 
-			this.listenTo(Backbone, "checkUserCredentials", this.check_user_credentials);
+            this.listenTo(Backbone, "checkUserCredentials", this.check_user_credentials);
 
-		},
+        },
 
-		
+        
 
-		replace_model: function(model) {
+        replace_model: function(model) {
 
-			if (model) {
+            if (model) {
 
-				this.model.stopListening();
+                this.model.stopListening();
 
-				this.model = model;
+                this.model = model;
 
-				this.render();
+                this.render();
 
-			}			
+            }           
 
-		},
+        },
 
-		/**
+        /**
 
-		**		Manage User Resources
+        **      Manage User Resources
 
-		**/
+        **/
 
-		destroy_item_model: function(model, url, msg) {
+        destroy_item_model: function(model, url, msg) {
 
-			//console.log("Attempt Image Destruction", model);
+            //console.log("Attempt Image Destruction", model);
 
-			var user = this.collection.user;
+            var user = this.collection.user;
 
-			var self = this;
+            var self = this;
 
-			YesNoDialog.initialize(
+            YesNoDialog.initialize(
 
-				msg,				
+                msg,                
 
-				function() {
+                function() {
 
-					model.destroy({
+                    model.destroy({
 
-						beforeSend: function (xhr) {
+                        beforeSend: function (xhr) {
 
-							//console.log("xhr", xhr);
+                            //console.log("xhr", xhr);
 
-							xhr.setRequestHeader('Authentication', authenticate(user, url, 'DELETE'));
+                            xhr.setRequestHeader('Authentication', authenticate(user, url, 'DELETE'));
 
-						},
+                        },
 
-						
+                        
 
-						success: function(model, response) {
+                        success: function(model, response) {
 
-							//console.log(response);
+                            //console.log(response);
 
-							//response = $.parseJSON(response);
+                            //response = $.parseJSON(response);
 
-							
+                            
 
-							if (response.success) {
+                            if (response.success) {
 
-								
+                                
 
-							} else {
+                            } else {
 
-								self.show_fail_message(response.message);
+                                self.show_fail_message(response.message);
 
-							}							
+                            }                           
 
-						},
+                        },
 
-						error: function(model, response) {
+                        error: function(model, response) {
 
-							//response = $.parseJSON(response);
+                            //response = $.parseJSON(response);
 
-							self.show_fail_message('We were not able to complete your request');	
+                            self.show_fail_message('We were not able to complete your request');    
 
-							//console.log("Model Destruction Error", response); 
+                            //console.log("Model Destruction Error", response); 
 
-						}
+                        }
 
-					});		
+                    });     
 
-					Modal.close();				
+                    Modal.close();              
 
-				}, 
+                }, 
 
-				
+                
 
-				function() {
+                function() {
 
-					Modal.close();
+                    Modal.close();
 
-				}
+                }
 
-			);
+            );
 
-		},
+        },
 
 
 
-		attempt_option_destruction: function(model, url) {
+        attempt_option_destruction: function(model, url) {
 
-			//console.log("Attempt Option Destruction", model);
+            //console.log("Attempt Option Destruction", model);
 
 
 
-			var user = this.collection.user;
+            var user = this.collection.user;
 
 
 
-			YesNoDialog.initialize(
+            YesNoDialog.initialize(
 
-				"Are you sure you want to permanently remove this option?",
+                "Are you sure you want to permanently remove this option?",
 
-				
+                
 
-				function() {
+                function() {
 
-					model.destroy({
+                    model.destroy({
 
-						beforeSend: function (xhr) {
+                        beforeSend: function (xhr) {
 
-							//console.log("xhr", xhr);
+                            //console.log("xhr", xhr);
 
-							xhr.setRequestHeader('Authentication', authenticate(user, url, 'DELETE'));
+                            xhr.setRequestHeader('Authentication', authenticate(user, url, 'DELETE'));
 
-						},
+                        },
 
-						
+                        
 
-						success: function(model, response) {
+                        success: function(model, response) {
 
-							//console.log("Model Destroyted", response);	
+                            //console.log("Model Destroyted", response);    
 
-						},
+                        },
 
-						error: function(model, response) {
+                        error: function(model, response) {
 
-							//console.log("Model Descruction Error", response); 
+                            //console.log("Model Descruction Error", response); 
 
-						}
+                        }
 
-					});		
+                    });     
 
-					Modal.close();				
+                    Modal.close();              
 
-				}, 
+                }, 
 
-				
+                
 
-				function() {
+                function() {
 
-					Modal.close();
+                    Modal.close();
 
-				}
+                }
 
-			);
+            );
 
-		},		
+        },      
 
-		
+        
 
-		
+        
 
-		/**
+        /**
 
-		**		On Save Click
+        **      On Save Click
 
-		**/
+        **/
 
-		save_form: function() {
+        save_form: function() {
 
-			if (!this.validate_user()) return false;
+            if (!this.validate_user()) return false;
 
-			//console.log("Model", this.model);
+            //console.log("Model", this.model);
 
 
 
-			$name = $('<input>', {type: 'text', class: 'tag-input nonmandatory', name: 'labelName'});
+            $name = $('<input>', {type: 'text', class: 'tag-input nonmandatory', name: 'labelName'});
 
 
 
-			var id = (this.model) ? this.model.get('id') : null;
+            var id = (this.model) ? this.model.get('id') : null;
 
-			
+            
 
-			$select = this.get_label_select('label-save-selector', id, false); 	
+            $select = this.get_label_select('label-save-selector', id, false);  
 
 
 
-			var dialog = new Dialog(
+            var dialog = new Dialog(
 
-				{fields: 
+                {fields: 
 
-					[
+                    [
 
-						{label: 'Save new label:', field: $name},
+                        {label: 'Save new label:', field: $name},
 
-						{label: 'Save as label:', field: $select} 
+                        {label: 'Save as label:', field: $select} 
 
-					],
+                    ],
 
-					id: 'saveForm', 
+                    id: 'saveForm', 
 
-					submitText: 'Save',
+                    submitText: 'Save',
 
-					submitId: 'save-button'
+                    submitId: 'save-button'
 
-				},
+                },
 
-				{callback: this.on_user_save, context: this}
+                {callback: this.on_user_save, context: this}
 
-			);
+            );
 
 
 
 
 
-		},
+        },
 
-		
+        
 
-		_gather_save_data: function() {
+        _gather_save_data: function() {
 
-			
+            
 
-			var data = {
+            var data = {
 
-					//font_style: this.model.get('fontStyle'),
+                    //font_style: this.model.get('fontStyle'),
 
-					//font_weight: this.model.get('fontWeight'),
+                    //font_weight: this.model.get('fontWeight'),
 
-					label_color: this.model.get('labelColor'),
+                    label_color: this.model.get('labelColor'),
 
-					//font_family: this.model.get('fontFamily'),
+                    //font_family: this.model.get('fontFamily'),
 
-					dealership_name: this.model.get('dealershipName'),
+                    dealership_name: this.model.get('dealershipName'),
 
-					dealership_tagline: this.model.get('dealershipTagline'),
+                    dealership_tagline: this.model.get('dealershipTagline'),
 
-					//dealership_info: this.model.get('dealershipInfo'),
+                    //dealership_info: this.model.get('dealershipInfo'),
 
-					dealership_logo_id: this.model.get('dealershipLogoId'),
+                    dealership_logo_id: this.model.get('dealershipLogoId'),
 
-					custom_image_id: this.model.get('customImageId'),
+                    custom_image_id: this.model.get('customImageId'),
 
-					display_logo: this.model.get('displayLogo'),
+                    display_logo: this.model.get('displayLogo'),
 
-					option_ids: this.model.get('optionIds'),
+                    option_ids: this.model.get('optionIds'),
 
-					option_prices: this.model.get('optionPrices'),
+                    option_prices: this.model.get('optionPrices'),
 
-					//discount_ids: this.model.get('discount_ids')
+                    //discount_ids: this.model.get('discount_ids')
 
-					user_id: this.collection.user.get('id'),
+                    user_id: this.collection.user.get('id'),
 
-					id: (parseInt(this.model.get('id')) > 0) ? this.model.get('id') : null,
+                    id: (parseInt(this.model.get('id')) > 0) ? this.model.get('id') : null,
 
-					name: this.model.get('name')
+                    name: this.model.get('name')
 
-				};
+                };
 
-			return data;		
+            return data;        
 
-		},
+        },
 
 
 
-		on_user_save: function(data) {
+        on_user_save: function(data) {
 
-			var data = _.extend(this._gather_save_data(), {name: data.labelName});
+            var data = _.extend(this._gather_save_data(), {name: data.labelName});
 
-			//console.log('save_form', data);
+            //console.log('save_form', data);
 
-			var request;
+            var request;
 
-			var id = $('#label-save-selector option:selected').val();
+            var id = $('#label-save-selector option:selected').val();
 
-			
+            
 
-			if (id > 0) {
+            if (id > 0) {
 
-				request = 'PUT';	
+                request = 'PUT';    
 
-			} else {
+            } else {
 
-				request = 'POST';  //gsk
+                request = 'POST';  //gsk
 
-			}
+            }
 
-			
+            
 
-			//console.log("on_user_save:collection.url", this.collection);						
+            //console.log("on_user_save:collection.url", this.collection);                      
 
-			this._do_ajax(data, request, this.collection.url(), this.on_save_successful);			
+            this._do_ajax(data, request, this.collection.url(), this.on_save_successful);           
 
-		},
+        },
 
 
 
-		on_save_successful: function(data) {
+        on_save_successful: function(data) {
 
-			Modal.displayMessage('Form saved.', 'success-message align-center');			
+            Modal.displayMessage('Form saved.', 'success-message align-center');            
 
 
 
-			if (data.method.match(/post/i)) {
+            if (data.method.match(/post/i)) {
 
-				Backbone.trigger('modelSavedAs', data.id);
+                Backbone.trigger('modelSavedAs', data.id);
 
-			}
+            }
 
 
 
-			this.model.set('id', data.id);
+            this.model.set('id', data.id);
 
-			this.model.set('name', data.name);
+            this.model.set('name', data.name);
 
-		},
+        },
 
-		
+        
 
-		get_label_select: function(selector_id, selected_id, appendAddNew) {
+        get_label_select: function(selector_id, selected_id, appendAddNew) {
+            appendAddNew = appendAddNew || true; // Always true? Tautology?
+            selected_id = selected_id || 0;
 
-			appendAddNew = appendAddNew || true;
+            $select = $('<select>', {id: selector_id, class: 'tag-select', estyle: 'width: 250px; display: block; margin: 0 auto;'});
 
-			selected_id = selected_id || 0;
+			$newLabel = $('<option>', {text: 'New Label', id: 'new_selection', value: '0'});
 
-								
-
-			$select = $('<select>', {id: selector_id, class: 'tag-select', style: 'width: 250px; display: block; margin: 0 auto;'});			
-
-			//console.log("Loading Selector", $select);
-
-
-
-			//if (appendAddNew) {
-
-				$newLabel = $('<option>', {text: 'New Label', id: 'new_selection', value: '0'});
-
-				$select.append($newLabel);	
+			$select.append($newLabel);
 
 			//}
-
-					
-
 			var labels = this.collection.models;
-
 			var html = '<option id="new_selection" value="0">New Label</option>';
-
 			for (var l in labels) {
-
 				var name = labels[l].get('name');
-
 				var label_id = labels[l].get('id');//gsk
 
 				if(sessionStorage.getItem("sel_id") != null){
-
 					selected_id = sessionStorage.getItem("sel_id");
-
 					console.log("label_id",selected_id);
-
 				}
 
 				if (name) {
-
-					var vals = {text: name, value: label_id};					
-
+					var vals = {text: name, value: label_id};
 					if (selected_id == label_id) {
-
 						html += '<option selected value="' + label_id + '">' + name + '</option>';
-
-						
-
 						$select.append('<option selected value="' + label_id + '">' + name + '</option>');
-
-						//$select.val(label_id);
-
-						//console.log("Get Label Select", $select, selected_id, label_id);
-
 					} else {
-
 						html += '<option value="' + label_id + '">' + name + '</option>';
 
 						$select.append($('<option>', vals));
@@ -556,14 +524,12 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
 			console.log("html",html); 
 
-			if(sessionStorage.getItem("labels") == null){
-
+			if(sessionStorage.getItem("labels") == null) {
 				sessionStorage.setItem("labels",html);
-
-			}else{
+			}
+            else{
 
 				old_html = sessionStorage.getItem("labels");
-
 				var n = old_html.localeCompare(html);
 
 				if((html!='') && (n!= 0)){
@@ -1146,26 +1112,16 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
 		
 
-		/**
-
+	   /**
 		** Called when user clicks on log out button gsk 
-
 		**/
-
 		log_out: function() {
-
 			sessionStorage.removeItem("userid");
-
 			sessionStorage.removeItem("logo");
-
 			sessionStorage.removeItem("custom");
-
 			sessionStorage.removeItem("dealershipName");
-
 			sessionStorage.removeItem("dealershipTagline");
-
 			sessionStorage.removeItem("labels");
-
 			$.ajax( {url:"/wp-content/plugins/label-maker/logout.php",type:'get'} ).done(function(data){window.location.href = "/addendum-generator"});
 
 		},
