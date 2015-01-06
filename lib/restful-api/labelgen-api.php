@@ -79,7 +79,7 @@ class labelgen_api extends restful_api {
      * Determines if the current user is logged in.
      */
     protected function is_user_logged_in() {
-        return isset($wp_session['user']);
+        return isset($this->wp_session['user']);
     }
 
     public function user_relationships($item_table, $item_id) {

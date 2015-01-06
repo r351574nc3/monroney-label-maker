@@ -165,6 +165,10 @@ class user_controller {
             return $this->signup_user($request, $verb, $args);
         }
 
+        if (!$this->is_user_logged_in()) {
+            throw new Exception("You are not authorized to perform this action! Please login and try again.");
+        }
+
         $action = "post_" . array_shift($args);
 
         $retval = $this->{$action}($request, $verb, $args);
@@ -180,6 +184,10 @@ class user_controller {
     }
 
     public function put($request, $verb, $args) {
+        if (!$this->is_user_logged_in()) {
+            throw new Exception("You are not authorized to perform this action! Please login and try again.");
+        }
+
         $action = "put_" . array_shift($args);
         $retval = $this->{$action}($request, $verb, $args);
         if (!isset($retval['method'])) {
@@ -194,7 +202,28 @@ class user_controller {
     }
 
     public function delete() {
+        if (!$this->is_user_logged_in()) {
+            throw new Exception("You are not authorized to perform this action! Please login and try again.");
+        }
+        $action = "delete_" . array_shift($args);
+
+        $retval = $this->{$action}($request, $verb, $args);
+        if (!isset($retval['method'])) {
+           $retval['method'] = $this->api->get_method();
+        }
+        return $retval;
     }
 
+    protected function delete_options($request, $verb, $args) {
+        $controller = new \labelgen\option_controller($this->api, $this->wp_session);
+        return $controller->delete($request, $verb, $args);    
+    }
+
+    /**
+     * Determines if the current user is logged in.
+     */
+    protected function is_user_logged_in() {
+        return isset($this->wp_session['user']);
+    }
 }
 ?>    
