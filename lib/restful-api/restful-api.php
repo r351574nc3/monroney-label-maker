@@ -86,13 +86,13 @@ abstract class restful_api {
 		}
     }
 
-    private function _response($data, $status = 200) {
+    protected function _response($data, $status = 200) {
         header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
        	$data = (!is_array($data)) ? array($data) : $data;
 	    return json_encode($data);
     }
 
-    private function _requestStatus($code) {
+    protected function _requestStatus($code) {
         switch ($code) {
 			case (200): return 'OK';
 			case (404): return 'Not Found';
@@ -141,7 +141,7 @@ abstract class restful_api {
 		return $hash;
 	}
 
-	private function process_message($messages) {
+	protected function process_message($messages) {
 		$m = array();
 		if (!$messages) {
 			$m['message'] = 'No POST Content';
@@ -163,7 +163,7 @@ abstract class restful_api {
 		return $m;
 	}
 	
-	private function prepare_message_array($messages, $success) {
+	protected function prepare_message_array($messages, $success) {
 		$m = array('success'=>$success);
 		return array_merge($m, $this->process_message($messages), array('method'=>$this->method)); 		
 	}

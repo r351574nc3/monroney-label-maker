@@ -1,17 +1,29 @@
 <?php
+include(LABEL_MAKER_ROOT.'/models/labelgen-user.php');
+
 require_once 'restful-api.php';
-//Define Exceptions
-define('INVALID_USER_NAME', 1);
-define('NAME_ALREADY_REGISTERED', 2);
-define('EMAIL_ALREADY_REGISTERED', 3);
-define('INVALID_CHARACTERS_IN_NAME', 4);
-session_start();
+require_once 'backbone-controller.php';
+require_once 'logo-controller.php';
+require_once 'make-controller.php';
+require_once 'model-controller.php';
+require_once 'year-controller.php';
+require_once 'image-controller.php';
+require_once 'option-controller.php';
+require_once 'label-controller.php';
+require_once 'user-controller.php';
+
+// Apply namespaces
+use \labelgen;
+
 class labelgen_api extends restful_api {
 	
-	private $username;
+	protected $username;
+    protected $wp_session;
 	
-	public function __construct($request, $origin) {
-		parent::__construct($request);
+    public function __construct($request, $session, $origin) {
+        parent::__construct($request);
+
+        $this->wp_session = $session;
 		
 		if ($this->user_is_logged_in()) {			
 			$this->get_user_id_from_secret($this->request['secret'], $this->verb);			
