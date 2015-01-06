@@ -201,7 +201,7 @@ class user_controller {
         return $controller->put($request, $verb, $args);    
     }
 
-    public function delete() {
+    public function delete($request, $verb, $args) {
         if (!$this->is_user_logged_in()) {
             throw new Exception("You are not authorized to perform this action! Please login and try again.");
         }
