@@ -1174,7 +1174,7 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
         //*** javascript userid session gsk ***
             sessionStorage.setItem("userid",data.id);
         // \*** end javascript userid session ***
-            if (_.isNumber(data.id) && data.id >= 0)) {
+            if (_.isNumber(data.id) && data.id >= 0) {
                 var user = new User(data, {parse: true});
                 var labels = user.get('labels');
                 this.collection = labels;
