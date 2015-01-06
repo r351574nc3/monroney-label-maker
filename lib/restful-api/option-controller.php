@@ -65,17 +65,17 @@ class option_controller {
 
     public function delete($request, $verb, $args) {
         global $wpdb;
-        $id = intval($args[0]);
+        $id = intval(array_pop($args));
         $user = $this->wp_session['user'];
         
         if ($user->is_admin() && !current_user_can('manage_options'))
             throw new \Exception("Permission Denied");
         
         if ($id) {
-            $wpdb->query($wpdb->prepare('SELECT * FROM labelgen_options WHERE owner = %d AND id = %d', array($this->user_id, $id)));
+            $wpdb->query($wpdb->prepare('SELECT * FROM labelgen_options WHERE owner = %d AND id = %d', [ $user->get_id(), $id ]));
 
             if (!$wpdb->last_result) {
-                throw new Exception('You do not have permission to delete this option.');
+                throw new \Exception('You do not have permission to delete this option.');
             }
             json_encode("");
             $this->parse_delete_request($table, ["id"=>$id, "owner"=>$this->user_id]);
@@ -84,7 +84,7 @@ class option_controller {
             
             return array('success'=>true);
         } else {
-            throw new Exception('Unable to process request!');                
+            throw new \Exception('Unable to process request!');                
         }       
     }
 }
