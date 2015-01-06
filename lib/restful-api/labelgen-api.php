@@ -27,8 +27,7 @@ class labelgen_api extends restful_api {
 
         
         if ($this->is_user_logged_in()) {
-            $this->user = new User($this->request);
-            // $this->get_user_id_from_secret($this->request['secret'], $this->verb);
+            $this->user = $this->wp_session['user'];
         }
 
         if (isset($this->request['loginstate'])) {
