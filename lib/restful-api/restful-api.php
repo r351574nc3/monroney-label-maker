@@ -227,7 +227,7 @@ abstract class restful_api {
 		}
 	}
 
-	protected function parse_get_request($table, $fields, $conditions = array()) {
+	public function parse_get_request($table, $fields, $conditions = array()) {
 		$this->validate_fields($fields);
 		$this->validate_table($table);
 		$this->validate_conditions($conditions);
@@ -276,7 +276,7 @@ abstract class restful_api {
 		return $data;
 	}
 	 	
-	protected function parse_put_request($table, $requests, $conditions) {
+	public function parse_put_request($table, $requests, $conditions) {
 	 	$this->validate_table($table);
 		$this->validate_request_data($requests);
 		$this->validate_conditions($conditions);
@@ -358,7 +358,7 @@ abstract class restful_api {
 		)); 
 	}
 	
-	protected function parse_post_request($table, $requests, $check_duplicates = true) {
+	public function parse_post_request($table, $requests, $check_duplicates = true) {
 		$this->validate_table($table);
 		$this->validate_request_data($requests);
 
@@ -407,7 +407,7 @@ abstract class restful_api {
 		}
 	 }
 	 
-	 function parse_delete_request($table, $where) {
+	 public function parse_delete_request($table, $where) {
 		 global $wpdb;		 
 		 $result = $wpdb->delete($table, $where, $this->get_format($where, true));
 		 return $result;
