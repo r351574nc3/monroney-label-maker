@@ -4,7 +4,6 @@ define(['jquery', 'underscore', 'backbone', 'label', 'extended-collection'], fun
 		model: Label,
 			
 		initialize: function(models, options) {
-			//console.log("New Label", models, options);
 			this.user = options.user;
 			this.listenTo(Backbone, 'userLoggedIn', this.set_user_id);
 		},
@@ -13,6 +12,7 @@ define(['jquery', 'underscore', 'backbone', 'label', 'extended-collection'], fun
 			var changes = model.changedAttributes();			
 			//console.log('Clone Model', changes, model, value);
 		},
+
 		url: function() {
 			return restful.url + 'users/' + this.user.get('name') + '/labels';
 		}

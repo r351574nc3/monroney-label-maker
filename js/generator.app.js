@@ -13,28 +13,38 @@ define(
             if (typeof data !== "object") {
                 var json = $.parseJSON(data);
             }
-            
+
             if (json.success == true) {
                 rootUser = new User(json, {parse: true});
             }
             else {
                 rootUser = new User({name: "admin", id: 0}, {parse: true});
             }
-            
-            $(document).ready(function() {      
-                
+
+            $(document).ready(function() {                      
                 var label = new Label({user: rootUser, user_id: rootUser.get('id')});
-                var labels = new Labels([label], {user: rootUser});
+                var labels = new Labels([label], { user: rootUser });
+
+                var label_id = parseInt(sessionStorage.getItem('labelId'));
+                if (_.isNumber(label_id)) {
+                    _.each(rootUser.get('labels').models, function(element, index, list) {
+                        if (label_id == element.get('id')) {
+                            console.log("Returning ", element);
+                            label = element;
+                        }
+                    });
+                }
+
                 var view = LabelView.initialize({model: label, collection: labels});
                 var pdfControls = Controls.initialize({model: label, collection: labels, user: rootUser});
     
                 view.render();
-
+                
                 if (labels.user.has('id')) { // Check if user is logged in
                     labels.fetch({ reset : true });
                     pdfControls._init_user(json);
                 }
-        
+
                 var label_images_view = ImgsView.initialize(
                     {
                         collection: rootUser.get('customImages'), 
@@ -101,8 +111,11 @@ define(
                     price_input: '#exterior-price-input',
                     add_item: '#add-new-exterior-item', 
                     save_button: '#exterior-add-button', 
-                    el: '#exterior-options'
+                     el: '#exterior-options',
+                     activated : label.get('optionIds')
                 });
+
+                console.log("Using option ids ", label.get('optionIds'));
                 
                 var interior_options_view = OptionsList.initialize({
                     collection: iOptions,

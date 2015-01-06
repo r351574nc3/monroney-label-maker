@@ -4,6 +4,7 @@ namespace labelgen;
 
 require_once(LABEL_MAKER_ROOT.'/models/labelgen-user.php');
 require_once(LABEL_MAKER_ROOT.'/models/label.php');
+require_once(LABEL_MAKER_ROOT.'/models/option.php');
 
 class user_controller {
     protected $wp_session;
@@ -53,6 +54,13 @@ class user_controller {
             throw new Exception('Something went wrong. We were not able to sign you up at this time.');             
         }
     }
+
+    protected function logout($request, $verb, $args) {
+        unset($this->wp_session['user']);
+        session_unset();   // this would destroy the session variables
+        session_destroy();
+        return [ success => true ];
+    }
     
     protected function login($request, $verb, $args) {
         $user = (new \labelgen\User\Builder())
@@ -65,10 +73,16 @@ class user_controller {
 
             $retval = $user->to_array();
 
-            $retval['labelgen_labels'] = Label::query_for($user);
-            $retval['labelgen_images'] = Image::query_for($user);
-            $retval['labelgen_logos']  = Logo::query_for($user);
+            $retval['labelgen_labels']   = Label::query_for($user);
+            $retval['labelgen_images']   = Image::query_for($user);
+            $retval['labelgen_logos']    = Logo::query_for($user);
+            $retval['labelgen_options']  = [];
 
+            foreach (Option::query_for($user) as $key => $value) {
+                $retval[$key] = $value;
+                array_push($retval['labelgen_options'], $value);
+            }
+            
             $retval['message'] = 'Login successful.';
           
             return $retval;
@@ -121,32 +135,17 @@ class user_controller {
         if ($verb == 'session') {
             return $this->load_session();
         }
-        
+
+        if ($verb == 'logout') {
+            return $this->logout($request, $verb, $args);
+        }
+
         if (isset($verb) && is_array($args)) {
             $action = array_pop($args);
             
             // If the action is a method, then evaluate it. If it is not, it must be a user.
             if (method_exists($this, $action) > 0) {
                 return $this->{$action}($request, $verb, $args);
-            }
-            else {
-                $username = $verb;
-            }
-        }
-
-        if (isset($verb)
-            && array_key_exists('loginPassword', $request)) {
-            // User is logging in
-            // $this->get_user_id_from_password($this->request['loginPassword'])
-
-            $user = (new \labelgen\User\Builder())
-                    ->with_username($username)
-                    ->from_password($pw)
-                    ->build();
-            
-            if ($user->auth()) {
-                $this->wp_session['user'] = $user;
-                return $user->to_json();
             }
         }
     }
@@ -183,6 +182,16 @@ class user_controller {
         return $controller->post($request, $verb, $args);    
     }
 
+    protected function post_images($request, $verb, $args) {
+        $controller = new \labelgen\image_controller($this->api, $this->wp_session);
+        return $controller->post($request, $verb, $args);    
+    }
+
+    protected function post_logos($request, $verb, $args) {
+        $controller = new \labelgen\logo_controller($this->api, $this->wp_session);
+        return $controller->post($request, $verb, $args);    
+    }
+
     public function put($request, $verb, $args) {
         if (!$this->is_user_logged_in()) {
             throw new Exception("You are not authorized to perform this action! Please login and try again.");
@@ -216,6 +225,16 @@ class user_controller {
 
     protected function delete_options($request, $verb, $args) {
         $controller = new \labelgen\option_controller($this->api, $this->wp_session);
+        return $controller->delete($request, $verb, $args);    
+    }
+
+    protected function delete_images($request, $verb, $args) {
+        $controller = new \labelgen\image_controller($this->api, $this->wp_session);
+        return $controller->delete($request, $verb, $args);    
+    }
+
+    protected function delete_logos($request, $verb, $args) {
+        $controller = new \labelgen\logo_controller($this->api, $this->wp_session);
         return $controller->delete($request, $verb, $args);    
     }
 

@@ -17,6 +17,7 @@ namespace labelgen {
         protected $name;
         protected $logo_id;
         protected $display_logo;
+        protected $option_ids;
      
         protected static $table = 'labelgen_labels';
         protected static $UPDATE_LABELS_FORMAT = <<<EOL
@@ -220,10 +221,36 @@ EOL;
                         unset($ut->table_name);
                         unset($ut->item_id);
                         unset($ut->time);
+                        $ut->option_ids = self::get_label_options($ut->id);
                     }
                 }        
             }
      
+            return $retval;
+        }
+
+        protected function get_label_options($label_id) {
+            global $wpdb;
+            $retval = [];
+            $wpdb->query(
+                $wpdb->prepare(
+                    "select id from labelgen_options where id in (select option_id from labelgen_option_relationships where label_id = %d)",
+                    intval($label_id)
+                )
+            );
+            
+           $num_results = $wpdb->last_result;
+                
+            if ($num_results) {
+                $results = $wpdb->last_result;
+            
+                if (is_array($results)) {
+                    foreach($results as &$ut) {
+                        array_push($retval, $ut->id);
+                    }
+                }        
+            }
+
             return $retval;
         }
           

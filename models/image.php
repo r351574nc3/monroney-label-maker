@@ -15,6 +15,10 @@ namespace labelgen {
         }
      
         public static function query_for($user) {
+            return is_null($user) ? self::get_all(0) : self::get_all($user->get_id());
+        }
+
+        public static function query_by_id($user) {
             global $wpdb;
             $retval = [];
             $table = self::$table;

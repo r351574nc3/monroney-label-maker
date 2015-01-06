@@ -23,6 +23,7 @@ define(['jquery', 'underscore', 'backbone', 'options', 'discounts', 'imgs', 'veh
 		
 		parse: function(data) {
 			var attrs = {};
+            
 			if (data.id) {
 				attrs.id = data.id;
 			}
@@ -58,7 +59,7 @@ define(['jquery', 'underscore', 'backbone', 'options', 'discounts', 'imgs', 'veh
 					user: this
 				}
 			);
-			
+
 			attrs.labels = this.parse_user_collections(
 				Labels, 
 				data.labelgen_labels, 
@@ -67,7 +68,7 @@ define(['jquery', 'underscore', 'backbone', 'options', 'discounts', 'imgs', 'veh
 				}
 			);
 			attrs.labels.push(new Label({id: 0}));
-			
+
 			attrs.makes = this.parse_user_collections(
 				VehicleType, 
 				data.labelgen_makes, 
@@ -128,16 +129,16 @@ define(['jquery', 'underscore', 'backbone', 'options', 'discounts', 'imgs', 'veh
 					}
 				);
 			}
-			
-			//console.log("Parsing New User", attrs);
+
 			return attrs;
 		},
 		
 		parse_user_collections: function(Collection, data, options) {
 			options = options || {};
+            
 			var collection = new Collection([], options);
-			//console.log(collection.model);
-			collection.add(data, {parse: true});
+            collection.add(data, { parse : true });
+
 			return collection;
 		},
 		
@@ -146,7 +147,6 @@ define(['jquery', 'underscore', 'backbone', 'options', 'discounts', 'imgs', 'veh
 			var name = this.get('name');
 			var secret = this.get('secret');
 	
-			//console.log('send user id', id);
 			if (id > 0) {
 				Backbone.trigger('returnUserId', id, name, secret);
 			} else {

@@ -132,10 +132,9 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 			this.$colorbox.on('click', null, {view: this}, this.setLabelColor);		
 			$('[type=fontStyle], [name=fontWeight]').on('change', null, $.proxy(this.setCheckboxAttr, null, this, this.model));
 			
-			Backbone.on("labelSelected", this.replace_model, this);
-			
 			this.model.on("change:id", this.collection.clone_model, this.collection);
-			
+
+            this.listenTo(Backbone, "labelSelected", this.replace_model);
 			this.listenTo(Backbone, "add_option", this.add_option);
 			this.listenTo(Backbone, "remove_option", this.remove_option);
 			this.listenTo(Backbone, "optionUpdated", $.proxy(this.model.update_option, this.model));
@@ -157,26 +156,23 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 		
 		set_field: function(model, options) {
 			_.each(model.changed, function(el, i, list) {
-				//console.log('LabelView:setField', el, i);
+				console.log('LabelView:setField', el, i);
 				if (i != "msrp") 
 					$('#' + i).text(el);
 			}, this);
 		},
 
 		replace_model: function(model) {
-			//console.log('Replace Model', model.get('id'));
 			if (this.model.get('id') != model.get('id')) {
 				this.model.stopListening();
-				this.model = model;			
+				this.model = model;
 				this.render();
 			}
 		},
 
 		reset_options: function() {
-			//console.log("Label Options", this.label_options);
 			for(var i in this.label_options) {
 				for (var j in this.label_options[i]) {
-					//console.log("Resetting Options", this.label_options[i][j]); 
 					this.label_options[i][j].detach_from_view();					
 				}
 			}
@@ -313,30 +309,16 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 		renderText: function(model, value, options) {			
 			this.renderTextByValue(model.get_change());
 		},
-		/*renderTextName: function(model, value, options) {
-			window.localStorage.setItem("name",value); console.log('hhhhh',value);
-			this.renderTextByValue(model.get_change());
-		},
-		
-		renderTextTag: function(model, value, options) {//gsk 
-			window.localStorage.setItem("tag",value);
-			this.renderTextByValue(model.get_change());
-		},*/
 		renderTextByValue: function(change) {
-			//console.log("renderTextByValue", change);
 			$el = $('[name="' + change.key + '"]');
 			var tag = $el.prop("tagName");
-			//console.log("Render Text", change.key, change.value, tag);
-			if((typeof change.value != "undefined") && (change.value != "[Dealership Name]") && (change.value != "") ){
-				window.localStorage.setItem(change.key,change.value);console.log("changekey",change.value);
-			}
+
 			if (tag.match(/INPUT/i)) {
 				$el.val(change.value);
 			} else {
 				$el.text(change.value);
 			}
 			$('#' + change.key).text(change.value);
-
 		},
 		
 		setText: function(view, model) {

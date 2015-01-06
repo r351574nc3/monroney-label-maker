@@ -399,29 +399,3 @@ $default = array(
 
     </div>
 </div>
-<script>
-jQuery(document).ready(function (){
-		if(sessionStorage.length > 0){
-				var logo = sessionStorage.getItem("logo");
-				var custom = sessionStorage.getItem("custom");
-				var name = sessionStorage.getItem("dealershipName");console.log("name",name);
-				var tag = sessionStorage.getItem("dealershipTagline");
-				if(typeof logo != "undefined"){
-					jQuery("#dealershipLogo").attr('src', logo);
-					jQuery("#dealershipName").removeClass('invisible');
-					jQuery("#dealershipLogo").addClass('invisible');
-				}
-				if(typeof custom != "undefined"){
-					jQuery("#customImage").attr('src', custom);
-				}
-				if(typeof name != "undefined"){
-					jQuery("input[name='dealershipName']").val(name);
-					jQuery("#dealershipName").text(name);					
-				}
-				if(typeof tag != "undefined"){
-					jQuery("input[name='dealershipTagline']").val(tag);
-					jQuery("#dealershipTagline").text(tag);					
-				}
-			}
-});
-</script>

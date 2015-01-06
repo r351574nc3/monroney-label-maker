@@ -1,6 +1,8 @@
 define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backbone, OptionsListItem) {
 
     var OptionsList = Backbone.View.extend({
+        activated: [],
+        
         initialize: function(attrs, opts) {
             //console.log("New Options List", this.collection.userId);
             this.collection = attrs.collection;
@@ -10,6 +12,7 @@ define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backb
             this.input = attrs.input;
             this.price_input = attrs.price_input;
             this.list_items = {};
+            this.activated = _.isArray(attrs.activated) ? attrs.activated : [];
             this.render();
         },
         
@@ -35,6 +38,8 @@ define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backb
     
             this.listenTo(Backbone, this.collection.location + "OptionsAdded", this.replace_collection);
             //this.listenTo(Backbone, 'requestOptions', this.fetch_options);
+
+            this.listenTo(Backbone, 'modelReloaded', this.update_checked);
     
             $(this.add_item).off('click');
             $(this.add_item).on('click', $.proxy(this.show_input, this));
@@ -43,6 +48,30 @@ define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backb
             $(this.save_button).on('click', $.proxy(this.add_new_option, this));
             
             this.render_all_items();
+            console.log("Updating checked with ", this.activated);
+            this.update_checked(this.activated);
+        },
+
+        update_checked: function(activated) {
+            this.reset_list_items();
+
+            for (var option_idx in activated) {
+                var option_id = activated[option_idx];
+
+                var an_option = this.get_option_by_id(option_id);
+                if (!_.isNull(an_option)) {
+                    an_option.$checkbox.prop("checked", true);
+                }
+            }
+        },
+
+        get_option_by_id: function(id) {
+            for (var list_item_idx in this.list_items) {
+                if (id == this.list_items[list_item_idx].model.get('id')) {
+                    return this.list_items[list_item_idx];
+                }
+            }
+            return null;
         },
         
         reset_list_items: function(user) {
@@ -54,7 +83,8 @@ define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backb
 
         render_all_items: function() {
             for (i in this.collection.models) {
-                this.render_list_item(this.collection.models[i], this.collection, {activated: false});
+                var an_option = this.collection.models[i];
+                this.render_list_item(an_option, this.collection, { activated: _.contains(this.activated, an_option.get('i')) ? true : false });
             }
         },
         

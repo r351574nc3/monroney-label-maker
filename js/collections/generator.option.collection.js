@@ -22,7 +22,6 @@ define(['jquery', 'underscore', 'backbone', 'option', 'extended-collection'], fu
 		
 		parse: function(attrs, opts) {
 			attrs = ExtendedCollection.prototype.parse.call(this, attrs, opts);						
-			console.log("ExtendedOptionCollection:parse", attrs);
 			for (var p in attrs) {
 				attrs[p].price = this.parse_value(attrs[p].price);
 			}

@@ -2,7 +2,6 @@ define(['jquery', 'underscore', 'backbone', 'util/authenticate'], function($, _,
 	return Backbone.Collection.extend({
 		set_user_id: function(user) {
 			this.user = user;
-			//console.log("Current User", this.user.get('name') + "(" + this.user.get('id') + ")");
 		},
 		
 		set_listeners: function() {
@@ -23,9 +22,6 @@ define(['jquery', 'underscore', 'backbone', 'util/authenticate'], function($, _,
 			}
 			var new_model = new this.model(attributes, options);
 
-			//console.log("New Model:attributes", attributes);
-			//console.log("New Model:options", options);			
-			//console.log("New Model", new_model);
  			var new_options = {};
 			new_options['data'] = {};
 				
@@ -48,13 +44,14 @@ define(['jquery', 'underscore', 'backbone', 'util/authenticate'], function($, _,
 				}
 	
 				if (data.success == true) {
-					console.log('Success', data);
 					new_model.set('id', data.id);
 
 					this.add(new_model);
-				} else if(data.message == "Already Added") {
+				}
+                else if(data.message == "Already Added") {
 					console.log("Already Added", json_response);
-				} else {
+				}
+                else {
 					console.log("Unsuccessful", data);
 				}
 			}, this);
@@ -75,31 +72,27 @@ define(['jquery', 'underscore', 'backbone', 'util/authenticate'], function($, _,
 		},
 		
 		parse: function(snake, options) {
-			
 			var camel = this.snakeToCamelCase(snake);
-			
+
 			var camels = [];
 			_.each(camel, function(el, i, li) {
 				camels.push(el);
 			}, this);
-			console.log('Parse(ExtendedCollection)', snake, camel, camels, options);
+
 			return camels;
 		},
 		
 		
 		camelToSnakeCase: function (camels) {
     		var snakes = []
-			//console.log('SNAKES', snakes);
 			for (var i in camels) {
 				snakes.push(this._recursiveCamels(camels[i]));
 			}
-			//console.log('SnakeCamel', snakes);
 			return snakes;
 		},
 		
 		_recursiveCamels: function(camels, isValue) {
 			if (typeof camels == 'string') {
-				//console.log('SnakeCamel:string', camels, isValue);
 				isValue = isValue || false;
 				//Check if function is returning a url or file
 				if (camels.match(/.*\.[a-zA-Z0-9]{3,4}$/)) {
@@ -111,38 +104,32 @@ define(['jquery', 'underscore', 'backbone', 'util/authenticate'], function($, _,
 				return camels.replace(/([A-Z])/, function(match, horse) {
 					return '_' + horse.toLowerCase();
 				});
-			} else if (typeof camels == 'object') {
+			}
+            else if (typeof camels == 'object') {
 				snake = {};
 				for (var key in camels) {
 					if (camels[key] != null) {
-						//console.log('SnakeCamel:object', key, camels[key]);
 						snake[this._recursiveCamels(key)] = this._recursiveCamels(camels[key], true);
 					}
 				}
 				return snake;				
 			} else if (typeof camels == 'number') {
-				//console.log('SnakeCamel:number', camels);
-
 				return camels;
-			} else {
-				//return null;
-				//console.log('SnakeCamel:undefined', camels);
 			}
 		},
 		
 		snakeToCamelCase: function (snakes) {
     		var camels = []
-			//console.log('SNAKES', snakes);
 			for (var i in snakes) {
-				camels.push(this._recursiveSnakes(snakes[i]));
+                camel = this._recursiveSnakes(snakes[i]);
+				camels.push(camel);
 			}
 			return camels;
 		},
-		
+	
 		_recursiveSnakes: function(snakes, isValue) {
-			if (typeof snakes == 'string') {
+			if (_.isString(snakes)) {
 				isValue = isValue || false;
-				//console.log('SnakeCamel:string', snakes);
 				
 				if (snakes.match(/.*\.[a-zA-Z0-9]{3,4}$/)) {
 					return snakes;				
@@ -152,20 +139,30 @@ define(['jquery', 'underscore', 'backbone', 'util/authenticate'], function($, _,
 				return snakes.toLowerCase().replace(/_(.)/g, function(match, horse) {
 					return horse.toUpperCase();
 				});
-			} else if (typeof snakes == 'object') {
-				camel = {};
+			}
+            else if (_.isNumber(snakes)) {
+				return snakes;
+            }
+            else if (_.isArray(snakes)) {
+                var arr = [];
+                for (var key in snakes) {
+                    var arrValue = this._recursiveSnakes(snakes[key], true);
+    				arr[key] = arrValue;
+                }
+                return arr;
+            }
+            else if (_.isObject(snakes)) {
+				var obj = {};
 				for (var key in snakes) {
 					if (snakes[key] != null) {
-						//console.log('SnakeCamel:object', key, snakes[key]);
-						camel[this._recursiveSnakes(key)] = this._recursiveSnakes(snakes[key], true);
+                        var objKey   = this._recursiveSnakes(key);
+                        var objValue = this._recursiveSnakes(snakes[key], true);
+						obj[objKey] = objValue;
 					}
 				}
-				return camel;				
-			} else if (typeof snakes == 'number') {
-				//console.log('SnakeCamel:number', snakes);
-
-				return snakes;
-			} else {
+				return obj;				
+			}
+            else {
 				//return null;
 				//console.log('SnakeCamel:undefined', snakes);
 			}

@@ -1,6 +1,5 @@
 define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 	return Backbone.Model.extend({
-		
 			defaults: {
 				user: null,
 				id: null,
@@ -12,8 +11,8 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 				fontWeight: 'normal',
 				fontFamily: 'sans-serif',
 				
-				dealershipName: window.localStorage.getItem('dealershipName') || '[Dealership Name]',
-				dealershipTagline: window.localStorage.getItem('dealershipTagline') || '',
+				dealershipName: '[Dealership Name]',
+				dealershipTagline: '',
 				
 				dealershipLogo: null,
 				dealershipLogoId: null,
@@ -46,7 +45,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 				
 				total: 0.00,
 			},
-				
+
 		initialize: function(attrs, opts) {
 			this.on("change:user", function(model, name) {
 				var old_user = model.previous("user");
@@ -54,8 +53,6 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 					old_user.stopListening();
 				}
 			});
-			dealershipName = 'abcde';
-			dealershipTagline = 'cdef';
 		},
 
 		set_all_attributes: function() {
@@ -119,7 +116,6 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 				if(isNaN(total)){
 					total = 0;
 				}
-				console.log('price',price);
 				/*
 				if (price.match(/%/)) {
 					price = price.replace(/%/, '');
@@ -147,7 +143,6 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 			for (var id in this.attributes.optionPrices) {
 				var price = this.get_option_price(id);
 				total += price;
-				console.log('price',price);
 				/*
 				if (price.match(/%/)) {
 					price = price.replace(/%/, '');

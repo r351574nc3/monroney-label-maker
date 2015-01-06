@@ -66,7 +66,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 		
 		set_checked: function() {
 			var checked = this.$checkbox.prop('checked');
-			//console.log("Setting Checked", checked);
+			console.log("Setting Checked", checked);
 	
 			if (checked) {
 				Backbone.trigger('add_option', this.model, this.$price_input.val());	

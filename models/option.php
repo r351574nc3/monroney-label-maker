@@ -15,6 +15,10 @@ class Option {
     public function __construct() {
     }
 
+    public static function query_for($user) {
+        return is_null($user) ? self::get_all(0) : self::get_all($user->get_id());
+    }
+
     public static function get_all($id) {
         global $wpdb;
         $retval = [];

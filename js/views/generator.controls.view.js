@@ -55,29 +55,12 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
                 $(this).children('.tooltip').css('visibility', 'none'); 
 
             });
-
-            
-
-            /*if(sessionStorage.length > 0){ //gsk
-
-                var selID = sessionStorage.getItem("sel_id")
-
-                var model = this.collection.get(selID);
-
-                //console.log("Loaded Label", selID, model.get('selID'));
-
-                this.model = model;         
-
-                Backbone.trigger('labelSelected', this.model);
-
-            }*/
-
+            this.collection.fetch();
         },
 
 
 
-        render: function() {                
-
+        render: function() {
             this.scale = .7;
 
             this.stopListening();
@@ -150,46 +133,26 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
             this.$print.on('click', $.proxy(this.print_form, this));
 
-
-
             this.listenTo(Backbone, "labelSelected", this.replace_model);
-
             this.listenTo(Backbone, "showFailMessage", this.show_fail_message);
-
             this.listenTo(Backbone, "destroyImage", this.destroy_item_model);
-
             this.listenTo(Backbone, "destroyOption", this.destroy_item_model);
-
             this.listenTo(Backbone, "checkUserCredentials", this.check_user_credentials);
 
         },
 
-        
-
         replace_model: function(model) {
-
             if (model) {
-
                 this.model.stopListening();
-
                 this.model = model;
-
                 this.render();
-
-            }           
-
+            }
         },
 
         /**
-
         **      Manage User Resources
-
         **/
-
         destroy_item_model: function(model, url, msg) {
-
-            //console.log("Attempt Image Destruction", model);
-
             var user = this.collection.user;
 
             var self = this;
@@ -327,101 +290,51 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
         
 
         /**
-
         **      On Save Click
-
         **/
-
         save_form: function() {
-
             if (!this.validate_user()) return false;
-
-            //console.log("Model", this.model);
-
-
 
             $name = $('<input>', {type: 'text', class: 'tag-input nonmandatory', name: 'labelName'});
 
-
-
             var id = (this.model) ? this.model.get('id') : null;
-
-            
-
             $select = this.get_label_select('label-save-selector', id, false);  
 
-
-
             var dialog = new Dialog(
-
                 {fields: 
-
                     [
-
                         {label: 'Save new label:', field: $name},
-
                         {label: 'Save as label:', field: $select} 
 
                     ],
-
                     id: 'saveForm', 
-
                     submitText: 'Save',
-
                     submitId: 'save-button'
-
                 },
 
                 {callback: this.on_user_save, context: this}
-
             );
-
-
-
-
-
         },
-
-        
 
         _gather_save_data: function() {
 
-            
-
             var data = {
-
                     //font_style: this.model.get('fontStyle'),
-
                     //font_weight: this.model.get('fontWeight'),
-
                     label_color: this.model.get('labelColor'),
-
                     //font_family: this.model.get('fontFamily'),
-
                     dealership_name: this.model.get('dealershipName'),
-
                     dealership_tagline: this.model.get('dealershipTagline'),
-
                     //dealership_info: this.model.get('dealershipInfo'),
-
                     dealership_logo_id: this.model.get('dealershipLogoId'),
-
                     custom_image_id: this.model.get('customImageId'),
-
                     display_logo: this.model.get('displayLogo'),
-
                     option_ids: this.model.get('optionIds'),
-
                     option_prices: this.model.get('optionPrices'),
-
                     //discount_ids: this.model.get('discount_ids')
-
                     user_id: this.collection.user.get('id'),
-
                     id: (parseInt(this.model.get('id')) > 0) ? this.model.get('id') : null,
-
                     name: this.model.get('name')
-
                 };
 
             return data;        
@@ -430,59 +343,35 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
 
 
-        on_user_save: function(data) {
-
-            var data = _.extend(this._gather_save_data(), {name: data.labelName});
-
-            //console.log('save_form', data);
-
+        on_user_save: function(input) {
+            var labelData = this._gather_save_data();
             var request;
-
             var id = $('#label-save-selector option:selected').val();
-
+            var name = input.labelName ? input.labelName : $('#label-save-selector option:selected').text();
             
-
+            var tosave = _.extend(labelData, { name: name, id: id });
+            
             if (id > 0) {
-
                 request = 'PUT';    
-
             } else {
-
-                request = 'POST';  //gsk
-
+                request = 'POST';
             }
-
             
-
-            //console.log("on_user_save:collection.url", this.collection);                      
-
-            this._do_ajax(data, request, this.collection.url(), this.on_save_successful);           
-
+            this._do_ajax(tosave, request, this.collection.url(), this.on_save_successful);           
         },
-
-
 
         on_save_successful: function(data) {
-
             Modal.displayMessage('Form saved.', 'success-message align-center');            
 
-
-
             if (data.method.match(/post/i)) {
-
                 Backbone.trigger('modelSavedAs', data.id);
-
             }
 
-
+            this.collection.fetch();
 
             this.model.set('id', data.id);
-
             this.model.set('name', data.name);
-
         },
-
-        
 
         get_label_select: function(selector_id, selected_id, appendAddNew) {
             appendAddNew = appendAddNew || true; // Always true? Tautology?
@@ -494,17 +383,11 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
             $select.append($newLabel);
 
-            //}
             var labels = this.collection.models;
             var html = '<option id="new_selection" value="0">New Label</option>';
             for (var l in labels) {
                 var name = labels[l].get('name');
                 var label_id = labels[l].get('id');//gsk
-
-                if(sessionStorage.getItem("sel_id") != null){
-                    selected_id = sessionStorage.getItem("sel_id");
-                    console.log("label_id",selected_id);
-                }
 
                 if (name) {
                     var vals = {text: name, value: label_id};
@@ -522,34 +405,6 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
             }
 
-            console.log("html",html); 
-
-            if(sessionStorage.getItem("labels") == null) {
-                sessionStorage.setItem("labels",html);
-            }
-            else{
-
-                old_html = sessionStorage.getItem("labels");
-                var n = old_html.localeCompare(html);
-
-                if((html!='') && (n!= 0)){
-
-                    old_html = html;
-
-                    sessionStorage.setItem("labels",old_html);
-
-                }
-
-                $select.html(old_html); 
-
-            }
-
-            $('#' + selector_id).on('change', function() {
-
-                //console.log("Selector Changed", $(this).children(':selected'));
-
-            });
-
             return $select;         
 
         },
@@ -563,153 +418,79 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
         **/     
 
         load_form: function() {
-
             if (!this.validate_user()) return false;
-
-            
 
             var select_id = 'label-load-selector';
 
-            
-
             $select = this.get_label_select(select_id);
-
             var dialog = new Dialog({
-
                 fields: [{label: 'Please Select a Form to Load', field: $select}], 
-
                 id: 'loadForm', 
-
                 class: 'dialogForm',
-
                 submitText: 'Load',
-
                 submitClass: 'tag-button',
-
                 submitId: 'load-button'
-
             },
-
                 {callback: $.proxy(this.on_label_load, this, select_id), context: this}
-
             );
-
         },
 
-        
-
         on_label_load: function(select_id) {
-
-            /*
-
-            if(sessionStorage.length > 0){
-
-                select_id = JSON.parse( sessionStorage.getItem("sel_id") );console.log('selectID',select_id);
-
-            }*/
-
-            
-
             if (typeof select_id == 'object') {
-
                 $select = select_id;
-
-            } else {
-
-                $select = $('#' + select_id);
-
             }
-
-            //console.log("Select", $select);           
+            else {
+                $select = $('#' + select_id);
+            }
 
             $selected = $select.children(':selected');
 
             var name = $selected.text() || ""; 
-
             var id = $selected.val() || 0;
-
-            sessionStorage.setItem("sel_id",id);
-
-            //console.log('on_label_load', id);
-
-            
 
             Modal.close();
 
             var model = this.collection.get(id);
-
-            //console.log("Loaded Label", id, model.get('id'));
-
-            this.model = model;         
-
-            Backbone.trigger('labelSelected', this.model);
-
+            
+            sessionStorage.setItem('labelId', model.get('id'));
+            Backbone.trigger('modelReloaded', model.get('optionIds'));
+            Backbone.trigger('labelSelected', model);
         },
-
-        
 
         reset_form: function() {
-
             $('input.tag-input').val('');
-
             $("#msrp").html("$0.00");
-
             Backbone.trigger('requestReset');
-
         },
 
-        
-
         _gather_data: function() {
-
             var tree = Array();
-
             tree.push(this.get_sizing($('#tag-preview-window')));
 
             var data = {
-
                 scale: this.scale,
-
                 root_element: JSON.stringify(this.get_sizing($('#tag-preview-window'))),
-
                 elements: JSON.stringify(this.get_elements($('#tag-preview-window'), tree)),
-
             };
 
-            
-
             return data;
-
         },
 
-        
-
         get_elements: function($root, tree) {   
-
             var controls = this;                    
 
             $root.children().each(function() {
-
                 if ($(this).is(":visible")) {
-
                     var branch = controls.get_sizing($(this));
-
                     tree.push(branch);
-
                     controls.get_elements($(this), tree);               
-
                 }
-
             });
 
             return tree;
-
         },
 
-        
-
-        
-
+       
         get_sizing: function($thing) {
 
         return {    width: $thing.css('width'), 
@@ -1116,14 +897,16 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
         ** Called when user clicks on log out button gsk 
         **/
         log_out: function() {
+            $('#generator-spinner-overlay').fadeOut();
+            $('#generator-page-loader').fadeOut();
+            sessionStorage.removeItem('labelId');
             sessionStorage.removeItem("userid");
             sessionStorage.removeItem("logo");
             sessionStorage.removeItem("custom");
             sessionStorage.removeItem("dealershipName");
             sessionStorage.removeItem("dealershipTagline");
             sessionStorage.removeItem("labels");
-            $.ajax( {url:"/wp-content/plugins/label-maker/logout.php",type:'get'} ).done(function(data){window.location.href = "/addendum-generator"});
-
+            $.ajax( {url:"api/users/logout", type:'get'} ).done(function(data){ window.location.reload(); });
         },
 
         on_successful_log_user_in: function(data) {
@@ -1151,11 +934,6 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
             $options = [];          
 
             $ok.one('click', $.proxy(this.on_label_load, this, $select));
-
-            
-
-            //window.location.href = "http://monroneyplus.com/addendum-generator";//gsk
-
         },
 
         
@@ -1171,9 +949,6 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
 
         _init_user: function(data) {
-        //*** javascript userid session gsk ***
-            sessionStorage.setItem("userid",data.id);
-        // \*** end javascript userid session ***
             if (_.isNumber(data.id) && data.id >= 0) {
                 var user = new User(data, {parse: true});
                 var labels = user.get('labels');
@@ -1187,46 +962,17 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
         
 
         validate_user: function() {
-
-            //console.log('Validate User', this);
-
-            if(sessionStorage.length > 0){ 
-
-                var user_id = parseInt( sessionStorage.getItem("userid") );
-
-                if(user_id > 0){
-
-                    return true;
-
-                }
-
-            }
-
-            //console.log(this.collection.user.get('id'));
-
             if (this.collection.user.get('id') > 0) {
-
                 return true;
-
             } else {
-
                 this.show_fail_message('You must be logged in to perform this action!');
-
                 return false;
-
             }
-
         },
 
-
-
         /** 
-
         **  Maniupulate the visibility of login links at the top of the form
-
         **/     
-
-        
 
         hide_login_links: function() {
 

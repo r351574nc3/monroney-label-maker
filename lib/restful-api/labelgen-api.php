@@ -3,7 +3,6 @@ include(LABEL_MAKER_ROOT.'/models/labelgen-user.php');
 
 require_once 'restful-api.php';
 require_once 'backbone-controller.php';
-require_once 'logo-controller.php';
 require_once 'make-controller.php';
 require_once 'model-controller.php';
 require_once 'year-controller.php';
@@ -38,17 +37,16 @@ class labelgen_api extends restful_api {
         }
         
         if ($_FILES) {
-            switch($this->endpoint) {
-                case('images'): 
-                    $this->file_dir = 'images'; 
-                    break;
-                case('logos'): 
-                    $this->file_dir = 'logos'; 
-                    break;                      
-                default: 
-                    throw new Exception('Are you sure you want to do that?');
+            if (in_array('images', $this->args)) {
+                $this->file_dir = 'images'; 
             }
-
+            else if(in_array('logos', $this->args)) {
+                $this->file_dir = 'logos';
+            }
+            else {
+	            throw new Exception('Are you sure you want to do that?');
+			}
+            
             $this->pathname = WP_CONTENT_DIR.'/uploads/label-maker/user_data/'.$this->file_dir.'/';
             $this->baseurl = content_url('uploads/label-maker/user_data/'.$this->file_dir.'/');
             $this->allowed_exts = array("image"=>array("gif", "jpeg", "jpg", "pjpeg", "x-png", "bmp", "tiff", "png"));

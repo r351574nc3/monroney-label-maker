@@ -41,7 +41,7 @@ class label_controller {
                     
                 foreach ($results as &$result) {
                     if (array_key_exists('id', $result)) {                
-                        global $wpdb;                
+                        global $wpdb;
                         $wpdb->query($wpdb->prepare('SELECT option_id, price FROM labelgen_option_relationships where label_id = %d', $result['id']));
                         $options = $wpdb->last_result;
          
@@ -67,7 +67,7 @@ class label_controller {
     public function post($input, $verb, $args) {
         $user = $this->wp_session['user'];
         $request = $this->parse_label_request($input);
-        
+
         global $wpdb;
         $wpdb->query($wpdb->prepare('SELECT * FROM labelgen_labels WHERE user_id = %d AND name = %s', $user->get_id(), $request['name']));
         $result = $wpdb->last_result;
@@ -78,7 +78,7 @@ class label_controller {
             $pkg = $this->api->parse_post_request(self::$table, $request, false);
         }
         
-        $this->set_label_options($pkg);
+        $this->set_label_options($request, $pkg);
         $pkg['request_method'] = 'POST';
         
         return $this->api->win($pkg);
@@ -88,6 +88,7 @@ class label_controller {
     public function put($input, $verb, $args) {
         $request = $this->parse_label_request($input);
         $user = $this->wp_session['user'];
+        $table = self::$table;
         $label = (new \labelgen\Label\Builder())
                 ->with_id($request['id'])
                 ->with_name($request['name'])
@@ -102,12 +103,11 @@ class label_controller {
                 ->with_image_id($request['custom_image_id'])
                 ->with_user($user)->build();
 
-        /*
-        $pkg = $this->parse_put_request($table, $request, array('id'=>$this->user_id) );
-        $this->set_label_options($pkg);
-        */
+        $retval = \labelgen\Label::update($label);
+        $this->set_label_options($request, $pkg);
+        $retval['option_ids'] = $request['option_ids'];
 
-        return \labelgen\Label::update($label);
+        return $retval;
     }
     
     public function delete() {
@@ -124,20 +124,21 @@ class label_controller {
 		$option_ids = [];
 		$prices = [];
         $user = $this->wp_session['user'];
-        
+
 		if ($this->is_logged_in()) {
 			global $wpdb;
 			$wpdb->query($wpdb->prepare('SELECT * FROM labelgen_option_relationships WHERE label_id = %d', $pkg['id']));
 			$temp = $wpdb->last_result;
 			$saved_options = [];
 			$saved_prices = [];
-			
+
 			for ($i = 0; $i < count($temp); $i++) {
 				$saved_options[$temp[$i]->option_id] = $temp[$i]->id;				
 				$saved_prices[$temp[$i]->option_id] = $temp[$i]->price;
 			}
-			
+
 			if (array_key_exists('option_ids', $request) && is_array($request['option_ids'])) {
+                
 				foreach($request['option_ids'] as $id) {
 					$option_id = intval($id);
 					$price = floatval($request['option_prices'][$option_id]);			
@@ -206,6 +207,8 @@ class label_controller {
 			@ $retval['custom_image_id'] = $request['custom_image_id'] ? intval($request['custom_image_id']) : NULL;
 			@ $retval['name'] = $request['name'] ? sanitize_text_field($request['name']) : NULL;
 			@ $retval['display_logo'] = $request['display_logo'] ? true : false;
+            @ $retval['option_prices'] = $request['option_prices'];
+            @ $retval['option_ids'] = $request['option_ids'];
 			//$retval['make_id'] = $request['make_id'] ? intval($request['make_id']) : '';
 			//$retval['model_id'] = $request['model_id'] ? intval($request['model_id']) : '';
 			//$retval['year_id'] = $request['year_id'] ? intval($request['year_id']) : '';
@@ -216,6 +219,7 @@ class label_controller {
         else {
 			throw new \Exception('Please log in or sign up to save your form.');
 		}
+
 	    return $retval;
 	}
 }
