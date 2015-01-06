@@ -171,18 +171,6 @@ class labelgen_api extends restful_api {
         return $controller->{$method}($this->request, $action, $args);
     }
     
-    protected function get_location($loc) {
-        switch ($loc) {
-            case ("interior"): 
-                return 'interior'; 
-            case ("exterior"): 
-                return 'exterior'; 
-            default: 
-                throw new Exception('Not a valid location!'); 
-        }
-
-    }
-    
     protected function options($action, $args) {
         $method = strtolower($this->method);
         $controller = new \labelgen\option_controller($this, $this->wp_session);
