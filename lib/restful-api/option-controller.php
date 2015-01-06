@@ -77,10 +77,9 @@ class option_controller {
             if (!$wpdb->last_result) {
                 throw new \Exception('You do not have permission to delete this option.');
             }
-            json_encode("");
-            $this->parse_delete_request($table, ["id"=>$id, "owner"=>$this->user_id]);
-            $this->parse_delete_request('labelgen_user_relationships', array('item_id'=>$id, 'user_id'=>$this->user_id, 'table_name'=>$table));
-            $this->parse_delete_request('labelgen_option_relationships', array('option_id'=>$id));
+            $this->api->parse_delete_request(self::$table, [ "id" => $id, "owner"=>$user->get_id() ]);
+            $this->api->parse_delete_request('labelgen_user_relationships', [ 'item_id'=>$id, 'user_id'=>$user->get_id(), 'table_name' => self::$table ]);
+            $this->api->parse_delete_request('labelgen_option_relationships', [ 'option_id' => $id ]);
             
             return array('success'=>true);
         } else {
