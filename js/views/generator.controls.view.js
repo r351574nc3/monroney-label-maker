@@ -490,1099 +490,1098 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
             $select = $('<select>', {id: selector_id, class: 'tag-select', estyle: 'width: 250px; display: block; margin: 0 auto;'});
 
-			$newLabel = $('<option>', {text: 'New Label', id: 'new_selection', value: '0'});
+            $newLabel = $('<option>', {text: 'New Label', id: 'new_selection', value: '0'});
 
-			$select.append($newLabel);
+            $select.append($newLabel);
 
-			//}
-			var labels = this.collection.models;
-			var html = '<option id="new_selection" value="0">New Label</option>';
-			for (var l in labels) {
-				var name = labels[l].get('name');
-				var label_id = labels[l].get('id');//gsk
+            //}
+            var labels = this.collection.models;
+            var html = '<option id="new_selection" value="0">New Label</option>';
+            for (var l in labels) {
+                var name = labels[l].get('name');
+                var label_id = labels[l].get('id');//gsk
 
-				if(sessionStorage.getItem("sel_id") != null){
-					selected_id = sessionStorage.getItem("sel_id");
-					console.log("label_id",selected_id);
-				}
+                if(sessionStorage.getItem("sel_id") != null){
+                    selected_id = sessionStorage.getItem("sel_id");
+                    console.log("label_id",selected_id);
+                }
 
-				if (name) {
-					var vals = {text: name, value: label_id};
-					if (selected_id == label_id) {
-						html += '<option selected value="' + label_id + '">' + name + '</option>';
-						$select.append('<option selected value="' + label_id + '">' + name + '</option>');
-					} else {
-						html += '<option value="' + label_id + '">' + name + '</option>';
+                if (name) {
+                    var vals = {text: name, value: label_id};
+                    if (selected_id == label_id) {
+                        html += '<option selected value="' + label_id + '">' + name + '</option>';
+                        $select.append('<option selected value="' + label_id + '">' + name + '</option>');
+                    } else {
+                        html += '<option value="' + label_id + '">' + name + '</option>';
 
-						$select.append($('<option>', vals));
+                        $select.append($('<option>', vals));
 
-					}
+                    }
 
-				}
+                }
 
-			}
+            }
 
-			console.log("html",html); 
+            console.log("html",html); 
 
-			if(sessionStorage.getItem("labels") == null) {
-				sessionStorage.setItem("labels",html);
-			}
+            if(sessionStorage.getItem("labels") == null) {
+                sessionStorage.setItem("labels",html);
+            }
             else{
 
-				old_html = sessionStorage.getItem("labels");
-				var n = old_html.localeCompare(html);
+                old_html = sessionStorage.getItem("labels");
+                var n = old_html.localeCompare(html);
 
-				if((html!='') && (n!= 0)){
+                if((html!='') && (n!= 0)){
 
-					old_html = html;
+                    old_html = html;
 
-					sessionStorage.setItem("labels",old_html);
+                    sessionStorage.setItem("labels",old_html);
 
-				}
+                }
 
-				$select.html(old_html); 
+                $select.html(old_html); 
 
-			}
+            }
 
-			$('#' + selector_id).on('change', function() {
+            $('#' + selector_id).on('change', function() {
 
-				//console.log("Selector Changed", $(this).children(':selected'));
+                //console.log("Selector Changed", $(this).children(':selected'));
 
-			});
+            });
 
-			return $select;			
+            return $select;         
 
-		},
+        },
 
-		
+        
 
-		/**
+        /**
 
-		**		On Load Click
+        **      On Load Click
 
-		**/		
+        **/     
 
-		load_form: function() {
+        load_form: function() {
 
-			if (!this.validate_user()) return false;
+            if (!this.validate_user()) return false;
 
-			
+            
 
-			var select_id = 'label-load-selector';
+            var select_id = 'label-load-selector';
 
-			
+            
 
-			$select = this.get_label_select(select_id);
+            $select = this.get_label_select(select_id);
 
-			var dialog = new Dialog({
+            var dialog = new Dialog({
 
-				fields: [{label: 'Please Select a Form to Load', field: $select}], 
+                fields: [{label: 'Please Select a Form to Load', field: $select}], 
 
-				id: 'loadForm', 
+                id: 'loadForm', 
 
-				class: 'dialogForm',
+                class: 'dialogForm',
 
-				submitText: 'Load',
+                submitText: 'Load',
 
-				submitClass: 'tag-button',
+                submitClass: 'tag-button',
 
-				submitId: 'load-button'
+                submitId: 'load-button'
 
-			},
+            },
 
-				{callback: $.proxy(this.on_label_load, this, select_id), context: this}
+                {callback: $.proxy(this.on_label_load, this, select_id), context: this}
 
-			);
+            );
 
-		},
+        },
 
-		
+        
 
-		on_label_load: function(select_id) {
+        on_label_load: function(select_id) {
 
-			/*
+            /*
 
-			if(sessionStorage.length > 0){
+            if(sessionStorage.length > 0){
 
-				select_id = JSON.parse( sessionStorage.getItem("sel_id") );console.log('selectID',select_id);
+                select_id = JSON.parse( sessionStorage.getItem("sel_id") );console.log('selectID',select_id);
 
-			}*/
+            }*/
 
-			
+            
 
-			if (typeof select_id == 'object') {
+            if (typeof select_id == 'object') {
 
-				$select = select_id;
+                $select = select_id;
 
-			} else {
+            } else {
 
-				$select = $('#' + select_id);
+                $select = $('#' + select_id);
 
-			}
+            }
 
-			//console.log("Select", $select);			
+            //console.log("Select", $select);           
 
-			$selected = $select.children(':selected');
+            $selected = $select.children(':selected');
 
-			var name = $selected.text() || ""; 
+            var name = $selected.text() || ""; 
 
-			var id = $selected.val() || 0;
+            var id = $selected.val() || 0;
 
-			sessionStorage.setItem("sel_id",id);
+            sessionStorage.setItem("sel_id",id);
 
-			//console.log('on_label_load', id);
+            //console.log('on_label_load', id);
 
-			
+            
 
-			Modal.close();
+            Modal.close();
 
-			var model = this.collection.get(id);
+            var model = this.collection.get(id);
 
-			//console.log("Loaded Label", id, model.get('id'));
+            //console.log("Loaded Label", id, model.get('id'));
 
-			this.model = model;			
+            this.model = model;         
 
-			Backbone.trigger('labelSelected', this.model);
+            Backbone.trigger('labelSelected', this.model);
 
-		},
+        },
 
-		
+        
 
-		reset_form: function() {
+        reset_form: function() {
 
-			$('input.tag-input').val('');
+            $('input.tag-input').val('');
 
-			$("#msrp").html("$0.00");
+            $("#msrp").html("$0.00");
 
-			Backbone.trigger('requestReset');
+            Backbone.trigger('requestReset');
 
-		},
+        },
 
-		
+        
 
-		_gather_data: function() {
+        _gather_data: function() {
 
-			var tree = Array();
+            var tree = Array();
 
-			tree.push(this.get_sizing($('#tag-preview-window')));
+            tree.push(this.get_sizing($('#tag-preview-window')));
 
-			var data = {
+            var data = {
 
-				scale: this.scale,
+                scale: this.scale,
 
-				root_element: JSON.stringify(this.get_sizing($('#tag-preview-window'))),
+                root_element: JSON.stringify(this.get_sizing($('#tag-preview-window'))),
 
-				elements: JSON.stringify(this.get_elements($('#tag-preview-window'), tree)),
+                elements: JSON.stringify(this.get_elements($('#tag-preview-window'), tree)),
 
-			};
+            };
 
-			
+            
 
-			return data;
+            return data;
 
-		},
+        },
 
-		
+        
 
-		get_elements: function($root, tree) {	
+        get_elements: function($root, tree) {   
 
-			var controls = this;					
+            var controls = this;                    
 
-			$root.children().each(function() {
+            $root.children().each(function() {
 
-				if ($(this).is(":visible")) {
+                if ($(this).is(":visible")) {
 
-					var branch = controls.get_sizing($(this));
+                    var branch = controls.get_sizing($(this));
 
-					tree.push(branch);
+                    tree.push(branch);
 
-					controls.get_elements($(this), tree);				
+                    controls.get_elements($(this), tree);               
 
-				}
+                }
 
-			});
+            });
 
-			return tree;
+            return tree;
 
-		},
+        },
 
-		
+        
 
-		
+        
 
-		get_sizing: function($thing) {
+        get_sizing: function($thing) {
 
-		return {	width: $thing.css('width'), 
+        return {    width: $thing.css('width'), 
 
-					height: $thing.css('height'), 
+                    height: $thing.css('height'), 
 
-					padding: $thing.css('padding'),
+                    padding: $thing.css('padding'),
 
-					margin: $thing.css('margin'),
+                    margin: $thing.css('margin'),
 
-					background: $thing.css('background-color'),
+                    background: $thing.css('background-color'),
 
-					children: this.get_children_ids($thing),
+                    children: this.get_children_ids($thing),
 
-					parent: this.get_parent_id($thing),
+                    parent: this.get_parent_id($thing),
 
-					border: this.get_border($thing),
+                    border: this.get_border($thing),
 
-					position: $thing.css('position'),
+                    position: $thing.css('position'),
 
-					tag: $thing.prop('tagName'),
+                    tag: $thing.prop('tagName'),
 
-					id: $thing.attr('id'),
+                    id: $thing.attr('id'),
 
-					display: $thing.css('display'),
+                    display: $thing.css('display'),
 
-					siblings: this.get_siblings($thing),
+                    siblings: this.get_siblings($thing),
 
-					text: this.get_text($thing),
+                    text: this.get_text($thing),
 
-					color: $thing.css('color'),
+                    color: $thing.css('color'),
 
-					fontsize: $thing.css('font-size'),
+                    fontsize: $thing.css('font-size'),
 
-					fontfamily: $thing.css('font-family'),
+                    fontfamily: $thing.css('font-family'),
 
-					fontweight: $thing.css('font-weight'),
+                    fontweight: $thing.css('font-weight'),
 
-					fontstyle: $thing.css('font-style'),
+                    fontstyle: $thing.css('font-style'),
 
-					textalign: $thing.css('text-align'),
+                    textalign: $thing.css('text-align'),
 
-					float: $thing.css('float'),
+                    float: $thing.css('float'),
 
-					top: $thing.css('top'),
+                    top: $thing.css('top'),
 
-					right: $thing.css('right'),
+                    right: $thing.css('right'),
 
-					bottom: $thing.css('bottom'),
+                    bottom: $thing.css('bottom'),
 
-					left: $thing.css('left'),
+                    left: $thing.css('left'),
 
-					image: $thing.attr('src'),
+                    image: $thing.attr('src'),
 
-					zindex: $thing.css('z-index'),
+                    zindex: $thing.css('z-index'),
 
-					verticalalign: $thing.css('vertical-align')
+                    verticalalign: $thing.css('vertical-align')
 
-				};
+                };
 
-		},
+        },
 
-	
+    
 
-		get_border: function($thing) {
+        get_border: function($thing) {
 
-			var o = {
+            var o = {
 
-			top: $thing.css('border-top'),
+            top: $thing.css('border-top'),
 
-			right: $thing.css('border-right'),
+            right: $thing.css('border-right'),
 
-			bottom: $thing.css('border-bottom'),
+            bottom: $thing.css('border-bottom'),
 
-			left: $thing.css('border-left')
+            left: $thing.css('border-left')
 
-			}
+            }
 
-			return o;
+            return o;
 
-		},
+        },
 
-		
+        
 
-		get_text: function($thing) {
+        get_text: function($thing) {
 
-			if ($thing.val()) return $thing.val().trim(); 
+            if ($thing.val()) return $thing.val().trim(); 
 
-			else return $thing.clone().children().remove().end().text().trim();
+            else return $thing.clone().children().remove().end().text().trim();
 
-		},
+        },
 
 
 
-		get_siblings: function($thing) {
+        get_siblings: function($thing) {
 
-			var siblings = Array();
+            var siblings = Array();
 
-			
+            
 
-			$thing.parent().children().each(function() {
+            $thing.parent().children().each(function() {
 
-				if ($(this).attr('id') == $thing.attr('id')) {
+                if ($(this).attr('id') == $thing.attr('id')) {
 
-					return false;
+                    return false;
 
-				}
+                }
 
-			//console.log('IDS(' + $thing.attr('id') + ')', $(this).attr('id'));
+            //console.log('IDS(' + $thing.attr('id') + ')', $(this).attr('id'));
 
-				siblings.push($(this).attr('id'));
+                siblings.push($(this).attr('id'));
 
-			});
+            });
 
-			return siblings;
+            return siblings;
 
-		},
+        },
 
-		
+        
 
-		get_parent_id: function($child) {
+        get_parent_id: function($child) {
 
-			return $child.parent().attr('id');
+            return $child.parent().attr('id');
 
-		},
+        },
 
-		
+        
 
-		get_children_ids: function($parent) {
+        get_children_ids: function($parent) {
 
-			var ids = Array();
+            var ids = Array();
 
-			$parent.children().each(function() {
+            $parent.children().each(function() {
 
-				ids.push($(this).attr('id'));				
+                ids.push($(this).attr('id'));               
 
-			});
+            });
 
-			return ids;
+            return ids;
 
-		},
+        },
 
-		
+        
 
-		/**
+        /**
 
-		** Show PDF
+        ** Show PDF
 
-		**/
+        **/
 
-		
+        
 
-		print_form: function() {
+        print_form: function() {
 
-			this._get_form(this.print_pdf);
+            this._get_form(this.print_pdf);
 
-		},
+        },
 
-		
+        
 
-		inspect_form: function() {
+        inspect_form: function() {
 
-			this._get_form(this.show_pdf, {preview: true});			
+            this._get_form(this.show_pdf, {preview: true});         
 
-		},
+        },
 
 
 
-		_get_form: function(callback, options) {
+        _get_form: function(callback, options) {
 
-			options = options || {};			
+            options = options || {};            
 
-			var data = _.extend(this._gather_data(), _.extend({
+            var data = _.extend(this._gather_data(), _.extend({
 
-				callback: 'generate_pdf_label',
+                callback: 'generate_pdf_label',
 
-				username: this.collection.user.get('name'),
+                username: this.collection.user.get('name'),
 
-				labelname: this.model.get('name') || "nothing" 				
+                labelname: this.model.get('name') || "nothing"              
 
-			}, options));
+            }, options));
 
-						
+                        
 
-			this._do_ajax(data, 'POST', ajax.url, callback, {contentType: 'application/x-www-form-urlencoded', processData: true});					
+            this._do_ajax(data, 'POST', ajax.url, callback, {contentType: 'application/x-www-form-urlencoded', processData: true});                 
 
-		},
+        },
 
-		
+        
 
-		print_pdf: function(data) {				
+        print_pdf: function(data) {             
 
-			//var win = window.open(data.pdf, '_blank');
+            //var win = window.open(data.pdf, '_blank');
 
-			Modal.close();
+            Modal.close();
 
-			/*if (!win) {
+            /*if (!win) {
 
-				this.show_fail_message("Please Disable Popup Blocking to Use this Feature");
+                this.show_fail_message("Please Disable Popup Blocking to Use this Feature");
 
-			}*/
+            }*/
 
-			// pdf print gsk...
+            // pdf print gsk...
 
-			if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {//gsk
+            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {//gsk
 
-				//Modal.close();
+                //Modal.close();
 
-				// window.open(data.pdf, 'Test','_blank');				
+                // window.open(data.pdf, 'Test','_blank');              
 
-				
+                
 
-				var a = document.createElement('iframe');
+                var a = document.createElement('iframe');
 
-				a.setAttribute('src', data.pdf);
+                a.setAttribute('src', data.pdf);
 
-				a.setAttribute('style', 'width:0px;height:0px;');
+                a.setAttribute('style', 'width:0px;height:0px;');
 
-				document.body.appendChild(a);
+                document.body.appendChild(a);
 
-				a.onload = function() {					
+                a.onload = function() {                 
 
-					window.print();
+                    window.print();
 
-				};
+                };
 
-				}else{
+                }else{
 
-				var pdf = window.open(data.pdf,'_blank');
+                var pdf = window.open(data.pdf,'_blank');
 
-				pdf.print();
+                pdf.print();
 
-			}
+            }
 
-		},
+        },
 
 
 
-		show_pdf: function(data) {
+        show_pdf: function(data) {
 
-			//console.log('Canvas', data.pdf);
+            //console.log('Canvas', data.pdf);
 
-			PDFJS.disableWorker = true;				
+            PDFJS.disableWorker = true;             
 
-			PDFJS.workerSrc = pdfjs_ext.url + 'generic/build/pdf.worker.js';
+            PDFJS.workerSrc = pdfjs_ext.url + 'generic/build/pdf.worker.js';
 
-			// gsk
+            // gsk
 
-			var isiPad = navigator.platform.indexOf("iPod") != -1;
+            var isiPad = navigator.platform.indexOf("iPod") != -1;
 
-			var isiPhone = navigator.platform.indexOf("iPhone") != -1;
+            var isiPhone = navigator.platform.indexOf("iPhone") != -1;
 
-			if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {//gsk
+            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {//gsk
 
-				Modal.close();
+                Modal.close();
 
-				// window.open(data.pdf, 'Test','_blank');				
+                // window.open(data.pdf, 'Test','_blank');              
 
-				
+                
 
-				var a = document.createElement('a');
+                var a = document.createElement('a');
 
-				a.setAttribute('href', data.pdf);
+                a.setAttribute('href', data.pdf);
 
-				a.setAttribute('target', '_blank');
+                a.setAttribute('target', '_blank');
 
-				document.body.appendChild(a);
+                document.body.appendChild(a);
 
-				// a.click();
+                // a.click();
 
-				a.onclick = function(){ };
+                a.onclick = function(){ };
 
-				fireClick(a);
+                fireClick(a);
 
-				}else{
+                }else{
 
-			PDFJS.getDocument(data.pdf).then(function(pdf) {
+            PDFJS.getDocument(data.pdf).then(function(pdf) {
 
-				// Using promise to fetch the page			
+                // Using promise to fetch the page          
 
-				console.log('pdfurl',data.pdf);
+                console.log('pdfurl',data.pdf);
 
-				pdf.getPage(1).then(function(page) {
+                pdf.getPage(1).then(function(page) {
 
-					
+                    
 
-					var scale = 1.333;
+                    var scale = 1.333;
 
-					var viewport = page.getViewport(scale);
+                    var viewport = page.getViewport(scale);
 
-					//var canvas = $('<canvas', {id: 'pdfviewer'});
+                    //var canvas = $('<canvas', {id: 'pdfviewer'});
 
-					//$('#modal-content').append(canvas);
+                    //$('#modal-content').append(canvas);
 
-					Modal.replaceContent('canvas', {id: 'pdfviewer', style: 'display:none'});
+                    Modal.replaceContent('canvas', {id: 'pdfviewer', style: 'display:none'});
 
-					
+                    
 
-					var canvas = document.getElementById('pdfviewer');
+                    var canvas = document.getElementById('pdfviewer');
 
-					var context = canvas.getContext('2d');
+                    var context = canvas.getContext('2d');
 
-					
+                    
 
-					canvas.height = viewport.height;
+                    canvas.height = viewport.height;
 
-					canvas.width = viewport.width;
+                    canvas.width = viewport.width;
 
-					var renderContext = {
+                    var renderContext = {
 
-						canvasContext: context,
+                        canvasContext: context,
 
-						viewport: viewport
+                        viewport: viewport
 
-					};
+                    };
 
-					page.render(renderContext);
+                    page.render(renderContext);
 
-					//console.log("Canvas:", data.height, canvas.width);
+                    //console.log("Canvas:", data.height, canvas.width);
 
-					Modal.setContentProperties({overflow: "hidden"});
+                    Modal.setContentProperties({overflow: "hidden"});
 
-					Modal.setModalProperties({width: data.width, height: data.height, maxHeight: window.innerHeight - 100, overflowY: 'auto'});					
+                    Modal.setModalProperties({width: data.width, height: data.height, maxHeight: window.innerHeight - 100, overflowY: 'auto'});                 
 
-					$('#pdfviewer').show();
+                    $('#pdfviewer').show();
 
 
 
-			  });
+              });
 
-			})
+            })
 
-			
+            
 
-			}//gsk
+            }//gsk
 
-			//src: viewer.url + data.pdf;
+            //src: viewer.url + data.pdf;
 
-			//var path = {src: src, id: "viewer", width: 400, height: 1000};
+            //var path = {src: src, id: "viewer", width: 400, height: 1000};
 
-			
+            
 
-		},
+        },
 
-		
+        
 
-		/** 
+        /** 
 
-		**	Called when user clicks on log in button
+        **  Called when user clicks on log in button
 
-		**/
+        **/
 
-		log_in: function() {
+        log_in: function() {
 
-			$name = $('<input>', {type: 'text', class: 'tag-input', name: 'loginName'});
+            $name = $('<input>', {type: 'text', class: 'tag-input', name: 'loginName'});
 
-			$passw = $('<input>', {type: 'password', class: 'tag-input', name: 'loginPassword'});
+            $passw = $('<input>', {type: 'password', class: 'tag-input', name: 'loginPassword'});
 
-			
+            
 
-			var dialog = new Dialog(
+            var dialog = new Dialog(
 
-				{	fields: 
+                {   fields: 
 
-					[
+                    [
 
-						{label: 'Name', field: $name}, 
+                        {label: 'Name', field: $name}, 
 
-						{label: 'Enter a Password', field: $passw}, 
+                        {label: 'Enter a Password', field: $passw}, 
 
-					],
+                    ],
 
-					id: 'loginForm', 
+                    id: 'loginForm', 
 
-					submitText: 'Log In',
+                    submitText: 'Log In',
 
-					submitId: 'loginButton'
+                    submitId: 'loginButton'
 
-				},
+                },
 
-				
+                
 
-				{
+                {
 
-					callback: $.proxy(function(data) {
+                    callback: $.proxy(function(data) {
 
-							//console.log("Data", data);
+                            //console.log("Data", data);
 
-							this._do_ajax(data, 'POST', restful.url + '/users/' + data.loginName, this.on_successful_log_user_in);
+                            this._do_ajax(data, 'POST', restful.url + '/users/' + data.loginName, this.on_successful_log_user_in);
 
-						}, this),
+                        }, this),
 
-					context: this
+                    context: this
 
-				}
+                }
 
-			);
+            );
 
-		},
+        },
 
-		
+        
 
-	   /**
-		** Called when user clicks on log out button gsk 
-		**/
-		log_out: function() {
-			sessionStorage.removeItem("userid");
-			sessionStorage.removeItem("logo");
-			sessionStorage.removeItem("custom");
-			sessionStorage.removeItem("dealershipName");
-			sessionStorage.removeItem("dealershipTagline");
-			sessionStorage.removeItem("labels");
-			$.ajax( {url:"/wp-content/plugins/label-maker/logout.php",type:'get'} ).done(function(data){window.location.href = "/addendum-generator"});
+       /**
+        ** Called when user clicks on log out button gsk 
+        **/
+        log_out: function() {
+            sessionStorage.removeItem("userid");
+            sessionStorage.removeItem("logo");
+            sessionStorage.removeItem("custom");
+            sessionStorage.removeItem("dealershipName");
+            sessionStorage.removeItem("dealershipTagline");
+            sessionStorage.removeItem("labels");
+            $.ajax( {url:"/wp-content/plugins/label-maker/logout.php",type:'get'} ).done(function(data){window.location.href = "/addendum-generator"});
 
-		},
+        },
 
-		on_successful_log_user_in: function(data) {
+        on_successful_log_user_in: function(data) {
 
-			this._init_user(data);
+            this._init_user(data);
 
-			$doc = $('<div>');
+            $doc = $('<div>');
 
-			$head = $('<h3>', {text: 'Welcome back, ' + data.name + '. Please select a label:', class: 'success-message align-center'});			
+            $head = $('<h3>', {text: 'Welcome back, ' + data.name + '. Please select a label:', class: 'success-message align-center'});            
 
 
 
-			var select_id = 'label-login-selector';
+            var select_id = 'label-login-selector';
 
-			$select = this.get_label_select(select_id);			
+            $select = this.get_label_select(select_id);         
 
-			$ok = $('<button>', {text: 'OK', class: 'tag-button ok-button', style: 'margin-bottom: 50px'});
+            $ok = $('<button>', {text: 'OK', class: 'tag-button ok-button', style: 'margin-bottom: 50px'});
 
-			$doc.append($head, $select, $ok);
+            $doc.append($head, $select, $ok);
 
-			
+            
 
-			Modal.openDomDocument($doc);
+            Modal.openDomDocument($doc);
 
-			$options = [];			
+            $options = [];          
 
-			$ok.one('click', $.proxy(this.on_label_load, this, $select));
+            $ok.one('click', $.proxy(this.on_label_load, this, $select));
 
-			
+            
 
-			//window.location.href = "http://monroneyplus.com/addendum-generator";//gsk
+            //window.location.href = "http://monroneyplus.com/addendum-generator";//gsk
 
-		},
+        },
 
-		
+        
 
-		/** 
+        /** 
 
-		**	Initializes the user element
+        **  Initializes the user element
 
-		**	TRIGGERS--Backbone: userLoggedIn
+        **  TRIGGERS--Backbone: userLoggedIn
 
-		**/		
+        **/     
 
 
 
-		_init_user: function(data) {
-		//*** javascript userid session gsk ***
-			sessionStorage.setItem("userid",data.id);
-		// \*** end javascript userid session ***
-			if (_.isNumber(data.id) && data.id >= 0)) {
-				var user = new User(data, {parse: true});
-				var labels = user.get('labels');
-				this.collection = labels;
-				this.model.set('user', user);
-				this.hide_login_links();
-				Backbone.trigger('userLoggedIn', user);
-			}
+        _init_user: function(data) {
+        //*** javascript userid session gsk ***
+            sessionStorage.setItem("userid",data.id);
+        // \*** end javascript userid session ***
+            if (_.isNumber(data.id) && data.id >= 0)) {
+                var user = new User(data, {parse: true});
+                var labels = user.get('labels');
+                this.collection = labels;
+                this.model.set('user', user);
+                this.hide_login_links();
+                Backbone.trigger('userLoggedIn', user);
+            }
+        },
 
-		},
+        
 
-		
+        validate_user: function() {
 
-		validate_user: function() {
+            //console.log('Validate User', this);
 
-			//console.log('Validate User', this);
+            if(sessionStorage.length > 0){ 
 
-			if(sessionStorage.length > 0){ 
+                var user_id = parseInt( sessionStorage.getItem("userid") );
 
-				var user_id = parseInt( sessionStorage.getItem("userid") );
+                if(user_id > 0){
 
-				if(user_id > 0){
+                    return true;
 
-					return true;
+                }
 
-				}
+            }
 
-			}
+            //console.log(this.collection.user.get('id'));
 
-			//console.log(this.collection.user.get('id'));
+            if (this.collection.user.get('id') > 0) {
 
-			if (this.collection.user.get('id') > 0) {
+                return true;
 
-				return true;
+            } else {
 
-			} else {
+                this.show_fail_message('You must be logged in to perform this action!');
 
-				this.show_fail_message('You must be logged in to perform this action!');
+                return false;
 
-				return false;
+            }
 
-			}
+        },
 
-		},
 
 
+        /** 
 
-		/** 
+        **  Maniupulate the visibility of login links at the top of the form
 
-		**	Maniupulate the visibility of login links at the top of the form
+        **/     
 
-		**/		
+        
 
-		
+        hide_login_links: function() {
 
-		hide_login_links: function() {
+            //$('.login-txt').addClass('invisible');
 
-			//$('.login-txt').addClass('invisible');
+            $('#login-label').addClass('invisible');
 
-			$('#login-label').addClass('invisible');
+            $('#logout-label').removeClass('invisible');
 
-			$('#logout-label').removeClass('invisible');
+            $('#signup-label').css("display","none");
 
-			$('#signup-label').css("display","none");
+            $('.welcome-user-text').removeClass('invisible').text('Welcome ' + this.model.get('user').get('name') + '!');           
 
-			$('.welcome-user-text').removeClass('invisible').text('Welcome ' + this.model.get('user').get('name') + '!');			
+        },
 
-		},
+        
 
-		
+        show_login_links: function() {
 
-		show_login_links: function() {
+            $('.login-txt').removeClass('invisible');
 
-			$('.login-txt').removeClass('invisible');
+        },
 
-		},
+        
 
-		
+        /** 
 
-		/** 
+        **  Called when user clicks on signup button
 
-		**	Called when user clicks on signup button
+        **/
 
-		**/
+        sign_up: function() {
 
-		sign_up: function() {
+            $name = $('<input>', {type: 'text', class: 'tag-input', name: 'signupName'});
 
-			$name = $('<input>', {type: 'text', class: 'tag-input', name: 'signupName'});
+            $email = $('<input>', {type: 'text', class: 'tag-input', name: 'signupEmail'});
 
-			$email = $('<input>', {type: 'text', class: 'tag-input', name: 'signupEmail'});
+            $passw = $('<input>', {type: 'password', class: 'tag-input', name: 'signupPassword'});
 
-			$passw = $('<input>', {type: 'password', class: 'tag-input', name: 'signupPassword'});
+            $retype = $('<input>', {type: 'password', class: 'tag-input', name: 'signupPasswordRetype'});
 
-			$retype = $('<input>', {type: 'password', class: 'tag-input', name: 'signupPasswordRetype'});
+            //console.log('User Sign Up');
 
-			//console.log('User Sign Up');
+            
 
-			
+            var dialog = new Dialog(
 
-			var dialog = new Dialog(
+                {fields: 
 
-				{fields: 
+                    [
 
-					[
+                        {label: 'Username', field: $name}, 
 
-						{label: 'Username', field: $name}, 
+                        {label: 'Email', field: $email}, 
 
-						{label: 'Email', field: $email}, 
+                        {label: 'Enter a Password', field: $passw}, 
 
-						{label: 'Enter a Password', field: $passw}, 
+                        {label: 'Retype Password', field: $retype}
 
-						{label: 'Retype Password', field: $retype}
+                    ],
 
-					],
+                    id: 'signupForm', 
 
-					id: 'signupForm', 
+                    submitText: 'Sign Up',
 
-					submitText: 'Sign Up',
+                    submitId: 'signup-button'
 
-					submitId: 'signup-button'
+                },
 
-				},
+                {   
 
-				{	
+                    callback: $.proxy(function(data) {
 
-					callback: $.proxy(function(data) {
+                            if(data.signupPassword != data.signupPasswordRetype) {
 
-							if(data.signupPassword != data.signupPasswordRetype) {
+                                $('[name="signupPasswordRetype"]').animate({backgroundColor: '#bf2026'}, {duration: 600});
 
-								$('[name="signupPasswordRetype"]').animate({backgroundColor: '#bf2026'}, {duration: 600});
+                                $('[name="signupPasswordRetype"]').val('');
 
-								$('[name="signupPasswordRetype"]').val('');
+                            } else {
 
-							} else {
+                                this._do_ajax(data, 'POST', restful.url + '/users', this.on_successful_sign_user_up);
 
-								this._do_ajax(data, 'POST', restful.url + '/users', this.on_successful_sign_user_up);
+                            }
 
-							}
+                        }, this), 
 
-						}, this), 
+                    context: this
 
-					context: this
+                }
 
-				}
+            );
 
-			);
+        },
 
-		},
+        
 
-		
+        on_successful_sign_user_up: function(data) {
 
-		on_successful_sign_user_up: function(data) {
+            Modal.displayMessage('Congratulations, ' + data.name + '! To activate your account please log-out and then log-in again.  ', 'success-message align-center');           
 
-			Modal.displayMessage('Congratulations, ' + data.name + '! To activate your account please log-out and then log-in again.  ', 'success-message align-center');			
+            //console.log("Successful User Sign Up", data);
 
-			//console.log("Successful User Sign Up", data);
+            this._init_user(data);          
 
-			this._init_user(data);			
+        },
 
-		},
+        
 
-		
+        show_fail_message: function(message) {
 
-		show_fail_message: function(message) {
+            Modal.displayMessage(message, 'fail-message');      
 
-			Modal.displayMessage(message, 'fail-message');		
+        },
 
-		},
+        
 
-		
+        show_dialog: function(tag, options, modal_animation) {
 
-		show_dialog: function(tag, options, modal_animation) {
+            modal = Modal.open(tag, options, modal_animation);      
 
-			modal = Modal.open(tag, options, modal_animation);		
+        },
 
-		},
+        
 
-		
+        show_alert: function(name, message) {
 
-		show_alert: function(name, message) {
+            $('[name="' + name +'"]').val('');                  
 
-			$('[name="' + name +'"]').val('');					
+            $('[name="' + name + '"]').css({backgroundColor: "#bf2026"});                                       
 
-			$('[name="' + name + '"]').css({backgroundColor: "#bf2026"});										
+            Modal.prependContent('p', {class:"signupAlert", text: message});
 
-			Modal.prependContent('p', {class:"signupAlert", text: message});
+        },
 
-		},
+        
 
-		
+        handle_error: function(message) {
 
-		handle_error: function(message) {
+            var error_code = parseInt(message);
 
-			var error_code = parseInt(message);
+            switch(error_code) {
 
-			switch(error_code) {
+                case (INVALID_USER_NAME):
 
-				case (INVALID_USER_NAME):
+                    break;
 
-					break;
+                case (NAME_ALREADY_REGISTERED):
 
-				case (NAME_ALREADY_REGISTERED):
+                    this.show_alert('signupName', "Please choose a different login name.");
 
-					this.show_alert('signupName', "Please choose a different login name.");
+                    break;
 
-					break;
+                case (EMAIL_ALREADY_REGISTERED):
 
-				case (EMAIL_ALREADY_REGISTERED):
+                    this.show_alert('signupEmail', "This email has already been registered. Please check your records for the password");
 
-					this.show_alert('signupEmail', "This email has already been registered. Please check your records for the password");
+                    break;
 
-					break;
+                case (INVALID_CHARACTERS_IN_NAME):
 
-				case (INVALID_CHARACTERS_IN_NAME):
+                    this.show_alert('signupName', "Allowed characters for username: A-Z, a-z, 0-9");                
 
-					this.show_alert('signupName', "Allowed characters for username: A-Z, a-z, 0-9");				
+                    break;
 
-					break;
+                default:
 
-				default:
+                    this.show_fail_message(message);                
 
-					this.show_fail_message(message);				
+            }
 
-			}
+            
 
-			
 
 
+        },
 
-		},
+        
 
-		
+        check_user_credentials: function(response_code) {
 
-		check_user_credentials: function(response_code) {
+            var message = {};
 
-			var message = {};
+            message.message = false;                            
 
-			message.message = false;							
+            var url = restful.url + "users/" + this.collection.user.get('name') + "/check_credentials";
 
-			var url = restful.url + "users/" + this.collection.user.get('name') + "/check_credentials";
+            $.ajax({
 
-			$.ajax({
+                url: url,
 
-				url: url,
+                dataType: 'json',
 
-				dataType: 'json',
+                method: 'GET',
 
-				method: 'GET',
+                headers: {Authentication: authenticate(this.collection.user, url, 'GET')}
 
-				headers: {Authentication: authenticate(this.collection.user, url, 'GET')}
+            }).success(function(data) {
 
-			}).success(function(data) {
+                data = $.parseJSON(data);
 
-				data = $.parseJSON(data);
+                //console.log("success", data);
 
-				//console.log("success", data);
+                Backbone.trigger(response_code, data);                                  
 
-				Backbone.trigger(response_code, data);									
+            }).error(function() {
 
-			}).error(function() {
+                //console.log("error", data);   
 
-				//console.log("error", data);	
+                Backbone.trigger(response_code, message);
 
-				Backbone.trigger(response_code, message);
+            });
 
-			});
+        },
 
-		},
+                        
 
-						
+        _do_ajax: function(data, method, url, callback, options) {
 
-		_do_ajax: function(data, method, url, callback, options) {
+            data['action'] = ajax.action;
 
-			data['action'] = ajax.action;
+            Modal.showLoader();
 
-			Modal.showLoader();
+            $('.signupAlert').remove();
 
-			$('.signupAlert').remove();
+            options = options || {};
 
-			options = options || {};
+            var contentType = 'application/json';
 
-			var contentType = 'application/json';
+            var processData = false;                
 
-			var processData = false; 				
+            var controls = this;
 
-			var controls = this;
 
 
+            contentType = options.contentType || contentType;
 
-			contentType = options.contentType || contentType;
+            processData = options.processData || processData;
 
-			processData = options.processData || processData;
+            
 
-			
+            var json;
 
-			var json;
+            
 
-			
+            if (!processData || method.match(/put/i)) {
 
-			if (!processData || method.match(/put/i)) {
+                json = JSON.stringify(data);
 
-				json = JSON.stringify(data);
+            } else {
 
-			} else {
+                json = data;
 
-				json = data;
+            }
 
-			}
+            //console.log("Controls", json, contentType, processData);
 
-			//console.log("Controls", json, contentType, processData);
+            
 
-			
+            var user = this.collection.user;
 
-			var user = this.collection.user;
+            
 
-			
+            if (user.get('id') != 0) {              
 
-			if (user.get('id') != 0) {				
+                var headers = {
 
-				var headers = {
+                    Authentication: authenticate(user, url, method)
 
-					Authentication: authenticate(user, url, method)
+                };
 
-				};
+            }
 
-			}
 
 
+            //console.log('ajax.url(data, headers)', data, url);
 
-			//console.log('ajax.url(data, headers)', data, url);
+            return $.ajax(url, {
 
-			return $.ajax(url, {
+                type: method,
 
-				type: method,
+                data: json,
 
-				data: json,
+                headers: headers,
 
-				headers: headers,
+                processData: processData,
 
-				processData: processData,
+                dataType: 'json',
 
-				dataType: 'json',
+                contentType: contentType,
 
-				contentType: contentType,
+            }).done(function(response) {
 
-			}).done(function(response) {
+                
 
-				
+                if (typeof response === "object") {
 
-				if (typeof response === "object") {
+                    if (!response) {
 
-					if (!response) {
+                        response = {};
 
-						response = {};
+                        response.success = false;
 
-						response.success = false;
+                    }
 
-					}
+                } else {
 
-				} else {
+                    response = $.parseJSON(response);
 
-					response = $.parseJSON(response);
+                }           
 
-				}			
+                //console.log('post_form:done', response);
 
-				//console.log('post_form:done', response);
+                
 
-				
+                if (response.success == true) {
 
-				if (response.success == true) {
+                    callback.call(controls, response);
 
-					callback.call(controls, response);
+                } else {
 
-				} else {
+                    controls.handle_error(response.message);
 
-					controls.handle_error(response.message);
+                }
 
-				}
+                //var response = $.parseJSON(response);
 
-				//var response = $.parseJSON(response);
+            })
 
-			})
+            .fail(function(response) {
 
-			.fail(function(response) {
+                controls.show_fail_message("Something went technically wrong! If the problem persists, please contact the site administrator");
 
-				controls.show_fail_message("Something went technically wrong! If the problem persists, please contact the site administrator");
+                //console.log('post_form:fail', response.responseText);
 
-				//console.log('post_form:fail', response.responseText);
+            });
 
-			});
+        }
 
-		}
 
 
 
 
+    });
 
-	});
+    
 
-	
+    var initialize = function(attrs, opts) {
 
-	var initialize = function(attrs, opts) {
+        return new PDFControls(attrs, opts);    
 
-		return new PDFControls(attrs, opts);	
+    }
 
-	}
+    
 
-	
-
-	return {initialize: initialize};	
+    return {initialize: initialize};    
 
 });
