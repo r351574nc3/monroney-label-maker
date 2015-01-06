@@ -24,46 +24,25 @@ class labelgen_api extends restful_api {
         parent::__construct($request);
 
         $this->wp_session = $session;
-		
-		if ($this->user_is_logged_in()) {			
-			$this->get_user_id_from_secret($this->request['secret'], $this->verb);			
-		} else {
-										
-			if ($this->endpoint == 'users') {
-				if(isset($this->verb) && array_key_exists('loginPassword', $this->request)) {
-					$this->method = "GET";
-					$this->get_user_id_from_password($this->request['loginPassword']);						
-				} else if (array_key_exists("signupPassword", $this->request) && array_key_exists("signupName", $this->request) && array_key_exists('signupEmail', $this->request)) {
-					$this->user_id = NULL;
 
-				} else if (isset($this->args)) {
-					$this->get_user_id_from_secret();
-					$this->username = $this->verb;
-					$this->endpoint = array_shift($this->args);
-					if ($this->args) {
-						$this->verb = array_shift($this->args);
-					} else {
-						$this->verb = NULL;
-					}					
-				} else {
-					throw new Exception('Sorry. We cannot process your request at this time.');				
-				}
-			}else if( isset( $this->request['loginstate'] ) ){
-				unset( $_SESSION['wp_user_name'] );
-				unset( $_SESSION['wp_user_id'] );
+        
+        if ($this->is_user_logged_in()) {
+            $this->user = new User($this->request);
+            $this->get_user_id_from_secret($this->request['secret'], $this->verb);
+        }
+        else {
+            if ($this->endpoint != 'users') {
+                // throw new Exception("You are not authorized to perform this action!");                  
+            }
+        }
+
+        if (isset($this->request['loginstate'])) {
+				unset($this->wp_session['user']);
+				unset($_SESSION['wp_user_name']);
+				unset($_SESSION['wp_user_id']);
 				echo 'logout';
-			}
-			else {
-				throw new Exception("You are not authorized to perform this action!");					
-			}
 		}
 		
-		if (!preg_match('/GET/i', $this->method) && $this->user_id === 0) {
-			if (!current_user_can('manage_options')) {
-				throw new Exception("You do not have sufficient privilege to perform this action.");
-			}
-		} 
-
 		if ($_FILES) {
 			switch($this->endpoint) {
 				case('images'): 
@@ -101,11 +80,14 @@ class labelgen_api extends restful_api {
 		}
 	}
 	
-	private function user_is_logged_in() {		
-		return array_key_exists('secret', $this->request) && isset($this->verb);
-	}
+    /**
+     * Determines if the current user is logged in.
+     */
+    protected function is_user_logged_in() {
+        return isset($wp_session['user']);
+    }
 
-	private function get_user_id_from_password($pw) {
+	protected function get_user_id_from_password($pw) {
 		global $wpdb;											
 		$wpdb->query($wpdb->prepare('SELECT * FROM labelgen_users WHERE name = %s', array($this->verb)));
 		$result = $wpdb->last_result;
@@ -127,7 +109,7 @@ class labelgen_api extends restful_api {
 		}
 	}
 	
-	private function get_user_id_from_secret() {
+	protected function get_user_id_from_secret() {
 		$auth_args = explode(":", $_SERVER['HTTP_AUTHENTICATION']);
 		$user = substr($auth_args[0], 5, strlen($auth_args[0]));
 		$this->username = $user;
@@ -161,7 +143,7 @@ class labelgen_api extends restful_api {
 		}								
 	}
 	
-	private function user_relationships($item_table, $item_id) {
+	protected function user_relationships($item_table, $item_id) {
 		global $wpdb;
 		$table = 'labelgen_user_relationships';
 		$wpdb->insert($table, array( 
@@ -178,7 +160,7 @@ class labelgen_api extends restful_api {
 		}
 	}
 	
-	private function parse_args() {
+	protected function parse_args() {
 		//echo json_encode(array('args'=>$this->args, 'endpoint'=>$this->endpoint, 'verb'=>$this->verb));
 		//exit;		
 	}
@@ -275,7 +257,7 @@ class labelgen_api extends restful_api {
 		}
 	}
 	
-	private function signup_user($table, $fields) {
+	protected function signup_user($table, $fields) {
 		//First Check that all the appropriate fields have been filled in
 		if ($this->request['signupEmail'] && $this->request['signupPassword'] && $this->request['signupName']) {
 			
@@ -334,7 +316,7 @@ class labelgen_api extends restful_api {
 
 	}
 	
-	private function parse_label_request() {
+	protected function parse_label_request() {
 		if ($this->user_id) {
 			$request = array();
 			$request['user_id'] = $this->user_id;
@@ -363,7 +345,7 @@ class labelgen_api extends restful_api {
 		}
 	}
 
-	private function set_label_options(&$pkg) {
+	protected function set_label_options(&$pkg) {
 		$option_ids = array();
 		$prices = array();
 		if ($this->user_id === 0 || $this->user_id) {
@@ -554,7 +536,7 @@ class labelgen_api extends restful_api {
 		}
 	}
 	
-	private function get_location($loc) {
+	protected function get_location($loc) {
 		switch ($loc) {
 			case ("interior"): 
 				return 'interior'; 

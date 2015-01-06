@@ -148,6 +148,7 @@ class user_controller {
     }
 
     public function post($request, $verb, $args) {
+           echo "Got here";
         if (isset($verb)
             && array_key_exists('loginPassword', $request)) {
             // User is logging in

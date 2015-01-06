@@ -50,23 +50,13 @@ $default = array(
             <ul class="login-links">
 				<li id="login-message"><!--gsk-->
 				<h3 class="welcome-user-text tag-h2"></h3>
-				<?php if( isset( $_SESSION['wp_user_id'] ) ){ ?>
-					<h3 class="welcome-user-text tag-h2"><?php echo 'Welcome '.$_SESSION['wp_user_name']; ?></h3>
-					<?php }?>
-                	
 				</li>
-				<?php if( !isset ( $_SESSION['wp_user_id'] ) ) { ?>
                	<li id="login-label" class="">
                     <button class="icon-button black-text"><span class="icon-key2"></span><span class="login-txt">Log In</span></button>        
                 </li>
                 <li id="signup-label" class="">
                     <button class="icon-button black-text"><span class="icon-pencil"></span><span class="login-txt">Sign Up</span></button>        
                 </li>
-				<?php }else{?>
-				<li id="logout-label" class="">
-                    <button class="icon-button black-text"><span class="icon-key2"></span><span class="login-txt">Log out</span></button>        
-                </li>
-				<?php } ?>
 				<li id="logout-label" class="invisible">
                     <button class="icon-button black-text"><span class="icon-key2"></span><span class="login-txt">Log out</span></button>        
                 </li>
