@@ -172,7 +172,12 @@ abstract class restful_api {
 		return array_merge($m, $this->process_message($messages), array('method'=>$this->method)); 		
 	}
 	
-	protected function get_wpdb_values() {
+    public function get_method() {
+        return $this->method;
+    }
+    
+
+    protected function get_wpdb_values() {
 		global $wpdb;
 		return array('last_query'=>trim($wpdb->last_query), 'last_error'=>trim($wpdb->last_error), 'last_result'=>trim(print_r($wpdb->last_result, true)));
 	}
