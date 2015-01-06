@@ -1171,35 +1171,16 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
 
 		_init_user: function(data) {
-
 		//*** javascript userid session gsk ***
-
 			sessionStorage.setItem("userid",data.id);
-
-			
-
 		// \*** end javascript userid session ***
-
-			if (data.id != this.collection.user.get('id')) {						
-
+			if (_.isNumber(data.id) && data.id >= 0)) {
 				var user = new User(data, {parse: true});
-
-				//var coll = this.collection.parse(data.labelgen_labels);		
-
 				var labels = user.get('labels');
-
-				//console.log("New Collection", labels);
-
 				this.collection = labels;
-
-	
-
 				this.model.set('user', user);
-
 				this.hide_login_links();
-
 				Backbone.trigger('userLoggedIn', user);
-
 			}
 
 		},
