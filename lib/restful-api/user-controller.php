@@ -38,11 +38,15 @@ class user_controller {
                 ->build();
 
         $return = \labelgen\User::insert($user);
-        
+
         
         if ($return) {
-            // $retval = $user->to_array();
-            // $retval['success'] = true;
+            $this->api->parse_post_request(
+                'labelgen_apikeys', 
+                [ 'apikey' => \labelgen\User::encrypt($return['secret']),
+                  'secret' => $return['secret'] ]
+            );
+
             $this->wp_session['user'] = $user;
             return $return;
         } else {

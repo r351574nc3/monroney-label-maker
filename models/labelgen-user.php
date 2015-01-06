@@ -158,7 +158,7 @@ namespace labelgen {
             }
         }
 
-        protected function encrypt($passw, $cost = 10) {
+        public function encrypt($passw, $cost = 10) {
             
             //Create initialization vector from random source, size 16
             $iv = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
