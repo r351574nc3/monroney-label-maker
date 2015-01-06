@@ -59,16 +59,17 @@ class option_controller {
             $this->api->user_relationships($table, $result['id']);
             return $result;
         } else {
-            throw new Exception('Fields Not Set');
+            throw new \Exception('Fields Not Set');
         }
     }
 
     public function delete($request, $verb, $args) {
         global $wpdb;
         $id = intval($args[0]);
+        $user = $this->wp_session['user'];
         
-        if ($this->user_id == 0 && !current_user_can('manage_options'))
-            throw new Exception("Permission Denied");
+        if ($user->is_admin() && !current_user_can('manage_options'))
+            throw new \Exception("Permission Denied");
         
         if ($id) {
             $wpdb->query($wpdb->prepare('SELECT * FROM labelgen_options WHERE owner = %d AND id = %d', array($this->user_id, $id)));
