@@ -159,35 +159,6 @@ class labelgen_api extends restful_api {
         return $controller->{$method}($this->request, $action, args);       
     }
     
-    protected function parse_label_request() {
-        if ($this->user_id) {
-            $request = array();
-            $request['user_id'] = $this->user_id;
-            $request['id'] = $this->request['id'] ? intval($this->request['id']) : NULL;
-
-            @ $request['label_color'] = ($this->request['label_color']) ? (preg_match('/^#[a-zA-Z0-9]{6,8}$/', $this->request['label_color']) ? $this->request['label_color'] : '#234a8b') : '#234a8b';
-            @ $request['font_style'] = ($this->request['font_style']) ? (in_array(array('Italic', 'Normal'), $this->request['font_style']) ? $this->request['font_style'] : 'Normal') : 'Normal';
-            @ $request['font_weight'] = ($this->request['font_weight']) ? (in_array(array('Bold', 'Normal'), $this->request['font_weight']) ? $this->request['font_weight'] : 'Normal') : 'Normal';
-            @ $request['font_family'] = ($this->request['font_family']) ? (in_array(array('Sans Serif', 'Monospace', 'Serif'), $this->request['font_family']) ? $this->request['font_family'] : 'Sans Serif') : 'Sans Serif';
-            @ $request['dealership_name'] = $this->request['dealership_name'] ? sanitize_text_field($this->request['dealership_name']) : NULL;              
-            @ $request['dealership_logo_id'] = $this->request['dealership_logo_id'] ? intval($this->request['dealership_logo_id']) : NULL;              
-            @ $request['dealership_tagline'] = $this->request['dealership_tagline'] ? sanitize_text_field($this->request['dealership_tagline']) : NULL;             
-            //$request['dealership_info'] = $this->request['dealership_info'] ? sanitize_text_field($this->request['dealership_info']) : '';                
-            @ $request['custom_image_id'] = $this->request['custom_image_id'] ? intval($this->request['custom_image_id']) : NULL;
-            @ $request['name'] = $this->request['name'] ? sanitize_text_field($this->request['name']) : NULL;
-            @ $request['display_logo'] = $this->request['display_logo'] ? true : false;
-            //$request['make_id'] = $this->request['make_id'] ? intval($this->request['make_id']) : '';
-            //$request['model_id'] = $this->request['model_id'] ? intval($this->request['model_id']) : '';
-            //$request['year_id'] = $this->request['year_id'] ? intval($this->request['year_id']) : '';
-            //$request['vin'] = $this->request['vin'] ? intval($this->request['vin']) : '';
-            //$request['msrp'] = $this->request['msrp'] ? floatval($this->request['msrp']) : '';
-            //$request['trim'] = $this->request['trim'] ? sanitize_text_field($this->request['trim']) : '';
-            return $request;
-        } else {
-            throw new Exception('Please log in or sign up to save your form.');
-        }
-    }
-    
     protected function labels($action, $args) {
         $method = strtolower($this->method);
         $controller = new \labelgen\label_controller($this, $this->wp_session);

@@ -14,9 +14,10 @@ if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
 
 try {
     $API = new labelgen_api(
-    	$_REQUEST['request'], 
-    	$_SERVER['HTTP_ORIGIN']
-    );	
+        $_REQUEST['request'],
+        WP_Session::get_instance(),
+        $_SERVER['HTTP_ORIGIN']
+    );
 	echo $API->processAPI();
 	exit;
 } catch (Exception $e) {
