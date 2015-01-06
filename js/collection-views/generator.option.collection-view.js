@@ -95,11 +95,13 @@ define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backb
                 console.log("Response Message", response);
                 $('#generator-spinner-overlay').fadeOut();
                 $('#generator-page-loader').fadeOut();
-				if (response.message) {
-					$(this.input_container).removeClass('invisible');
-					$(this.add_item).addClass('invisible');
-					$(this.input).focus();
-				} else {
+                if (response.message) {
+                    $(this.input_container).removeClass('invisible');
+                    $(this.add_item).addClass('invisible');
+                    $(this.input).focus();
+                } else {
+                    $('#generator-spinner-overlay').fadeOut();
+                    $('#generator-page-loader').fadeOut();
 					Backbone.trigger('showFailMessage', 'You must be logged in to perform this action.');
 				}
 			});
@@ -107,6 +109,8 @@ define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backb
 		
 		add_new_option: function() {
                           
+            $('#generator-spinner-overlay').fadeIn();
+            $('#generator-page-loader').fadeIn();
 			var new_option_name = $(this.input).val();
 			
 			if (new_option_name) {
@@ -129,6 +133,8 @@ define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backb
 					}
 				);
 			} else {
+                $('#generator-spinner-overlay').fadeOut();
+                $('#generator-page-loader').fadeOut();
 				Backbone.trigger("showFailMessage", "Please Enter an Option Name!");
 			}
 		}
