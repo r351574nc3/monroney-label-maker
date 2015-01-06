@@ -5,22 +5,25 @@ namespace labelgen;
 require_once(LABEL_MAKER_ROOT.'/models/image.php');
 
 class image_controller {
+    protected $wp_session;
+    protected $api;
 
+    protected static $table = "labelgen_images";
 
-    public function __construct($request, $session, $origin) {
-        $conditions = array();
+    public function __construct($api, $wp_session) {
+        $this->api = $api;
+        $this->wp_session = $wp_session;
     }
 
 
-    public function get() {
+    public function get($request, $verb, $args) {
         if (isset($id)) 
             $condition['id'] = intval($id);
         $fields = array('id', 'guid', 'caption', 'owner');
         return $this->parse_get_request($table, $fields, $conditions);
     }
 
-    public function post() {
-        
+    public function post($request, $verb, $args) {        
         $request['owner'] = $this->user_id;
         $request['guid'] = $this->process_user_upload();
         $result = $this->parse_post_request($table, $request);          
@@ -28,7 +31,7 @@ class image_controller {
         return $result;
     }
 
-    public function delete() {
+    public function delete($request, $verb, $args) {
         $id = intval($id);
         
         if ($this->user_id == 0 && !current_user_can('manage_options'))
