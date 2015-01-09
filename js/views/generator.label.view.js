@@ -34,184 +34,186 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 			this.listenTo(Backbone, "yearSelected", $.proxy(this.model.set_year_id, this.model));
 			this.listenTo(this.model, 'change:total', this.update_total);
 			this.listenTo(this.model, 'change:msrp', this.update_msrp);
-			this.listenTo(this.model, 'change', this.set_field);
+            this.listenTo(this.model, 'change', this.set_field);
 
-			this.listenTo(Backbone, "requestReset", $.proxy(this.model.reset_attributes, this.model));
-			
+            this.listenTo(Backbone, "requestReset", $.proxy(this.model.reset_attributes, this.model));
+            
 
-			//console.log("Rendering Model", this.model.get('id'));
+            //console.log("Rendering Model", this.model.get('id'));
 
-			this.label_options = {interior: {}, exterior: {}};
-			this.label_discounts = {};
+            this.label_options = {interior: {}, exterior: {}};
+            this.label_discounts = {};
 
-			this.$msrp = $("[name='msrp']");
-			this.$msrp.val("$0.00");
-			var model = this.model;
+            this.$msrp = $("[name='msrp']");
+            this.$msrp.val("$0.00");
+            var model = this.model;
 
-			this.$msrp.on('blur', function(event) {
-				var val = event.target.value;
-				model.set_msrp(val);
-			});
+            this.$msrp.on('blur', function(event) {
+                var val = event.target.value;
+                model.set_msrp(val);
+            });
 
-			this.$total = $('#total');
-			this.$total.val("$0.00");
-			
-			this.$footer = $('#tag-preview-footer');								
-			this.$window = $('#tag-preview-window');
-			
-			this.$fontFamily = $('[name=fontFamily]');
-			this.$fontStyle = $('[name=fontStyle]');
-			this.$fontWeight = $('[name=fontWeight]');
+            this.$total = $('#total');
+            this.$total.val("$0.00");
+            
+            this.$footer = $('#tag-preview-footer');                                
+            this.$window = $('#tag-preview-window');
+            
+            this.$fontFamily = $('[name=fontFamily]');
+            this.$fontStyle = $('[name=fontStyle]');
+            this.$fontWeight = $('[name=fontWeight]');
 
-			this.$toggleVisibility = $('[name=toggleVisibility]');
-			this.$colorbox = $('.colorbox');
-			this.$uploadLogo = $('#upload-logo');
-			this.$uploadLabel = $('#upload-label');
+            this.$toggleVisibility = $('[name=toggleVisibility]');
+            this.$colorbox = $('.colorbox');
+            this.$uploadLogo = $('#upload-logo');
+            this.$uploadLabel = $('#upload-label');
 
-			this.$dealershipLogo = $('#dealershipLogo');
-			this.$dealershipText = $('#dealershipText');
+            this.$dealershipLogo = $('#dealershipLogo');
+            this.$dealershipText = $('#dealershipText');
 
-			this.$dealershipName = $('#dealershipName');
-			this.$dealershipTagline = $('#dealershipTagline');
-			this.$customImage = $('#customImage');
-			
-			var labelView = this;
+            this.$dealershipName = $('#dealershipName');
+            this.$dealershipTagline = $('#dealershipTagline');
+            this.$customImage = $('#customImage');
+            
+            var labelView = this;
 
-			$('.branding-option').on("click", function() {
-				if (!$(this).hasClass('selected-option')) {
-					labelView.toggle_visibility();
-				}
-			});
-			
-			this.model.on('change:labelColor', this.renderLabelColor, this);
-			this.renderLabelColor();
+            $('.branding-option').on("click", function() {
+                if (!$(this).hasClass('selected-option')) {
+                    labelView.toggle_visibility();
+                }
+            });
+            
+            this.model.on('change:labelColor', this.renderLabelColor, this);
+            this.renderLabelColor();
 
-			this.listenTo(Backbone, "imageAdded", function(guid, id, clz) {
-				//console.log("Image Added", guid, id, clz);
-				this.model.set(clz, guid);
-				$('#' + clz).attr('src', guid); 
-				this.model.set(clz + "Id", id);
-			});
+            this.listenTo(Backbone, "imageAdded", function(guid, id, clz) {
+                //console.log("Image Added", guid, id, clz);
+                this.model.set(clz, guid);
+                $('#' + clz).attr('src', guid); 
+                this.model.set(clz + "Id", id);
+            });
 
-			this.model.on('change:fontFamily change:fontWeight change:fontStyle', this.renderTextStyle, this);
-			this.model.on('change:dealershipName change:dealershipTagline', this.renderText, this);
-			//this.model.on('change:dealershipName', this.renderTextName, this);
-			//this.model.on('change:dealershipTagline', this.renderTextTag, this);//gsk
-			
-			this.renderTextByValue({key: 'dealershipTagline', value: this.model.get('dealershipTagline')});
-			this.renderTextByValue({key: 'dealershipName', value: this.model.get('dealershipName')});
+            this.model.on('change:fontFamily change:fontWeight change:fontStyle', this.renderTextStyle, this);
+            this.model.on('change:dealershipName change:dealershipTagline', this.renderText, this);
+            //this.model.on('change:dealershipName', this.renderTextName, this);
+            //this.model.on('change:dealershipTagline', this.renderTextTag, this);//gsk
+            
+            this.renderTextByValue({key: 'dealershipTagline', value: this.model.get('dealershipTagline')});
+            this.renderTextByValue({key: 'dealershipName', value: this.model.get('dealershipName')});
 
-			/* Deal with images */
-			this.model.on('change:dealershipLogo', $.proxy(function(model, value) {
-				//console.log("Dealership Logo", model, value);
-				window.localStorage.setItem("logo",value);//gsk
-				this.$dealershipLogo.attr('src', value);
-				if($("#text-branding-option").hasClass("selected-option")){
-					this.$dealershipText.removeClass('invisible');
-					this.$dealershipLogo.addClass('invisible');
-				}else{
-					this.$dealershipText.addClass('invisible');
-					this.$dealershipLogo.removeClass('invisible');
-				}
-				
-			}, this));
+            /* Deal with images */
+            this.model.on('change:dealershipLogo', $.proxy(function(model, value) {
+                //console.log("Dealership Logo", model, value);
+                window.localStorage.setItem("logo",value);//gsk
+                this.$dealershipLogo.attr('src', value);
+                if($("#text-branding-option").hasClass("selected-option")){
+                    this.$dealershipText.removeClass('invisible');
+                    this.$dealershipLogo.addClass('invisible');
+                }else{
+                    this.$dealershipText.addClass('invisible');
+                    this.$dealershipLogo.removeClass('invisible');
+                }
+                
+            }, this));
 
-			this.listenTo(this.model, 'change:customImage', $.proxy(function(model, value) {
-				//console.log('change:customImage', this.$customImage, model, value);
-				window.localStorage.setItem("custom",value);//gsk
-				this.$customImage.attr('src', value);				
-			}, this));
-			
-			this.listenTo(Backbone, 'dealershipLogoAdded', this.toggle_visibility);
-			//$('.tag-input[type=text]').on('blur', null, $.proxy(this.setText, null, this, this.model));  //gsk
-			$('[name="dealershipName"], [name="dealershipTagline"], [name="model"], [name="make"], [name="stockNo"], [name="year"], [name="vin"], [name="trim"]').on('blur', null, $.proxy(this.setText, null, this, this.model));
+            this.listenTo(this.model, 'change:customImage', $.proxy(function(model, value) {
+                //console.log('change:customImage', this.$customImage, model, value);
+                window.localStorage.setItem("custom",value);//gsk
+                this.$customImage.attr('src', value);               
+            }, this));
+            
+            this.listenTo(Backbone, 'dealershipLogoAdded', this.toggle_visibility);
+            //$('.tag-input[type=text]').on('blur', null, $.proxy(this.setText, null, this, this.model));  //gsk
+            $('[name="dealershipName"], [name="dealershipTagline"], [name="model"], [name="make"], [name="stockNo"], [name="year"], [name="vin"], [name="trim"]').on('blur', null, $.proxy(this.setText, null, this, this.model));
 
-			this.$fontFamily.on('change', null, $.proxy(this.setAttr, null, this, this.model));
+            this.$fontFamily.on('change', null, $.proxy(this.setAttr, null, this, this.model));
 
-			this.$toggleVisibility.on('change', null, {view: this}, this.toggle_visibility);
-			this.$colorbox.on('click', null, {view: this}, this.setLabelColor);		
-			$('[type=fontStyle], [name=fontWeight]').on('change', null, $.proxy(this.setCheckboxAttr, null, this, this.model));
-			
-			this.model.on("change:id", this.collection.clone_model, this.collection);
+            this.$toggleVisibility.on('change', null, {view: this}, this.toggle_visibility);
+            this.$colorbox.on('click', null, {view: this}, this.setLabelColor);     
+            $('[type=fontStyle], [name=fontWeight]').on('change', null, $.proxy(this.setCheckboxAttr, null, this, this.model));
+            
+            this.model.on("change:id", this.collection.clone_model, this.collection);
 
             this.listenTo(Backbone, "labelSelected", this.replace_model);
-			this.listenTo(Backbone, "add_option", this.add_option);
-			this.listenTo(Backbone, "remove_option", this.remove_option);
-			this.listenTo(Backbone, "optionUpdated", $.proxy(this.model.update_option, this.model));
-						
-			this.listenTo(Backbone, "add_discount", this.add_discount);
-			this.listenTo(Backbone, "remove_discount", this.remove_discount);
-			
-			this.listenTo(Backbone, 'requestReset', this.reset_options);
+            this.listenTo(Backbone, "add_option", this.add_option);
+            this.listenTo(Backbone, "remove_option", this.remove_option);
+            this.listenTo(Backbone, "optionUpdated", $.proxy(this.model.update_option, this.model));
+                        
+            this.listenTo(Backbone, "add_discount", this.add_discount);
+            this.listenTo(Backbone, "remove_discount", this.remove_discount);
+            
+            this.listenTo(Backbone, 'requestReset', this.reset_options);
 
-			/* load stuff */
-			
-			this.fetch_options();
-			this.fetch_image('customImage');
-			this.fetch_image('dealershipLogo');
-		
+            /* load stuff */
+            
+            this.fetch_options();
+            this.fetch_image('customImage');
+            this.fetch_image('dealershipLogo');
+        
 
-			return this;
-		},
-		
-		set_field: function(model, options) {
-			_.each(model.changed, function(el, i, list) {
-				console.log('LabelView:setField', el, i);
-				if (i != "msrp") 
-					$('#' + i).text(el);
-			}, this);
-		},
+            return this;
+        },
+        
+        set_field: function(model, options) {
+            _.each(model.changed, function(el, i, list) {
+                console.log('LabelView:setField', el, i);
+                if (i != "msrp") 
+                    $('#' + i).text(el);
+            }, this);
+        },
 
-		replace_model: function(model) {
-			if (this.model.get('id') != model.get('id')) {
-				this.model.stopListening();
-				this.model = model;
-				this.render();
-			}
-		},
+        replace_model: function(model) {
+            if (this.model.get('id') != model.get('id')) {
+                this.model.stopListening();
+                this.model = model;
+                this.render();
+            }
+        },
 
-		reset_options: function() {
-			for(var i in this.label_options) {
-				for (var j in this.label_options[i]) {
-					this.label_options[i][j].detach_from_view();					
-				}
-			}
-			
-		},
-		
-		add_option: function(model, price) {
-			//console.log('Add Option', model, price, this.label_options);
-			var old_option = this.label_options[model.get('location')][model.get('optionName')];		
-						
-			price = (price) ? parseFloat(price).toFixed(2) : 0.00;
-			//var cost = parseFloat(price);//gsk
-			model.set("price", price);
-			//var msrp = $("#msrp").html().replace('$','').replace(',','');console.log('msrp+cost',parseFloat(msrp),cost);
-			//msrp = parseFloat(msrp)+cost; 
-			//msrp = msrp.toFixed(2);
-			//msrp = msrp.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')
-			//$('#msrp').html("$"+msrp);
-			if (old_option) {
-				old_option.render();
-			} else {
-				var new_option = LabelOption.initialize({model: model});
-				this.label_options[model.get('location')][model.get('optionName')] = new_option;				
-			}
-			
-			this.model.add_option(model.get('id'), price);			
-		},
-		
-		remove_option: function(model, price) {
-			price = (price) ? parseFloat(price).toFixed(2) : 0.00;			
-			//console.log("Remove Option", model, price);
-			//var cost = parseFloat(price);//gsk
-			//var msrp = $("#msrp").html().replace('$','').replace(',','');console.log('msrp+cost',parseFloat(msrp),cost);
-			//msrp = parseFloat(msrp)-cost; 
-			//msrp = msrp.toFixed(2);
-			//msrp = msrp.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')
-			//$('#msrp').html("$"+msrp);
-			
-			this.label_options[model.get('location')][model.get('optionName')].detach_from_view(this);	
+        reset_options: function() {
+            for(var i in this.label_options) {
+                for (var j in this.label_options[i]) {
+                    this.label_options[i][j].detach_from_view();                    
+                }
+            }
+            
+        },
+        
+        add_option: function(model, price) {
+            //console.log('Add Option', model, price, this.label_options);
+            var old_option = this.label_options[model.get('location')][model.get('optionName')];        
+                        
+            price = (price) ? parseFloat(price).toFixed(2) : 0.00;
+            //var cost = parseFloat(price);//gsk
+            model.set("price", price);
+            //var msrp = $("#msrp").html().replace('$','').replace(',','');console.log('msrp+cost',parseFloat(msrp),cost);
+            //msrp = parseFloat(msrp)+cost; 
+            //msrp = msrp.toFixed(2);
+            //msrp = msrp.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')
+            //$('#msrp').html("$"+msrp);
+            if (old_option) {
+                old_option.render();
+            } else {
+                var new_option = LabelOption.initialize({model: model});
+                this.label_options[model.get('location')][model.get('optionName')] = new_option;                
+            }
+            
+            this.model.add_option(model.get('id'), price);          
+        },
+        
+        remove_option: function(model, price) {
+            price = (price) ? parseFloat(price).toFixed(2) : 0.00;          
+            //console.log("Remove Option", model, price);
+            //var cost = parseFloat(price);//gsk
+            //var msrp = $("#msrp").html().replace('$','').replace(',','');console.log('msrp+cost',parseFloat(msrp),cost);
+            //msrp = parseFloat(msrp)-cost; 
+            //msrp = msrp.toFixed(2);
+            //msrp = msrp.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')
+            //$('#msrp').html("$"+msrp);
+            
+            if (this.label_options[model.get('location')][model.get('optionName')]) {
+                this.label_options[model.get('location')][model.get('optionName')].detach_from_view(this);
+            }
 			this.model.remove_option(model.get('id'), price);
 		},
 		

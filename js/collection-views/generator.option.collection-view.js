@@ -19,7 +19,6 @@ define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backb
         fetch_options: function(ids, prices) {
             for (var i = 0; i < ids.length; i++) {
                 var model = this.collection.findWhere({id: ids[i]});
-                //console.log('fetch ' + this.collection.location + ' options', this.collection.userId);        
                 if (model != null) {
                     Backbone.trigger('add_option', model, prices[ids[i]]);
                 }
@@ -48,7 +47,6 @@ define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backb
             $(this.save_button).on('click', $.proxy(this.add_new_option, this));
             
             this.render_all_items();
-            console.log("Updating checked with ", this.activated);
             this.update_checked(this.activated);
         },
 
@@ -60,7 +58,8 @@ define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backb
 
                 var an_option = this.get_option_by_id(option_id);
                 if (!_.isNull(an_option)) {
-                    an_option.$checkbox.prop("checked", true);
+                    an_option.$checkbox.prop('checked', true);
+                    an_option.set_checked();
                 }
             }
         },

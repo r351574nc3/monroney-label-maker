@@ -17,6 +17,8 @@ abstract class restful_api {
     
     protected $user_id;
 
+    protected static $user_table = 'labelgen_user_relationships';
+
     public function __construct($request) {
         header("Access-Control-Allow-Orgin: *"); //allow requests from any origin to be processed
         header("Access-Control-Allow-Methods: *"); //allow any http method to be accepted
@@ -383,7 +385,7 @@ abstract class restful_api {
                         $data[$field] = $result[0]->$field;
                     }
                     $data['success'] = true;        
-                    $wpdb->insert($this->user_table, array('user_id'=>$this->user_id, 'table_name'=>$table, 'item_id'=>$data['id'], 'time'=>current_time('mysql')));
+                    $wpdb->insert(self::$user_table, array('user_id'=>$this->user_id, 'table_name'=>$table, 'item_id'=>$data['id'], 'time'=>current_time('mysql')));
                     return $data;
                 }
             }

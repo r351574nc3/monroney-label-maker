@@ -23,18 +23,18 @@ class backbone_controller {
                 "name"    => is_null($user) ? '' : $user->get_username(),
                 "id"      => is_null($user) ? '' : $user->get_id(),
                 "secret"  => is_null($user) ? '' : $user->get_secret(),
-                "labelgen_images"  => $this->get_images($user),
-                "labelgen_logos"   => $this->get_logos($user),
+                "labelgen_images"  => is_null($user) ? [] : $this->get_images($user),
+                "labelgen_logos"   => is_null($user) ? [] : $this->get_logos($user),
                 "labelgen_options" => [],
                 "labelgen_labels"  => is_null($user) ? [] : $this->get_labels($user)
         ];
 
-        foreach ($this->get_options($user) as $key => $value) {
-            $retval[$key] = $value;
-            array_push($retval['labelgen_options'], $value);
+        if (!is_null($user)) {
+            foreach ($this->get_options($user) as $key => $value) {
+                $retval[$key] = $value;
+                array_push($retval['labelgen_options'], $value);
+            }
         }
-
-        // return json_encode($retval);
         return $retval;
     }
 
@@ -46,11 +46,11 @@ class backbone_controller {
         return Image::query_for($user);
     }
 
-    protected function get_logos() {
+    protected function get_logos($user) {
         return Logo::query_for($user);
     }
 
-    protected function get_options() {
+    protected function get_options($user) {
         return Option::query_for($user);
     }
 }
