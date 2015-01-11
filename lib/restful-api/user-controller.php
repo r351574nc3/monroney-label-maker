@@ -17,8 +17,8 @@ class user_controller {
 
     protected function check_credentials($request, $verb, $args) {
         $user = $wp_session['user'];
-        return json_encode([ 'success' => true,
-                             'message' => (isset($user) && $user->is_admin()) ? current_user_can('manage_options') : true ]);
+        return [ 'success' => true,
+                 'message' => (isset($user) && $user->is_admin()) ? current_user_can('manage_options') : true ];
     }
 
     protected function get_unencrypted_secret() {
@@ -136,8 +136,8 @@ class user_controller {
             return $this->load_session();
         }
 
-        if ($verb == 'logout') {
-            return $this->logout($request, $verb, $args);
+        if ($method_exists($this, $verb) > 0) {
+            return $this->{$verb}($request, $verb, $args);
         }
 
         if (isset($verb) && is_array($args)) {
