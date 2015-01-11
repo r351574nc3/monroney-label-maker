@@ -82,7 +82,7 @@ class labelgen_api extends restful_api {
     public function user_relationships($item_table, $item_id) {
         global $wpdb;
         $table = 'labelgen_user_relationships';
-        $wpdb->insert($item_table, array( 
+        $wpdb->insert($table, array( 
             'user_id'=>$this->user_id, 
             'table_name'=> $item_table, 
             'item_id'=>$item_id, 
