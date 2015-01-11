@@ -56,7 +56,7 @@ class option_controller {
             $request['owner'] = $user->get_id();
 
             $result = $this->api->parse_post_request($table, $request);        
-            $this->api->user_relationships($table, $result['id']);
+            $this->api->user_relationships($table, $user->get_id(),$result['id']);
             return $result;
         } else {
             throw new \Exception('Fields Not Set');

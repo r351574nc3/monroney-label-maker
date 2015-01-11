@@ -31,7 +31,7 @@ class image_controller {
         $request['owner'] = $user->get_id();
         $request['guid'] = $this->api->process_user_upload();
         $result = $this->api->parse_post_request(self::$table, $request);
-        $this->api->user_relationships(self::$table, $result['id']);
+        $this->api->user_relationships(self::$table, $user->get_id(), $result['id']);
         return $result;
     }
 
