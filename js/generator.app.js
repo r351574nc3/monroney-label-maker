@@ -30,6 +30,7 @@ define(
                     _.each(rootUser.get('labels').models, function(element, index, list) {
                         if (label_id == element.get('id')) {
                             console.log("Returning ", element);
+                            console.log("Display Logo?", element.get('displayLogo'));
                             label = element;
                         }
                     });
@@ -39,6 +40,8 @@ define(
                 var pdfControls = Controls.initialize({model: label, collection: labels, user: rootUser});
     
                 view.render();
+
+                console.log("display logo? ", label.get('displayLogo'));
                 
                 if (labels.user.has('id')) { // Check if user is logged in
                     labels.fetch({ reset : true });

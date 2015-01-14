@@ -144,7 +144,11 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
             
             this.listenTo(Backbone, 'requestReset', this.reset_options);
 
-            console.log('display logo? ', this.model.get('displayLogo'));
+            console.log('display logo?', this.model.get('displayLogo'));
+            console.log('display logo?', this.model);
+            if (_.isBoolean(this.model.get('displayLogo'))) {
+                this.toggle_visibility();
+            }
 
             /* load stuff */
             
@@ -336,11 +340,7 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 			$('#dealershipLogo, #dealershipText').toggleClass('invisible');
 			$('.branding-option').toggleClass('selected-option');	
 			$('.branding-configuration').toggleClass('invisible');
-			var logoIsDisplayed = this.model.get('displayLogo');
-            console.log("display logo? ", logoIsDisplayed);
-            console.log("display logo? ", _.isBoolean(logoIsDisplayed));
-            console.log("display logo? ", parseInt(logoIsDisplayed) == 0);
-            
+			var logoIsDisplayed = this.model.get('displayLogo');            
 			this.model.set('displayLogo', _.isBoolean(logoIsDisplayed) ? false : true);
 
 		},

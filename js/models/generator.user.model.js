@@ -34,42 +34,42 @@ define(['jquery', 'underscore', 'backbone', 'options', 'discounts', 'imgs', 'veh
 			
 			if (data.secret) {
 				attrs.secret = data.secret;
-			}
-			
-			attrs.dealershipLogos = this.parse_user_collections(
-				Imgs, 
-				data.labelgen_logos || {}, 
-				{
-					el: ".logo-collection", 
-					name: "dealershipLogo", 
-					pluralName: "dealershipLogos", 
-					url: restful.url + 'users/' + attrs.name + '/logos', 
-					user: this
-				}
-			);
-	
-			attrs.customImages = this.parse_user_collections(
-				Imgs, 
-				data.labelgen_images || {}, 
-				{
-					el: ".image-collection", 
-					name: "customImage", 
-					pluralName: "customImages", 
-					url: restful.url + 'users/' + attrs.name + '/images',
-					user: this
-				}
-			);
+            }
+            
+            attrs.dealershipLogos = this.parse_user_collections(
+                Imgs, 
+                data.labelgen_logos || {}, 
+                {
+                    el: ".logo-collection", 
+                    name: "dealershipLogo", 
+                    pluralName: "dealershipLogos", 
+                    url: restful.url + 'users/' + attrs.name + '/logos', 
+                    user: this
+                }
+            );
+    
+            attrs.customImages = this.parse_user_collections(
+                Imgs, 
+                data.labelgen_images || {}, 
+                {
+                    el: ".image-collection", 
+                    name: "customImage", 
+                    pluralName: "customImages", 
+                    url: restful.url + 'users/' + attrs.name + '/images',
+                    user: this
+                }
+            );
 
-			attrs.labels = this.parse_user_collections(
-				Labels, 
-				data.labelgen_labels, 
-				{
-					user: this
-				}
-			);
-			attrs.labels.push(new Label({id: 0}));
+            attrs.labels = this.parse_user_collections(
+                Labels, 
+                data.labelgen_labels, 
+                {
+                    user: this
+                }
+            );
+            attrs.labels.push(new Label({id: 0}));
 
-			attrs.makes = this.parse_user_collections(
+  			attrs.makes = this.parse_user_collections(
 				VehicleType, 
 				data.labelgen_makes, 
 				{

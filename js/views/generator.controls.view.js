@@ -121,6 +121,13 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
             this.listenTo(Backbone, "destroyOption", this.destroy_item_model);
             this.listenTo(Backbone, "checkUserCredentials", this.check_user_credentials);
 
+            for (var label in this.collection.models) {
+                if (label.id == 58) {
+                    console.log("58? ", label.get('display_logo'))
+                }
+                
+            }
+
         },
 
         replace_model: function(model) {
