@@ -82,25 +82,16 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
             this.$signup = $('#signup-label');
 
             //*** Logout gsk ***
-
             this.$logout = $("#logout-label");
-
             this.$logout.off('click');
-
             this.$logout.on('click', $.proxy(this.log_out, this));
-
             // \*** End Logout gsk ***
 
             
-
             this.$login.off('click');
-
             this.$login.on('click', $.proxy(this.log_in, this));
 
-
-
             this.$signup.off('click');
-
             this.$signup.on('click', $.proxy(this.sign_up, this));
 
 
@@ -112,25 +103,16 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
 
             this.$load.off('click');
-
             this.$load.on('click', $.proxy(this.load_form, this));
 
-
-
             this.$inspect.off('click');
-
             this.$inspect.on('click', $.proxy(this.inspect_form, this));
 
 
-
             this.$reset.off('click');
-
             this.$reset.on('click', $.proxy(this.reset_form, this));
-
             
-
             this.$print.off('click');
-
             this.$print.on('click', $.proxy(this.print_form, this));
 
             this.listenTo(Backbone, "labelSelected", this.replace_model);
@@ -451,6 +433,8 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
             Modal.close();
 
             var model = this.collection.get(id);
+
+            console.log("Selected id");
             
             sessionStorage.setItem('labelId', model.get('id'));
             Backbone.trigger('modelReloaded', model.get('optionIds'));
@@ -899,6 +883,7 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
         log_out: function() {
             $('#generator-spinner-overlay').fadeOut();
             $('#generator-page-loader').fadeOut();
+            
             sessionStorage.removeItem('labelId');
             sessionStorage.removeItem("userid");
             sessionStorage.removeItem("logo");
@@ -906,6 +891,7 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
             sessionStorage.removeItem("dealershipName");
             sessionStorage.removeItem("dealershipTagline");
             sessionStorage.removeItem("labels");
+            
             $.ajax( {url:"api/users/logout", type:'get'} ).done(function(data){ window.location.reload(); });
         },
 
