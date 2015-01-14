@@ -115,8 +115,6 @@ define(
                      activated : label.get('optionIds')
                 });
 
-                console.log("Using option ids ", label.get('optionIds'));
-                
                 var interior_options_view = OptionsList.initialize({
                     collection: iOptions,
                     input_container: '#interior-input-container', 
