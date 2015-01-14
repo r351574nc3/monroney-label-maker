@@ -136,7 +136,7 @@ class user_controller {
             return $this->load_session();
         }
 
-        if ($method_exists($this, $verb) > 0) {
+        if (method_exists($this, $verb) > 0) {
             return $this->{$verb}($request, $verb, $args);
         }
 
