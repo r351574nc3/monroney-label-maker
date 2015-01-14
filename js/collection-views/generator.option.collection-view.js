@@ -122,8 +122,6 @@ define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backb
             Backbone.trigger('checkUserCredentials', response_msg);
             this.listenToOnce(Backbone, response_msg, function(response) {
                 console.log("Response Message", response);
-                $('#generator-spinner-overlay').fadeOut();
-                $('#generator-page-loader').fadeOut();
                 if (response.message) {
                     $(this.input_container).removeClass('invisible');
                     $(this.add_item).addClass('invisible');
@@ -134,6 +132,8 @@ define(['jquery', 'underscore', 'backbone', 'option-view'], function($, _, Backb
 					Backbone.trigger('showFailMessage', 'You must be logged in to perform this action.');
 				}
 			});
+            $('#generator-spinner-overlay').fadeOut();
+            $('#generator-page-loader').fadeOut();
 		},
 		
 		add_new_option: function() {
