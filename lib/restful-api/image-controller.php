@@ -95,6 +95,16 @@ class logo_controller extends image_controller {
         parent::__construct($api, $wp_session); 
     }
 
+    public function post($request, $verb, $args) {
+        $user = $this->wp_session['user'];
+
+        $request['owner'] = $user->get_id();
+        $request['guid'] = $this->api->process_user_upload();
+        $result = $this->api->parse_post_request(self::$table, $request);
+        $this->api->user_relationships(self::$table, $user->get_id(), $result['id']);
+        return $result;
+    }
+
     public function delete() {
         $id = intval(array_pop($args));
         $user = $this->wp_session['user'];
