@@ -434,8 +434,10 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
             var model = this.collection.get(id);
 
-            console.log("Selected id", id);
-            
+            if (id == 0) {
+                this.reset_form();
+            }
+
             sessionStorage.setItem('labelId', model.get('id'));
             Backbone.trigger('modelReloaded', model.get('optionIds'));
             Backbone.trigger('labelSelected', model);
