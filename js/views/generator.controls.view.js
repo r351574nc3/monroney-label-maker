@@ -158,16 +158,7 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
                         
 
                         success: function(model, response) {
-
-                            //console.log(response);
-
-                            //response = $.parseJSON(response);
-
-                            
-
                             if (response.success) {
-
-                                
 
                             } else {
 
@@ -1138,38 +1129,22 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
         },
 
-        
-
         check_user_credentials: function(response_code) {
-
             var message = {};
-
             message.message = false;                            
 
             var url = restful.url + "users/" + this.collection.user.get('name') + "/check_credentials";
-
             $.ajax({
-
                 url: url,
-
                 dataType: 'json',
-
                 method: 'GET',
-
                 headers: {Authentication: authenticate(this.collection.user, url, 'GET')}
-
             }).success(function(data) {
-
-                data = $.parseJSON(data);
-
-                //console.log("success", data);
-
+                // data = $.parseJSON(data);
+                console.log("success", data);
                 Backbone.trigger(response_code, data);                                  
-
             }).error(function() {
-
                 //console.log("error", data);   
-
                 Backbone.trigger(response_code, message);
 
             });
@@ -1285,8 +1260,6 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
                     controls.handle_error(response.message);
 
                 }
-
-                //var response = $.parseJSON(response);
 
             })
 
