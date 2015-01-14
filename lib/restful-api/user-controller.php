@@ -165,7 +165,7 @@ class user_controller {
         }
 
         if (!$this->is_user_logged_in()) {
-            throw new Exception("You are not authorized to perform this action! Please login and try again.");
+            throw new \Exception("You are not authorized to perform this action! Please login and try again.");
         }
 
         $action = "post_" . array_shift($args);
