@@ -144,6 +144,8 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
             
             this.listenTo(Backbone, 'requestReset', this.reset_options);
 
+            console.log('display logo? ', this.model.get('displayLogo'));
+
             /* load stuff */
             
             this.fetch_options();
@@ -335,7 +337,12 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
 			$('.branding-option').toggleClass('selected-option');	
 			$('.branding-configuration').toggleClass('invisible');
 			var logoIsDisplayed = this.model.get('displayLogo');
-			this.model.set('displayLogo', logoIsDisplayed ? false : true);		
+            console.log("display logo? ", logoIsDisplayed);
+            console.log("display logo? ", _.isBoolean(logoIsDisplayed));
+            console.log("display logo? ", parseInt(logoIsDisplayed) == 0);
+            
+			this.model.set('displayLogo', _.isBoolean(logoIsDisplayed) ? false : true);
+
 		},
 		
 		fetch_image: function(name) {

@@ -1140,13 +1140,9 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
                 method: 'GET',
                 headers: {Authentication: authenticate(this.collection.user, url, 'GET')}
             }).success(function(data) {
-                // data = $.parseJSON(data);
-                console.log("success", data);
                 Backbone.trigger(response_code, data);                                  
             }).error(function() {
-                //console.log("error", data);   
                 Backbone.trigger(response_code, message);
-
             });
 
         },
