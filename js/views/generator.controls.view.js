@@ -883,8 +883,8 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
         ** Called when user clicks on log out button gsk 
         **/
         log_out: function() {
-            $('#generator-spinner-overlay').fadeOut();
-            $('#generator-page-loader').fadeOut();
+            $('#generator-spinner-overlay').fadeIn();
+            $('#generator-page-loader').fadeIn();
             
             sessionStorage.removeItem('labelId');
             sessionStorage.removeItem("userid");
