@@ -93,7 +93,6 @@ define(['jquery', 'underscore', 'backbone', 'dropzone', 'util/authenticate', 'im
 				});
 			}
 			
-			console.log('Imgs', this.collection.url);
 			this.dropzone_form = new Dropzone('#' + this.dropzoneId, {
 				url: this.collection.url,
 				method: "POST",
