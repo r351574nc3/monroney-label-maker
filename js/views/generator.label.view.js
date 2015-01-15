@@ -144,9 +144,7 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
             
             this.listenTo(Backbone, 'requestReset', this.reset_options);
 
-            console.log('display logo?', this.model.get('displayLogo'));
-            console.log('display logo?', this.model);
-            if (_.isBoolean(this.model.get('displayLogo'))) {
+            if (parseInt(this.model.get('displayLogo')) == 1) {
                 this.toggle_visibility();
             }
 

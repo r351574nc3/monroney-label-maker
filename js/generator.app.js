@@ -29,8 +29,6 @@ define(
                 if (_.isNumber(label_id)) {
                     _.each(rootUser.get('labels').models, function(element, index, list) {
                         if (label_id == element.get('id')) {
-                            console.log("Returning ", element);
-                            console.log("Display Logo?", element.get('displayLogo'));
                             label = element;
                         }
                     });
@@ -41,8 +39,6 @@ define(
     
                 view.render();
 
-                console.log("display logo? ", label.get('displayLogo'));
-                
                 if (labels.user.has('id')) { // Check if user is logged in
                     labels.fetch({ reset : true });
                     pdfControls._init_user(json);
