@@ -432,19 +432,17 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
 
             var model = this.collection.get(id);
 
-            if (id == 0) {
-                this.reset_form();
-            }
-
+            this.reset_form();
             sessionStorage.setItem('labelId', model.get('id'));
             Backbone.trigger('modelReloaded', model.get('optionIds'));
             Backbone.trigger('labelSelected', model);
         },
 
         reset_form: function() {
+            console.log("Resetting form");
             $('input.tag-input').val('');
-            $("#msrp").html("$0.00");
-            Backbone.trigger('requestReset');
+            // $("#msrp").html("$0.00");
+            // Backbone.trigger('requestReset');
         },
 
         _gather_data: function() {
