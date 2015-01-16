@@ -175,6 +175,7 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
         },
 
         reset_options: function() {
+            console.log("resetting");
             for(var i in this.label_options) {
                 for (var j in this.label_options[i]) {
                     this.label_options[i][j].detach_from_view();                    

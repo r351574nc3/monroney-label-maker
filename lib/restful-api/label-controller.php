@@ -125,6 +125,8 @@ class label_controller {
 		$prices = [];
         $user = $this->wp_session['user'];
 
+        echo "Using label '" . $pkg['id'] . "'";
+
 		if ($this->is_logged_in()) {
 			global $wpdb;
 			$wpdb->query($wpdb->prepare('SELECT * FROM labelgen_option_relationships WHERE label_id = %d', $pkg['id']));

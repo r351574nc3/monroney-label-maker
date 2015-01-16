@@ -439,10 +439,9 @@ define(['jquery', 'underscore', 'backbone', 'dialog', 'yes-no-dialog', 'modal', 
         },
 
         reset_form: function() {
-            console.log("Resetting form");
-            $('input.tag-input').val('');
-            // $("#msrp").html("$0.00");
-            // Backbone.trigger('requestReset');
+            $('input#exterior-price-input').val('');
+            $("#msrp").html("$0.00");
+            Backbone.trigger('requestReset');
         },
 
         _gather_data: function() {
