@@ -104,6 +104,7 @@ class label_controller {
                 ->with_user($user)->build();
 
         $retval = \labelgen\Label::update($label);
+        $pkg['id'] = $request['id'];
         $this->set_label_options($request, $pkg);
         $retval['option_ids'] = $request['option_ids'];
 
@@ -124,8 +125,6 @@ class label_controller {
 		$option_ids = [];
 		$prices = [];
         $user = $this->wp_session['user'];
-
-        echo "Using label '" . $pkg['id'] . "'";
 
 		if ($this->is_logged_in()) {
 			global $wpdb;

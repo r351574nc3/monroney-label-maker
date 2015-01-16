@@ -134,7 +134,7 @@ define(['jquery', 'underscore', 'backbone', 'label-option-view', 'label-discount
             
             this.model.on("change:id", this.collection.clone_model, this.collection);
 
-            this.listenTo(Backbone, "labelSelected", this.replace_model);
+            // this.listenTo(Backbone, "labelSelected", this.replace_model);
             this.listenTo(Backbone, "add_option", this.add_option);
             this.listenTo(Backbone, "remove_option", this.remove_option);
             this.listenTo(Backbone, "optionUpdated", $.proxy(this.model.update_option, this.model));
