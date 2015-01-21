@@ -991,3 +991,8 @@ button {
   padding: 15px 10px 5px 10px;
   text-align: center;
 }
+
+/* temporarily remove save and load buttons from generator */
+#save-label, #load-label {
+    display: none !important;
+}
