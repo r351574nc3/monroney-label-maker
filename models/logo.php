@@ -28,7 +28,7 @@ namespace labelgen {
                     "SELECT * FROM {$table} tx 
                      INNER JOIN labelgen_user_relationships ty
                      ON tx.id = ty.item_id 
-                     WHERE ty.user_id = %d AND ty.table_name = %s", 
+                     WHERE ty.user_id = %d OR ty.user_id = 0 AND ty.table_name = %s", 
                      intval($id), $table
                 )
             );
