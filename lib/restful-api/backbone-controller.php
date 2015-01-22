@@ -23,7 +23,7 @@ class backbone_controller {
                 "name"    => is_null($user) ? '' : $user->get_username(),
                 "id"      => is_null($user) ? '' : $user->get_id(),
                 "secret"  => is_null($user) ? '' : $user->get_secret(),
-                "labelgen_images"  => is_null($user) ? [] : $this->get_images($user),
+                "labelgen_images"  => $this->get_images($user),
                 "labelgen_logos"   => is_null($user) ? [] : $this->get_logos($user),
                 "labelgen_options" => [],
                 "labelgen_labels"  => is_null($user) ? [] : $this->get_labels($user)
