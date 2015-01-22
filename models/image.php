@@ -25,10 +25,10 @@ namespace labelgen {
             
             $wpdb->query(
                 $wpdb->prepare(
-                    "SELECT * FROM {$table} tx 
-                     INNER JOIN labelgen_user_relationships ty
-                     ON tx.id = ty.item_id 
-                     WHERE (ty.user_id = %d OR ty.user_id = 0) AND ty.table_name = %s", 
+                    "SELECT * FROM {$table}
+                     where id in 
+                     (select item_id from labelgen_user_relationships where (user_id = %d or user_id = 0) 
+                     AND table_name = %s)", 
                      intval($user->get_id()), $table
                 )
             );
